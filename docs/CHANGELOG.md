@@ -2,6 +2,19 @@
 
 All meaningful project changes should be recorded here.
 
+## [0.5.0] — 2026-10-02 — Feature Foundation & End-to-End Stitch UI/UX Implementation
+
+### Added
+- **Database Migration 002 (`002_create_core_features_schema.sql`):** Created tables in Supabase PostgreSQL: `favorite_cities`, `search_history`, `activities`, `activity_interest_tags`, and `recommendation_rules` with indexes, foreign keys, and seed activities.
+- **Weather API Service (`weatherService.js`):** OpenWeatherMap integration with normalized data mapping for current telemetry (temperature, feels-like, wind, humidity, pressure, UV, precipitation, AQI) and multi-day forecasts, backed by high-fidelity deterministic fallback.
+- **Rule-Based Recommendation Engine (`recommendationService.js`):** Evaluates weather conditions against database rules and matching user interest profile tags to assign suitability grades (`OPTIMAL`, `SUITABLE`, `CAUTION`, `INDOOR_ALT`) and suitability scores.
+- **Favorites Management (`favoritesController.js` & `FavoritesModal.jsx`):** Allows authenticated users to pin and unpin favorite cities to Supabase with real-time reload.
+- **Search History Logging & Retrieval (`historyController.js` & `HistoryDrawer.jsx`):** Logs all guest and authenticated queries into `search_history` and provides user-isolated history viewing and clearing.
+- **Admin Command Center (`adminController.js` & `AdminPage.jsx`):** Provides usage analytics (searches today, total users, popular search destinations), interactive recommendation rule matrix toggle/management, and user registry with role guards (`requireRole('ADMIN')`).
+- **Live Frontend Integration (`HomePage.jsx`):** Fully connected all search, weather hero, telemetry cards, 7-day forecast, recommendation filter pills, and saved place actions to real backend endpoints.
+
+
+
 ## [0.4.5] — 2026-10-02 — UI/UX Improvement Using Stitch Design References
 
 ### Added

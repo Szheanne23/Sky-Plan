@@ -3,8 +3,8 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Spinner from '../common/Spinner';
 
-export default function ProtectedRoute({ children }) {
-  const { isAuthenticated, isLoading } = useAuth();
+export default function ProtectedRoute({ children, requiredRole }) {
+  const { user, isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
 
   if (isLoading) {
@@ -21,5 +21,10 @@ export default function ProtectedRoute({ children }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  if (requiredRole && user?.role !== requiredRole) {
+    return <Navigate to="/" replace />;
+  }
+
   return children;
 }
+

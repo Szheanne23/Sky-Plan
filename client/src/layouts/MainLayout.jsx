@@ -196,6 +196,16 @@ export default function MainLayout() {
                           <User className="w-4 h-4 text-outline" />
                           <span>Profile & Preferences</span>
                         </Link>
+                        {user?.role === 'ADMIN' && (
+                          <Link
+                            to="/admin"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-tertiary hover:bg-tertiary/20 transition-colors"
+                          >
+                            <Shield className="w-4 h-4 text-tertiary" />
+                            <span>Admin Portal</span>
+                          </Link>
+                        )}
                         <button
                           type="button"
                           onClick={handleLogout}
@@ -260,6 +270,18 @@ export default function MainLayout() {
                   My Preferences
                 </Link>
               )}
+              {isAuthenticated && user?.role === 'ADMIN' && (
+                <Link
+                  to="/admin"
+                  className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                    location.pathname === '/admin'
+                      ? 'bg-tertiary-container text-on-tertiary-container shadow-glow-amber'
+                      : 'text-tertiary hover:bg-tertiary/20'
+                  }`}
+                >
+                  Admin Portal
+                </Link>
+              )}
             </nav>
 
             {/* Quick Saved City Chips (Stitch Reference Feature) */}
@@ -303,18 +325,34 @@ export default function MainLayout() {
                 <span>Dashboard & Forecast</span>
               </Link>
               {isAuthenticated ? (
-                <Link
-                  to="/profile"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-                    location.pathname === '/profile'
-                      ? 'bg-primary-container text-on-primary-container shadow-glow'
-                      : 'text-on-surface-variant hover:bg-surface-container'
-                  }`}
-                >
-                  <User className="w-4 h-4" />
-                  <span>My Profile & Preferences</span>
-                </Link>
+                <>
+                  <Link
+                    to="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                      location.pathname === '/profile'
+                        ? 'bg-primary-container text-on-primary-container shadow-glow'
+                        : 'text-on-surface-variant hover:bg-surface-container'
+                    }`}
+                  >
+                    <User className="w-4 h-4" />
+                    <span>My Profile & Preferences</span>
+                  </Link>
+                  {user?.role === 'ADMIN' && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                        location.pathname === '/admin'
+                          ? 'bg-tertiary-container text-on-tertiary-container shadow-glow-amber'
+                          : 'text-tertiary hover:bg-tertiary/20'
+                      }`}
+                    >
+                      <Shield className="w-4 h-4" />
+                      <span>Admin Portal</span>
+                    </Link>
+                  )}
+                </>
               ) : (
                 <div className="pt-2 flex flex-col gap-2">
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
@@ -332,6 +370,7 @@ export default function MainLayout() {
             </nav>
           </div>
         )}
+
       </header>
 
       {/* Main Page Content (Padded to clear fixed 2-tier header) */}

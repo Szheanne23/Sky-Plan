@@ -25,9 +25,11 @@ async function request(endpoint, options = {}) {
   };
 
   const config = {
+    credentials: 'include',
     ...options,
     headers,
   };
+
 
   try {
     const response = await fetch(url, config);

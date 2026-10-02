@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+import AdminPage from './pages/AdminPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
@@ -26,6 +27,14 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="admin"
+              element={
+                <ProtectedRoute requiredRole="ADMIN">
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
@@ -33,3 +42,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+

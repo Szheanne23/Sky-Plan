@@ -66,6 +66,42 @@ async function authenticateToken(req, res, next) {
 }
 
 /**
+ * Middleware that optionally attaches the user if a valid token exists, but doesn't reject guests.
+ */
+async function optionalAuthenticate(req, res, next) {
+  let token = null;
+
+  if (req.cookies && req.cookies[COOKIE_NAME]) {
+    token = req.cookies[COOKIE_NAME];
+  } else if (req.headers.authorization) {
+    const parts = req.headers.authorization.split(' ');
+    if (parts.length === 2 && parts[0] === 'Bearer') {
+      token = parts[1];
+    }
+  }
+
+  if (!token) {
+    return next();
+  }
+
+  try {
+    const decoded = verifyToken(token);
+    const userResult = await query(
+      'SELECT id, email, role FROM users WHERE id = $1',
+      [decoded.id]
+    );
+
+    if (userResult.rows.length > 0) {
+      req.user = userResult.rows[0];
+    }
+  } catch (err) {
+    // Non-blocking: continue as guest if token expired or invalid
+  }
+
+  next();
+}
+
+/**
  * Middleware to restrict endpoints by role.
  * @param {string|string[]} roles - Allowed role or array of roles (e.g. 'ADMIN')
  */
@@ -98,5 +134,7 @@ function requireRole(roles) {
 
 module.exports = {
   authenticateToken,
+  optionalAuthenticate,
   requireRole,
 };
+
