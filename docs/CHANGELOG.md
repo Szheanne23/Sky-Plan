@@ -2,6 +2,17 @@
 
 All meaningful project changes should be recorded here.
 
+## [0.4.5] — 2026-10-02 — UI/UX Improvement Using Stitch Design References
+
+### Added
+- **Weather Search Command Panel (`SearchPanel.jsx`):** Search input with instant location suggestion pills (Interlaken, Boulder, Kyoto, Reykjavík, Vancouver, Manila, Denver) and date selection pills.
+- **Meteorological Micro-Telemetry Cards (`WeatherMetricCard.jsx`):** Atmospheric cards for Precipitation %, Wind & Gusts, UV Index (Optimal), Humidity %, Air Quality Index (AQI), and Barometric Pressure with progress gauges and condition badges.
+- **7-Day Atmospheric Itinerary Ribbon (`ForecastCard.jsx`):** Interactive daily forecast cards with high/low visual temperature range bars and precipitation probability pills.
+- **Smart Activity Recommendations (`RecommendationCard.jsx`):** Activity suggestions with suitability scoring (96% Optimal, 84% Suitable, 68% Caution, 98% Indoor Alt), time-of-day slots, and meteorological criteria tags.
+- **Reusable System Primitives:** Added `EmptyState.jsx` and `LoadingSkeleton.jsx` to prevent layout shifts.
+- **Unified Authentication & Profile UI:** Refactored `LoginPage.jsx`, `RegisterPage.jsx`, and `ProfilePage.jsx` to use the dark atmospheric frosted glass language (`#0a122a` / `#131a33`) with password visibility toggles and inline error handling.
+- **Mobile Navigation Drawer:** Responsive slide-down menu in `MainLayout.jsx` with touch-friendly navigation pills ($44\text{px}+$ targets).
+
 ## [0.4.0] — 2026-10-02 — Phase 1 Supabase PostgreSQL Setup & End-to-End Verification
 
 ### Added

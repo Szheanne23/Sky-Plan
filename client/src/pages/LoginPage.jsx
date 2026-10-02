@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Mail, Lock, LogIn, Sparkles, ArrowRight } from 'lucide-react';
+import { Mail, Lock, LogIn, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/common/Card';
 import Button from '../components/common/Button';
@@ -51,7 +51,7 @@ export default function LoginPage() {
       if (result.success) {
         navigate(from, { replace: true });
       } else {
-        setErrorMessage(result.error || 'Invalid credentials.');
+        setErrorMessage(result.error || 'Invalid email or password.');
       }
     } catch (err) {
       setErrorMessage(err.message || 'An unexpected error occurred during sign in.');
@@ -62,28 +62,34 @@ export default function LoginPage() {
 
   return (
     <div className="max-w-md mx-auto py-8">
+      {/* Header Badge & Title */}
       <div className="text-center mb-8 space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100/80 border border-sky-200 text-sky-800 text-xs font-semibold shadow-xs">
-          <Sparkles className="w-3.5 h-3.5 text-sky-600" />
-          <span>Registered Access</span>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-surface-container-high/90 border border-primary/20 text-primary text-xs font-semibold shadow-specular-inset">
+          <Sparkles className="w-3.5 h-3.5 text-primary" />
+          <span>Registered Member Access</span>
         </div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Welcome Back</h1>
-        <p className="text-sm text-slate-500">Sign in to manage your interest preferences and personalized plans.</p>
+        <h1 className="text-3xl font-extrabold font-display text-on-surface tracking-tight">
+          Sign In to SkyPlan
+        </h1>
+        <p className="text-sm text-on-surface-variant max-w-xs mx-auto">
+          Access your personalized activity plans, saved locations, and interest tags.
+        </p>
       </div>
 
-      <Card className="border-sky-100 shadow-glass overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-sky-50/50 via-white to-slate-50/50">
+      {/* Atmospheric Frosted Login Card */}
+      <Card className="border-white/10 shadow-glass overflow-hidden">
+        <CardHeader className="border-b border-white/5 bg-surface-container-low/50">
           <CardTitle className="text-base flex items-center gap-2">
-            <LogIn className="w-4 h-4 text-sky-600" />
+            <LogIn className="w-4 h-4 text-primary" />
             Account Authentication
           </CardTitle>
-          <CardDescription>Enter your verified credentials below.</CardDescription>
+          <CardDescription>Enter your credentials to securely restore your session.</CardDescription>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             {errorMessage && (
-              <Alert variant="error" title="Authentication Failed" onClose={() => setErrorMessage(null)}>
+              <Alert variant="error" title="Sign In Error" onClose={() => setErrorMessage(null)}>
                 {errorMessage}
               </Alert>
             )}
@@ -101,7 +107,7 @@ export default function LoginPage() {
               }}
               error={validationErrors.email}
               autoComplete="email"
-              disabled={isSubmitting}
+              required
             />
 
             <Input
@@ -117,28 +123,29 @@ export default function LoginPage() {
               }}
               error={validationErrors.password}
               autoComplete="current-password"
-              disabled={isSubmitting}
+              required
             />
 
-            <div className="pt-2">
-              <Button
-                type="submit"
-                variant="primary"
-                size="md"
-                className="w-full justify-center"
-                isLoading={isSubmitting}
-                icon={ArrowRight}
-              >
-                Sign In
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              icon={ArrowRight}
+              isLoading={isSubmitting}
+              className="w-full mt-2"
+            >
+              Sign In to Account
+            </Button>
           </form>
         </CardContent>
 
-        <CardFooter className="justify-center text-xs text-slate-500">
+        <CardFooter className="bg-surface-container-lowest/70 border-t border-white/5 py-4 flex items-center justify-center text-xs text-outline">
           <span>Don't have an account yet?</span>
-          <Link to="/register" className="ml-1.5 font-semibold text-sky-600 hover:text-sky-700 hover:underline">
-            Create account
+          <Link
+            to="/register"
+            className="ml-2 font-semibold text-primary hover:text-primary-300 transition-colors"
+          >
+            Create Account &rarr;
           </Link>
         </CardFooter>
       </Card>

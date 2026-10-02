@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, UserPlus, Sparkles, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/common/Card';
 import Button from '../components/common/Button';
@@ -70,25 +70,31 @@ export default function RegisterPage() {
 
   return (
     <div className="max-w-md mx-auto py-8">
+      {/* Header Badge & Title */}
       <div className="text-center mb-8 space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100/80 border border-sky-200 text-sky-800 text-xs font-semibold shadow-xs">
-          <Sparkles className="w-3.5 h-3.5 text-sky-600" />
-          <span>New Account</span>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-surface-container-high/90 border border-primary/20 text-primary text-xs font-semibold shadow-specular-inset">
+          <Sparkles className="w-3.5 h-3.5 text-primary" />
+          <span>New Account Registration</span>
         </div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Create SkyPlan Account</h1>
-        <p className="text-sm text-slate-500">Sign up to unlock personalized activity recommendations and save favorite locations.</p>
+        <h1 className="text-3xl font-extrabold font-display text-on-surface tracking-tight">
+          Create SkyPlan Account
+        </h1>
+        <p className="text-sm text-on-surface-variant max-w-xs mx-auto">
+          Join to unlock personalized activity recommendations and sync saved places.
+        </p>
       </div>
 
-      <Card className="border-sky-100 shadow-glass overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-sky-50/50 via-white to-slate-50/50">
+      {/* Atmospheric Frosted Registration Card */}
+      <Card className="border-white/10 shadow-glass overflow-hidden">
+        <CardHeader className="border-b border-white/5 bg-surface-container-low/50">
           <CardTitle className="text-base flex items-center gap-2">
-            <UserPlus className="w-4 h-4 text-sky-600" />
+            <UserPlus className="w-4 h-4 text-primary" />
             User Registration
           </CardTitle>
-          <CardDescription>Fill in your profile and account information.</CardDescription>
+          <CardDescription>Fill in your profile details to create your secure identity.</CardDescription>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             {errorMessage && (
               <Alert variant="error" title="Registration Error" onClose={() => setErrorMessage(null)}>
@@ -98,7 +104,8 @@ export default function RegisterPage() {
 
             <Input
               label="Display Name"
-              id="register-displayName"
+              id="register-name"
+              type="text"
               placeholder="e.g. Alex Rivera"
               icon={User}
               value={displayName}
@@ -108,7 +115,7 @@ export default function RegisterPage() {
               }}
               error={validationErrors.displayName}
               autoComplete="name"
-              disabled={isSubmitting}
+              required
             />
 
             <Input
@@ -124,14 +131,14 @@ export default function RegisterPage() {
               }}
               error={validationErrors.email}
               autoComplete="email"
-              disabled={isSubmitting}
+              required
             />
 
             <Input
               label="Password"
               id="register-password"
               type="password"
-              placeholder="Minimum 6 characters"
+              placeholder="At least 6 characters"
               icon={Lock}
               value={password}
               onChange={(e) => {
@@ -140,14 +147,14 @@ export default function RegisterPage() {
               }}
               error={validationErrors.password}
               autoComplete="new-password"
-              disabled={isSubmitting}
+              required
             />
 
             <Input
               label="Confirm Password"
-              id="register-confirmPassword"
+              id="register-confirm-password"
               type="password"
-              placeholder="Re-enter password"
+              placeholder="Re-type your password"
               icon={Lock}
               value={confirmPassword}
               onChange={(e) => {
@@ -156,28 +163,29 @@ export default function RegisterPage() {
               }}
               error={validationErrors.confirmPassword}
               autoComplete="new-password"
-              disabled={isSubmitting}
+              required
             />
 
-            <div className="pt-2">
-              <Button
-                type="submit"
-                variant="primary"
-                size="md"
-                className="w-full justify-center"
-                isLoading={isSubmitting}
-                icon={ArrowRight}
-              >
-                Create Account
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              icon={ArrowRight}
+              isLoading={isSubmitting}
+              className="w-full mt-2"
+            >
+              Complete Registration
+            </Button>
           </form>
         </CardContent>
 
-        <CardFooter className="justify-center text-xs text-slate-500">
+        <CardFooter className="bg-surface-container-lowest/70 border-t border-white/5 py-4 flex items-center justify-center text-xs text-outline">
           <span>Already registered?</span>
-          <Link to="/login" className="ml-1.5 font-semibold text-sky-600 hover:text-sky-700 hover:underline">
-            Sign in
+          <Link
+            to="/login"
+            className="ml-2 font-semibold text-primary hover:text-primary-300 transition-colors"
+          >
+            Sign In Instead &rarr;
           </Link>
         </CardFooter>
       </Card>

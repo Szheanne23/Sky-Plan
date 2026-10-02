@@ -54,3 +54,14 @@
 ## 6. Items That Cannot Be Determined From the References
 - **Exact Cloud Particle Simulation Engine:** Some simulation references contain complex three.js particle shaders; these will serve as visual inspiration for lightweight CSS/Canvas effects rather than heavy 3D engine requirements.
 - **Third-Party Social Auth:** Stitch header displays profile avatars without prescribing OAuth providers; we adhere strictly to the proposal baseline of JWT + email/password authentication.
+
+---
+
+## 7. UI/UX Refinement & Component Upgrades
+- **Interactive Weather Search Command Panel:** Reusable `SearchPanel` with city input, date pill switcher ("Today", "Tomorrow", "Weekend", "7-Day"), and popular location chips.
+- **Micro-Telemetry Grid Components:** Specialized `WeatherMetricCard` with live progress gauges and status badges.
+- **7-Day Atmospheric Itinerary:** Interactive `ForecastCard` with active day state and high/low temperature visual range bars.
+- **Smart Activity Recommendations:** Reusable `RecommendationCard` with category filters (Outdoor, Caution, Indoor Alt), suitability scores (e.g. 96%), time windows, and meteorological criteria tags.
+- **Authentication & Profile Views:** Fully unified `LoginPage`, `RegisterPage`, and `ProfilePage` using dark frosted glass cards (`bg-surface-container-low/80`), password toggles, and live tag synchronization.
+- **Mobile Navigation Drawer:** Responsive slide-down drawer menu on small screens with touch-friendly pill targets.
+- **Reusable System Primitives:** Added `EmptyState` and `LoadingSkeleton` to prevent layout shifts.
