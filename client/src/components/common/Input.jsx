@@ -8,6 +8,7 @@ export default function Input({
   error,
   helperText,
   icon: Icon,
+  pill = true,
   className,
   wrapperClassName,
   ...props
@@ -17,13 +18,13 @@ export default function Input({
   return (
     <div className={cn('w-full space-y-1.5', wrapperClassName)}>
       {label && (
-        <label htmlFor={inputId} className="block text-sm font-medium text-slate-700">
+        <label htmlFor={inputId} className="block text-xs font-semibold uppercase tracking-wider text-on-surface-variant">
           {label}
         </label>
       )}
-      <div className="relative rounded-xl shadow-sm">
+      <div className="relative rounded-full shadow-specular-inset">
         {Icon && (
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline">
             <Icon className="h-4 w-4" />
           </div>
         )}
@@ -31,18 +32,19 @@ export default function Input({
           id={inputId}
           type={type}
           className={cn(
-            'block w-full rounded-xl border bg-white/70 backdrop-blur-xs text-slate-900 placeholder:text-slate-400 sm:text-sm transition-all duration-200 focus:outline-none focus:ring-2',
-            Icon ? 'pl-10 pr-3.5 py-2.5' : 'px-3.5 py-2.5',
+            'block w-full border bg-surface-container-high/80 backdrop-blur-md text-on-surface placeholder:text-outline text-sm transition-all duration-200 focus:outline-none focus:ring-2',
+            pill ? 'rounded-full' : 'rounded-xl',
+            Icon ? 'pl-11 pr-4 py-2.5' : 'px-4 py-2.5',
             error
-              ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-500/20 text-rose-900'
-              : 'border-slate-200/90 focus:border-sky-500 focus:ring-sky-500/20 hover:border-slate-300',
+              ? 'border-error/50 focus:border-error focus:ring-error/20 text-error placeholder:text-error/50'
+              : 'border-white/10 focus:border-primary focus:ring-primary/30 hover:border-white/20 focus:shadow-[0_0_16px_rgba(76,214,251,0.25)]',
             className
           )}
           {...props}
         />
       </div>
-      {error && <p className="text-xs text-rose-600 mt-1">{error}</p>}
-      {!error && helperText && <p className="text-xs text-slate-500 mt-1">{helperText}</p>}
+      {error && <p className="text-xs text-error mt-1">{error}</p>}
+      {!error && helperText && <p className="text-xs text-outline mt-1">{helperText}</p>}
     </div>
   );
 }

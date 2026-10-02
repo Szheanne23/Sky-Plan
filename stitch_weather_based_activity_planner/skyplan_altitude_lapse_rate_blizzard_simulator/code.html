@@ -1,0 +1,1298 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SkyPlan - Altitude Lapse Rate &amp; Thermodynamic Atmospheric Engine</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Outfit:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            display: ['Outfit', '"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            primary: '#c6bfff',
+            secondary: '#43d7f7',
+            'brand-cyan': '#38BDF8',
+            'brand-violet': '#7C3AED',
+            'brand-amethyst': '#6C5CE7',
+            'brand-periwinkle': '#A29BFE',
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    :root {
+      --bg-sky-top: #0a0b1e;
+      --bg-sky-mid: #141738;
+      --bg-sky-bottom: #1f1b4b;
+      --bubble-bg: rgba(26, 24, 56, 0.58);
+      --bubble-border: rgba(162, 155, 254, 0.18);
+      --bubble-glow: rgba(108, 92, 231, 0.22);
+      --text-main: #FFFFFF;
+      --text-sub: #A5B4FC;
+      --accent-glow: #6C5CE7;
+      --tag-bg: rgba(124, 58, 237, 0.25);
+    }
+    body.day-mode {
+      --bg-sky-top: #38bdf8;
+      --bg-sky-mid: #818cf8;
+      --bg-sky-bottom: #c084fc;
+      --bubble-bg: rgba(255, 255, 255, 0.75);
+      --bubble-border: rgba(255, 255, 255, 0.65);
+      --bubble-glow: rgba(56, 189, 248, 0.22);
+      --text-main: #0F172A;
+      --text-sub: #334155;
+      --accent-glow: #0284c7;
+      --tag-bg: rgba(56, 189, 248, 0.22);
+    }
+    body.twilight-mode {
+      --bg-sky-top: #1e1b4b;
+      --bg-sky-mid: #4c1d95;
+      --bg-sky-bottom: #831843;
+      --bubble-bg: rgba(30, 27, 75, 0.68);
+      --bubble-border: rgba(192, 132, 252, 0.25);
+      --bubble-glow: rgba(192, 132, 252, 0.25);
+      --text-main: #FDF4FF;
+      --text-sub: #E9D5FF;
+      --accent-glow: #C084FC;
+      --tag-bg: rgba(192, 132, 252, 0.25);
+    }
+    body.storm-active {
+      --bg-sky-top: #060714;
+      --bg-sky-mid: #10122e;
+      --bg-sky-bottom: #161838;
+      --bubble-border: rgba(196, 181, 253, 0.32);
+      --bubble-glow: rgba(139, 92, 246, 0.35);
+      --accent-glow: #a78bfa;
+    }
+    .theme-transition {
+      transition: background 0.7s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+    }
+    .bubble-glass {
+      background: var(--bubble-bg);
+      border: 1px solid var(--bubble-border);
+      box-shadow: 0 12px 36px 0 var(--bubble-glow), inset 0 1px 1px 0 rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .bubble-glass-soft {
+      background: var(--bubble-bg);
+      border: 1px solid var(--bubble-border);
+      box-shadow: 0 8px 24px 0 var(--bubble-glow);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .floating-star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+    }
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 9999px;
+      height: 6px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 0 14px var(--accent-glow), 0 2px 6px rgba(0,0,0,0.3);
+      cursor: pointer;
+      border: 2px solid var(--accent-glow);
+      transition: transform 0.15s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+    @keyframes lightningShake {
+      0% { transform: translate(0, 0); }
+      20% { transform: translate(-3px, 2px); }
+      40% { transform: translate(3px, -2px); }
+      60% { transform: translate(-2px, 1px); }
+      80% { transform: translate(2px, -1px); }
+      100% { transform: translate(0, 0); }
+    }
+    .shake-active {
+      animation: lightningShake 0.35s cubic-bezier(.36,.07,.19,.97) both;
+    }
+    .lightning-flash-fx {
+      box-shadow: 0 0 50px 12px rgba(196, 181, 253, 0.65), inset 0 1px 12px 2px rgba(255, 255, 255, 0.9) !important;
+      border-color: rgba(224, 231, 255, 0.95) !important;
+    }
+  </style>
+</head>
+<body class="theme-transition min-h-screen text-slate-100 font-sans relative overflow-x-hidden antialiased" id="bodyRoot" style="background: linear-gradient(175deg, var(--bg-sky-top) 0%, var(--bg-sky-mid) 48%, var(--bg-sky-bottom) 100%);">
+<!-- Ambient Sky Flash -->
+<div class="fixed inset-0 pointer-events-none z-10 transition-opacity duration-75 opacity-0 mix-blend-screen" id="ambientFlash" style="background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(196, 181, 253, 0.8) 40%, rgba(56, 189, 248, 0.2) 100%); opacity: 0.85;"></div>
+<div class="absolute inset-0 pointer-events-none z-0 overflow-hidden" id="starField"></div>
+<canvas class="fixed inset-0 pointer-events-none z-10 w-full h-full cursor-crosshair" id="atmospheric-particles"></canvas>
+<!-- Sun/Moon Glow Halo -->
+<div class="absolute pointer-events-none transition-all duration-1000 ease-out z-0 rounded-full blur-3xl opacity-75" id="celestialOrb" style="width: 420px; height: 420px; top: 8%; right: 12%; background: radial-gradient(circle, rgba(162, 155, 254, 0.45) 0%, rgba(108, 92, 231, 0.15) 60%, transparent 80%);"></div>
+<!-- Mountain Silhouette -->
+<div class="absolute bottom-0 inset-x-0 pointer-events-none z-0 opacity-40 theme-transition">
+<svg class="w-full h-72 object-cover" fill="none" preserveAspectRatio="none" viewBox="0 0 1440 320">
+<path class="text-[#070919] opacity-90 transition-colors duration-700" d="M0,224L48,208C96,192,192,160,288,165.3C384,171,480,213,576,197.3C672,181,768,107,864,106.7C960,107,1056,181,1152,192C1248,203,1344,149,1392,122.7L1440,96L1440,320L0,320Z" fill="currentColor" id="mPath1"></path>
+<path class="text-[#030511] opacity-95 transition-colors duration-700" d="M0,288L60,266.7C120,245,240,203,360,202.7C480,203,600,245,720,256C840,267,960,245,1080,224C1200,203,1320,181,1380,170.7L1440,160L1440,320L0,320Z" fill="currentColor" id="mPath2"></path>
+</svg>
+</div>
+<!-- Header -->
+<header class="relative z-30 border-b border-white/10 theme-transition bg-black/20 backdrop-blur-xl px-6 lg:px-12 py-3 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-violet via-brand-amethyst to-brand-cyan p-0.5 shadow-lg shadow-brand-violet/30 flex items-center justify-center">
+<div class="w-full h-full bg-[#0e112a] rounded-[14px] flex items-center justify-center text-brand-cyan">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>
+</div>
+</div>
+<div>
+<span class="font-display font-black text-xl tracking-tight text-white flex items-center gap-1">Sky<span class="text-brand-cyan">Plan</span></span>
+<span class="text-[9px] font-semibold tracking-widest uppercase text-brand-periwinkle/80 block -mt-1">Thermodynamic Atmospheric Engine</span>
+</div>
+</div>
+<!-- Location Badge with Live Elevation -->
+<div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bubble-glass text-xs" style="color: var(--text-main);">
+<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+<span class="font-semibold" id="headerLocationName">Interlaken Crest</span>
+<span class="opacity-40">|</span>
+<span class="font-bold text-brand-cyan" id="headerElevationTag">2,163m ASL</span>
+<span class="opacity-40">•</span>
+<span class="font-semibold text-purple-300" id="headerTemp">6°C</span>
+</div>
+</div>
+<!-- Center Mode Switcher -->
+<div class="bubble-glass rounded-full p-1 flex items-center gap-1 shadow-xl">
+<button class="px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 bg-brand-amethyst text-white shadow-md" id="btnNight" onclick="setMode('night')">
+<span>🌙 Starlight</span>
+</button>
+<button class="px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 text-slate-300 hover:text-white" id="btnTwilight" onclick="setMode('twilight')">
+<span>🌅 Twilight</span>
+</button>
+<button class="px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 text-slate-300 hover:text-white" id="btnDay" onclick="setMode('day')">
+<span>☀️ Daylight</span>
+</button>
+</div>
+<!-- Right Telemetry & Profile -->
+<div class="flex items-center gap-3">
+<!-- Thermodynamic Lapse Telemetry Badge -->
+<div class="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-full bubble-glass text-xs font-semibold" style="color: var(--text-main);">
+<span class="text-[10px] uppercase tracking-wider text-brand-cyan">Γ Lapse</span>
+<span class="font-mono text-cyan-300">-6.5°C / km</span>
+</div>
+<button class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bubble-glass text-xs font-medium text-amber-300 border-amber-400/30 hover:bg-amber-400/10 transition-colors" onclick="triggerLightningManually()">
+<span class="animate-bounce">⚡</span><span>Strike Sky</span>
+</button>
+<div class="w-9 h-9 rounded-full overflow-hidden border border-white/30 shadow-md">
+<img alt="Observer Elena" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1U4_bY-4VC_5SfhgVo2XCTDAMJZf_6Pw-1kFIppbB7cipDofEr8WoXidEZGb7vHOCfrKDgar5pbOxOjNdCI0ywJrFJesNOpyl1sePrZr6uyfg4KSAoFVsh0tD3Q0wM4Ah0f93N3nHkB4--naUo3hGE6aEJDEqXsNF7se6olNDaS7SCmQx8_ieDnaT3jQ9c5KNb4QwwMvfzTM5ZyjLcMoVRpPI0P9easODpC6mIuXsdINUPWvZfkumUhWw">
+</div>
+</div>
+</header>
+<!-- Main Container -->
+<main class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 shake-active" id="mainContainer">
+<!-- Diurnal & Altitude Lapse Rate Control Suite -->
+<section class="bubble-glass rounded-3xl p-6 theme-transition shadow-2xl space-y-5">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-white/10">
+<div>
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-1" style="background: var(--tag-bg); color: var(--accent-glow);">
+<span>⛰️ Thermodynamic Lapse Simulation</span>
+</div>
+<h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight font-display" style="color: var(--text-main);">
+            Hypsometric Lapse &amp; Celestial Horizon
+          </h1>
+<p class="text-xs sm:text-sm mt-0.5 leading-relaxed" style="color: var(--text-sub);">
+            Simulating environmental temperature lapse (<span class="font-mono text-cyan-300 font-semibold">-6.5°C per 1,000m</span>) from valley rain showers to alpine glacier blizzards.
+          </p>
+</div>
+<!-- 4 Quick Altitude Stratum Preset Buttons -->
+<div class="flex flex-wrap items-center gap-1.5 self-start lg:self-center">
+<button class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all bubble-glass-soft text-slate-200 hover:text-white border border-white/15" onclick="setAltitudePreset(568)">
+            🏞️ Valley <span class="text-cyan-300 ml-1">568m</span>
+</button>
+<button class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all bubble-glass-soft text-slate-200 hover:text-white border border-white/15" onclick="setAltitudePreset(1850)">
+            🌲 Ridge <span class="text-cyan-300 ml-1">1,850m</span>
+</button>
+<button class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all bubble-glass-soft text-slate-200 hover:text-white border border-white/15" onclick="setAltitudePreset(2800)">
+            🏔️ Crest <span class="text-cyan-300 ml-1">2,800m</span>
+</button>
+<button class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all bubble-glass-soft text-slate-200 hover:text-white border border-white/15" onclick="setAltitudePreset(4158)">
+            ❄️ Summit <span class="text-cyan-300 ml-1">4,158m</span>
+</button>
+</div>
+</div>
+<!-- Dual Slider Row: Elevation & 24H Diurnal -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-1">
+<!-- 1. Altitude Lapse Rate Slider -->
+<div class="space-y-2">
+<div class="flex items-center justify-between text-xs font-semibold" style="color: var(--text-sub);">
+<span class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+<span>Elevation Stratum:</span>
+</span>
+<span class="font-extrabold text-sm px-2.5 py-0.5 rounded-full bubble-glass-soft text-cyan-300" id="altitudeDisplay">
+              2,163m (Interlaken Crest)
+            </span>
+</div>
+<input class="w-full cursor-ew-resize" id="altitudeSlider" max="4158" min="568" oninput="onAltitudeChange(this.value)" step="25" type="range" value="2163">
+<div class="flex justify-between text-[11px] font-medium opacity-60" style="color: var(--text-sub);">
+<span>568m (Lake Brienz)</span>
+<span>2,100m (0°C Freezing Line)</span>
+<span>4,158m (Jungfrau Summit)</span>
+</div>
+</div>
+<!-- 2. Diurnal Progression Time Slider -->
+<div class="space-y-2">
+<div class="flex items-center justify-between text-xs font-semibold" style="color: var(--text-sub);">
+<span class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-purple-400"></span>
+<span>Diurnal Time Progression:</span>
+</span>
+<span class="font-extrabold text-sm px-2.5 py-0.5 rounded-full bubble-glass-soft" id="sliderTimeDisplay" style="color: var(--text-main);">
+              02:00 (Starlight Night)
+            </span>
+</div>
+<input class="w-full cursor-ew-resize" id="timeScrubber" max="24" min="0" oninput="onTimeSliderChange(this.value)" step="0.5" type="range" value="2">
+<div class="flex justify-between text-[11px] font-medium opacity-60" style="color: var(--text-sub);">
+<span>00:00 (Night)</span>
+<span>06:00 (Dawn)</span>
+<span>12:00 (Noon)</span>
+<span>18:00 (Dusk)</span>
+<span>24:00 (Midnight)</span>
+</div>
+</div>
+</div>
+<!-- Real-time Thermodynamic Telemetry Bar -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-3 border-t border-white/10 text-xs">
+<div class="bubble-glass-soft rounded-2xl p-2.5 text-center">
+<span class="text-[10px] uppercase font-bold tracking-wider opacity-60" style="color: var(--text-sub);">Freezing Line (0°C)</span>
+<div class="font-black text-sm text-cyan-300 mt-0.5" id="teleFreezingLine">2,100m ASL</div>
+<div class="text-[10px] text-slate-400 mt-0.5" id="teleFreezingRel">Current: +63m above line</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-2.5 text-center">
+<span class="text-[10px] uppercase font-bold tracking-wider opacity-60" style="color: var(--text-sub);">Precipitation Phase</span>
+<div class="font-black text-sm text-indigo-300 mt-0.5" id="telePrecipPhase">Sleet &amp; Mixed Flurry</div>
+<div class="text-[10px] text-emerald-400 mt-0.5" id="telePrecipDesc">Transitioning to Snow</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-2.5 text-center">
+<span class="text-[10px] uppercase font-bold tracking-wider opacity-60" style="color: var(--text-sub);">Barometric Pressure</span>
+<div class="font-black text-sm text-purple-300 mt-0.5" id="teleBaro">782 hPa (QNH)</div>
+<div class="text-[10px] text-slate-400 mt-0.5" id="teleDensityAlt">Density: 2,420m Std</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-2.5 text-center">
+<span class="text-[10px] uppercase font-bold tracking-wider opacity-60" style="color: var(--text-sub);">Lifting Cond. Level</span>
+<div class="font-black text-sm text-amber-300 mt-0.5">1,400m Cloud Base</div>
+<div class="text-[10px] text-slate-400 mt-0.5">RH: 88% Saturated</div>
+</div>
+</div>
+</section>
+<!-- Atmospheric Particle Simulator Dock -->
+<section class="bubble-glass rounded-3xl p-5 theme-transition shadow-2xl border border-cyan-400/20 space-y-4">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg">
+<svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" stroke-width="2" style="animation-duration: 9s;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6.3 6.3l2.1 2.1M15.6 15.6l2.1 2.1M6.3 17.7l2.1-2.1M15.6 8.4l2.1-2.1"></path></svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="text-sm font-extrabold tracking-wide uppercase font-display" style="color: var(--text-main);">Atmospheric Particle Simulator</h2>
+<span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">Dual-Phase 60 FPS</span>
+</div>
+<p class="text-xs mt-0.5" style="color: var(--text-sub);">Interactive dual-phase physics: rain streaks in warm valleys automatically convert to crystal snowflakes at high altitudes.</p>
+</div>
+</div>
+<!-- Particle Mode Selector Pills -->
+<div class="flex items-center flex-wrap gap-1.5 p-1 rounded-2xl bg-black/25 backdrop-blur-md border border-white/10">
+<button class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-brand-amethyst text-white shadow-md" id="pModeStars" onclick="setParticleMode('stars')">✨ Clear / Stars</button>
+<button class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all text-slate-300 hover:text-white" id="pModeWind" onclick="setParticleMode('wind')">💨 Wind Gusts</button>
+<button class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all text-slate-300 hover:text-white" id="pModeRain" onclick="setParticleMode('rain')">🌧️ Rain Shower</button>
+<button class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all text-slate-300 hover:text-white" id="pModeSnow" onclick="setParticleMode('snow')">❄️ Snow / Blizzard</button>
+<button class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-amber-300 hover:text-white border border-amber-400/30" id="pModeStorm" onclick="setParticleMode('storm')">⚡ Thunderstorm</button>
+</div>
+</div>
+<!-- Quick Action Row -->
+<div class="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-purple-600 text-white shadow-lg active:scale-95 transition-transform" onclick="triggerLightningManually()">
+            ⚡ Strike Bolt
+          </button>
+<button class="px-3 py-1.5 rounded-xl text-xs font-semibold bubble-glass-soft text-slate-200 hover:text-white border border-white/15" id="thunderAudioToggle" onclick="toggleThunderAudio()">
+<span id="audioIcon">🔊</span> <span id="audioStatusText">Thunder Audio: On</span>
+</button>
+<span class="text-[11px] opacity-70 hidden sm:inline ml-2" style="color: var(--text-sub);">Click canvas to strike lightning bolt at coordinates</span>
+</div>
+<div class="flex items-center gap-2 font-medium" style="color: var(--text-sub);">
+<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+<span class="text-amber-300 font-bold" id="strikeStatusPill">Discharge at 3.0 km</span>
+<span class="opacity-40">|</span>
+<span id="strikeCounterPill">Strikes: 7</span>
+</div>
+</div>
+<!-- Sliders Row -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 text-xs">
+<div class="bubble-glass-soft rounded-2xl p-3 space-y-1.5">
+<div class="flex items-center justify-between font-semibold" style="color: var(--text-main);">
+<span>Wind Velocity:</span>
+<span class="text-cyan-300 font-bold" id="windSpeedLabel">14 km/h</span>
+</div>
+<input class="w-full" id="windSpeedSlider" max="80" min="2" oninput="onWindSpeedChange(this.value)" step="1" type="range" value="14">
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3 space-y-1.5">
+<div class="flex items-center justify-between font-semibold" style="color: var(--text-main);">
+<span>Particle Density:</span>
+<span class="text-purple-300 font-bold" id="precipDensityLabel">200 qty</span>
+</div>
+<input class="w-full" id="precipDensitySlider" max="450" min="40" oninput="onParticleDensityChange(this.value)" step="10" type="range" value="200">
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3 space-y-1.5">
+<div class="flex items-center justify-between font-semibold" style="color: var(--text-main);">
+<span>Wind Trajectory:</span>
+<span class="text-amber-300 font-bold" id="windAngleLabel">+20° East</span>
+</div>
+<input class="w-full" id="windAngleSlider" max="60" min="-60" oninput="onWindAngleChange(this.value)" step="2" type="range" value="20">
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3 space-y-1.5">
+<div class="flex items-center justify-between font-semibold" style="color: var(--text-main);">
+<span>Lightning Activity:</span>
+<span class="text-indigo-300 font-bold" id="lightningFreqLabel">Active (~5s)</span>
+</div>
+<input class="w-full" id="lightningFreqSlider" max="3" min="0" oninput="onLightningFreqChange(this.value)" step="1" type="range" value="2">
+</div>
+</div>
+</section>
+<!-- Main Weather Display -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- Left Hero Bubble: Altitude-Calculated Weather -->
+<div class="lg:col-span-7 bubble-glass rounded-3xl p-6 sm:p-8 space-y-5 theme-transition relative overflow-hidden" id="heroWeatherCard">
+<div class="flex items-start justify-between relative z-10">
+<div>
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-white/15" id="heroStationPill" style="color: var(--text-main);">Live Stratum</span>
+<span class="text-xs font-semibold" id="heroAltitudeMeta" style="color: var(--text-sub);">Bernese Oberland • 2,163m ASL</span>
+</div>
+<h2 class="text-3xl lg:text-4xl font-black mt-1 font-display tracking-tight" id="heroLocationName" style="color: var(--text-main);">
+              Interlaken Crest
+            </h2>
+<p class="text-xs sm:text-sm mt-0.5 font-medium" id="heroSubtext" style="color: var(--text-sub);">
+              Alpine Freezing Line • Mixed Flurries • Relative Humidity 86%
+            </p>
+</div>
+<div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl p-2 flex flex-col items-center justify-center shadow-xl transition-all" id="weatherIconBox" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.45) 0%, rgba(56, 189, 248, 0.35) 100%); border: 1px solid rgba(255,255,255,0.4);">
+<div class="text-4xl" id="heroEmoji">❄️</div>
+<div class="text-[10px] font-bold uppercase tracking-wider mt-1 text-white/90 text-center" id="heroPhaseLabel">Alpine Crest</div>
+</div>
+</div>
+<!-- Big Temperature & Lapse Feedback -->
+<div class="flex items-baseline gap-4 pt-1">
+<span class="text-7xl lg:text-8xl font-black tracking-tighter font-display" id="bigTemp" style="color: var(--text-main);">6°</span>
+<div>
+<div class="text-2xl font-bold opacity-80" id="tempUnit" style="color: var(--accent-glow);">Celsius</div>
+<div class="text-xs font-semibold" id="feelsLikeText" style="color: var(--text-sub);">Feels like 3°C • Lapse delta: -10.4°C from valley floor</div>
+</div>
+</div>
+<!-- 4 Metric Cards -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+<div class="bubble-glass-soft rounded-2xl p-3 text-center">
+<div class="text-[10px] font-bold uppercase tracking-wider opacity-70" style="color: var(--text-sub);">Precipitation</div>
+<div class="text-lg font-extrabold mt-0.5" id="heroRainVal" style="color: var(--text-main);">1.8 mm</div>
+<div class="text-[10px] text-cyan-300 font-semibold truncate" id="heroRainDesc">Sleet / Graupel</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3 text-center">
+<div class="text-[10px] font-bold uppercase tracking-wider opacity-70" style="color: var(--text-sub);">Wind Vector</div>
+<div class="text-lg font-extrabold mt-0.5" id="heroWindVal" style="color: var(--text-main);">24 km/h</div>
+<div class="text-[10px] text-slate-300 font-semibold truncate" id="heroWindDesc">Ridge Inversion</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3 text-center">
+<div class="text-[10px] font-bold uppercase tracking-wider opacity-70" style="color: var(--text-sub);">UV Index</div>
+<div class="text-lg font-extrabold mt-0.5" id="heroUVVal" style="color: var(--text-main);">0.0</div>
+<div class="text-[10px] text-brand-periwinkle font-semibold truncate" id="heroUVDesc">Night Starlight</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3 text-center">
+<div class="text-[10px] font-bold uppercase tracking-wider opacity-70" style="color: var(--text-sub);">Barometer QNH</div>
+<div class="text-lg font-extrabold mt-0.5 text-emerald-400" id="heroBaroVal">782 hPa</div>
+<div class="text-[10px] font-semibold truncate" id="heroBaroDesc" style="color: var(--text-sub);">Hypsometric Std</div>
+</div>
+</div>
+<!-- Celestial Arc & Elevation -->
+<div class="pt-3 border-t border-white/10">
+<div class="flex items-center justify-between text-xs font-semibold mb-2" style="color: var(--text-sub);">
+<span>Celestial Arc &amp; Sun/Moon Elevation</span>
+<span class="text-brand-cyan font-bold" id="arcStatusText">Zenith: Lunar Arc at 68°</span>
+</div>
+<div class="relative h-20 w-full bg-black/10 rounded-2xl p-2 overflow-hidden flex items-end">
+<svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 500 80">
+<path d="M0,75 Q250,5 500,75 L500,80 L0,80 Z" fill="rgba(56, 189, 248, 0.15)"></path>
+<path d="M0,75 Q250,5 500,75" fill="none" stroke="#38BDF8" stroke-linecap="round" stroke-width="2.5"></path>
+<circle cx="60" cy="62" fill="#FFFFFF" id="arcIndicatorCircle" r="6" stroke="#6C5CE7" stroke-width="2.5"></circle>
+</svg>
+</div>
+</div>
+</div>
+<!-- Right Column: Dual-Tone Contrast & Altitude-Adaptive Activities -->
+<div class="lg:col-span-5 space-y-6">
+<!-- Dual-Tone Horizon Split -->
+<div class="bubble-glass rounded-3xl p-6 theme-transition shadow-xl space-y-3">
+<div class="flex items-center justify-between">
+<h3 class="text-sm font-bold flex items-center gap-1.5" style="color: var(--text-main);">
+<span class="text-brand-cyan">✦</span> Dual-Tone Altitude Contrast
+            </h3>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 font-semibold" id="splitDeltaPill" style="color: var(--text-sub);">Lapse Delta: 22°C</span>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="rounded-2xl p-3.5 bg-gradient-to-br from-sky-400/20 to-indigo-500/10 border border-white/20">
+<div class="flex items-center justify-between">
+<span class="text-xs font-black text-sky-300 uppercase tracking-wider">Valley Floor</span>
+<span class="text-lg">🌧️</span>
+</div>
+<div class="text-2xl font-black mt-1 text-white" id="splitValleyTemp">16°C</div>
+<div class="text-[11px] font-medium text-slate-300">568m • Lake Brienz</div>
+<div class="text-[9px] text-sky-200 mt-2 bg-sky-500/20 px-2 py-0.5 rounded inline-block">Liquid Rain • 1013 hPa</div>
+</div>
+<div class="rounded-2xl p-3.5 bg-gradient-to-br from-purple-900/40 to-slate-900/40 border border-purple-400/30">
+<div class="flex items-center justify-between">
+<span class="text-xs font-black text-purple-300 uppercase tracking-wider">Glacial Peak</span>
+<span class="text-lg">❄️</span>
+</div>
+<div class="text-2xl font-black mt-1 text-white" id="splitSummitTemp">-7°C</div>
+<div class="text-[11px] font-medium text-slate-300">4,158m • Jungfrau</div>
+<div class="text-[9px] text-purple-200 mt-2 bg-purple-500/20 px-2 py-0.5 rounded inline-block">Blizzard Powder • 602 hPa</div>
+</div>
+</div>
+</div>
+<!-- Adaptive Recommendations Window -->
+<div class="bubble-glass rounded-3xl p-6 theme-transition shadow-xl space-y-3">
+<div class="flex items-center justify-between">
+<h3 class="text-sm font-bold flex items-center gap-1.5" style="color: var(--text-main);">
+<span class="text-emerald-400">✓</span> Altitude-Adaptive Recommendations
+            </h3>
+<span class="text-[10px] font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full" id="activityHeaderBadge">
+              Ridge Match
+            </span>
+</div>
+<div class="space-y-2.5" id="activityContainer">
+<!-- Populated dynamically based on altitude -->
+</div>
+</div>
+</div>
+</div>
+<!-- Multi-Altitude Elevation Strata Deck -->
+<section class="bubble-glass rounded-3xl p-6 theme-transition shadow-2xl space-y-3">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-lg font-black tracking-tight font-display" style="color: var(--text-main);">
+            Atmospheric Elevation Strata Deck
+          </h3>
+<p class="text-xs mt-0.5" style="color: var(--text-sub);">
+            Click any stratum card to instantly synchronize altitude lapse calculations, phase changes, and particle physics
+          </p>
+</div>
+<span class="text-xs font-semibold px-3 py-1 rounded-full bubble-glass-soft" style="color: var(--text-main);">
+          4 Strata Synchronized
+        </span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+<!-- Card 1: Valley -->
+<div class="bubble-glass-soft rounded-2xl p-4 cursor-pointer hover:border-brand-cyan transition-all group" onclick="setAltitudePreset(568)">
+<div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+<span class="font-bold text-cyan-300">STRATUM 1</span>
+<span>568m ASL</span>
+</div>
+<div class="text-sm font-bold" style="color: var(--text-main);">Lake Brienz Valley</div>
+<div class="text-3xl font-black mt-1 text-cyan-300" id="cardTemp1">16°C</div>
+<div class="text-[11px] font-semibold text-emerald-400 mt-1">Liquid Rain • 1013 hPa</div>
+<p class="text-[10px] mt-1 text-slate-300">Dense atmosphere, no freezing risk. Kayak &amp; low trail accessible.</p>
+</div>
+<!-- Card 2: Mid-Ridge -->
+<div class="bubble-glass-soft rounded-2xl p-4 cursor-pointer hover:border-brand-violet transition-all group" onclick="setAltitudePreset(1322)">
+<div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+<span class="font-bold text-purple-300">STRATUM 2</span>
+<span>1,322m ASL</span>
+</div>
+<div class="text-sm font-bold" style="color: var(--text-main);">Harder Kulm Ridge</div>
+<div class="text-3xl font-black mt-1 text-purple-300" id="cardTemp2">11°C</div>
+<div class="text-[11px] font-semibold text-purple-200 mt-1">Cloud Inversion • 868 hPa</div>
+<p class="text-[10px] mt-1 text-slate-300">Below freezing level. Cool mist and intermittent rain squalls.</p>
+</div>
+<!-- Card 3: Freezing Line Crest -->
+<div class="bubble-glass-soft rounded-2xl p-4 cursor-pointer hover:border-amber-400 transition-all group" onclick="setAltitudePreset(2320)">
+<div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+<span class="font-bold text-amber-300">STRATUM 3</span>
+<span>2,320m ASL</span>
+</div>
+<div class="text-sm font-bold" style="color: var(--text-main);">Männlichen Crest</div>
+<div class="text-3xl font-black mt-1 text-amber-300" id="cardTemp3">5°C</div>
+<div class="text-[11px] font-semibold text-amber-200 mt-1">Freezing Boundary • 765 hPa</div>
+<p class="text-[10px] mt-1 text-slate-300">Phase shift zone: Rain converts into wet snow &amp; black ice crust.</p>
+</div>
+<!-- Card 4: Glacial Summit -->
+<div class="bubble-glass-soft rounded-2xl p-4 cursor-pointer hover:border-blue-400 transition-all group" onclick="setAltitudePreset(3571)">
+<div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+<span class="font-bold text-blue-300">STRATUM 4</span>
+<span>3,571m ASL</span>
+</div>
+<div class="text-sm font-bold" style="color: var(--text-main);">Jungfraujoch Sphinx</div>
+<div class="text-3xl font-black mt-1 text-blue-300" id="cardTemp4">-3°C</div>
+<div class="text-[11px] font-semibold text-rose-300 mt-1">Glacial Blizzard • 650 hPa</div>
+<p class="text-[10px] mt-1 text-slate-300">Perpetual frost zone, 100% crystalline powder snow and severe gale.</p>
+</div>
+</div>
+</section>
+<!-- Global Microclimate Deck -->
+<section class="bubble-glass rounded-3xl p-6 theme-transition shadow-2xl space-y-3">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-base font-extrabold tracking-tight font-display" style="color: var(--text-main);">
+            Global Microclimate Multi-Station Deck
+          </h3>
+<p class="text-xs" style="color: var(--text-sub);">Real-time high-resolution surface telemetry stations</p>
+</div>
+<span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bubble-glass-soft" style="color: var(--text-main);">6 Global Links</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 pt-1">
+<div class="bubble-glass-soft rounded-2xl p-3 text-center">
+<div class="text-[10px] text-slate-400 flex justify-between"><span>CH</span><span>🌙</span></div>
+<div class="text-xs font-bold mt-1" style="color: var(--text-main);">Interlaken</div>
+<div class="text-xl font-black mt-0.5 text-cyan-300">14°</div>
+<div class="text-[9px] text-cyan-400 mt-0.5">568m Valley</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3 text-center">
+<div class="text-[10px] text-slate-400 flex justify-between"><span>CH</span><span>✨</span></div>
+<div class="text-xs font-bold mt-1" style="color: var(--text-main);">Zermatt</div>
+<div class="text-xl font-black mt-0.5 text-purple-300">7°</div>
+<div class="text-[9px] text-purple-400 mt-0.5">1,608m Crest</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3 text-center">
+<div class="text-[10px] text-slate-400 flex justify-between"><span>CA</span><span>☁️</span></div>
+<div class="text-xs font-bold mt-1" style="color: var(--text-main);">Banff Pass</div>
+<div class="text-xl font-black mt-0.5 text-emerald-300">9°</div>
+<div class="text-[9px] text-emerald-400 mt-0.5">1,383m Glacial</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3 text-center">
+<div class="text-[10px] text-slate-400 flex justify-between"><span>US</span><span>☀️</span></div>
+<div class="text-xs font-bold mt-1" style="color: var(--text-main);">Boulder</div>
+<div class="text-xl font-black mt-0.5 text-amber-300">21°</div>
+<div class="text-[9px] text-amber-400 mt-0.5">1,655m Foothill</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3 text-center">
+<div class="text-[10px] text-slate-400 flex justify-between"><span>JP</span><span>🌧️</span></div>
+<div class="text-xs font-bold mt-1" style="color: var(--text-main);">Kyoto</div>
+<div class="text-xl font-black mt-0.5 text-indigo-300">16°</div>
+<div class="text-[9px] text-indigo-400 mt-0.5">55m Lowland</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3 text-center">
+<div class="text-[10px] text-slate-400 flex justify-between"><span>NZ</span><span>💨</span></div>
+<div class="text-xs font-bold mt-1" style="color: var(--text-main);">Queenstown</div>
+<div class="text-xl font-black mt-0.5 text-cyan-300">12°</div>
+<div class="text-[9px] text-cyan-400 mt-0.5">310m Lake</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Persistent Web Footer -->
+<footer class="relative z-20 border-t border-white/10 theme-transition bg-black/25 backdrop-blur-md px-6 py-5 mt-10 text-center text-xs" style="color: var(--text-sub);">
+<div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+<span>Hypsometric Engine: Γ = -6.5°C/km</span>
+<span class="opacity-40">•</span>
+<span>ECMWF 0.1° / SwissMeteo High-Res Sync</span>
+</div>
+<div>
+        © 2025 SkyPlan Celestial Weather &amp; Atmospheric Lapse Intelligence
+      </div>
+<div class="flex items-center gap-4 text-xs font-medium" style="color: var(--text-main);">
+<a class="hover:underline" href="#">Thermodynamic Docs</a>
+<a class="hover:underline" href="#">Terms</a>
+<a class="hover:underline" href="#">API Status</a>
+</div>
+</div>
+</footer>
+<!-- Vanilla JS Engine: Altitude Lapse, Dual-Phase Particles, Lightning & Web Audio -->
+<script>
+    // State variables
+    let currentMode = 'night'; // 'night' | 'twilight' | 'day'
+    let particleMode = 'rain'; // 'stars' | 'wind' | 'rain' | 'snow' | 'storm'
+    let currentAltitude = 2163; // meters ASL
+    const BASE_ALTITUDE = 568; // Lake Brienz valley floor (m)
+    const LAPSE_RATE = 0.0065; // °C per meter (-6.5°C / km)
+
+    let windSpeed = 14; // km/h
+    let windAngleDeg = 20; // -60 to +60
+    let particleCount = 200;
+    let lightningFreq = 2;
+    let lightningTimer = null;
+    let strikeCount = 0;
+    let thunderAudioEnabled = true;
+    let audioCtx = null;
+    let activeBolts = [];
+
+    // Base temperature at valley level (568m) according to diurnal mode
+    function getValleyBaseTemp() {
+      if (currentMode === 'day') return 22.0;
+      if (currentMode === 'twilight') return 18.0;
+      return 16.0; // night
+    }
+
+    // Compute altitude temperature: T(alt) = T_base - (alt - BASE_ALTITUDE) * LAPSE_RATE
+    function computeAltitudeTemp(alt) {
+      const base = getValleyBaseTemp();
+      return Math.round((base - (alt - BASE_ALTITUDE) * LAPSE_RATE) * 10) / 10;
+    }
+
+    // Compute Barometric Pressure: P = 1013.25 * (1 - 2.25577e-5 * alt)^5.25588
+    function computePressure(alt) {
+      return Math.round(1013.25 * Math.pow(1 - (2.25577e-5 * alt), 5.25588));
+    }
+
+    // Interactive Altitude Preset trigger
+    function setAltitudePreset(meters) {
+      currentAltitude = meters;
+      document.getElementById('altitudeSlider').value = meters;
+      updateAltitudeLapseDisplay();
+    }
+
+    function onAltitudeChange(val) {
+      currentAltitude = parseInt(val, 10);
+      updateAltitudeLapseDisplay();
+    }
+
+    function updateAltitudeLapseDisplay() {
+      const temp = computeAltitudeTemp(currentAltitude);
+      const pressure = computePressure(currentAltitude);
+      const valleyTemp = getValleyBaseTemp();
+      const freezingLineAlt = Math.round(BASE_ALTITUDE + (valleyTemp / LAPSE_RATE));
+
+      // Update Header
+      document.getElementById('headerElevationTag').textContent = `${currentAltitude.toLocaleString()}m ASL`;
+      document.getElementById('headerTemp').textContent = `${temp}°C`;
+
+      let locationLabel = "Interlaken Crest";
+      if (currentAltitude <= 800) locationLabel = "Lake Brienz Valley";
+      else if (currentAltitude <= 1500) locationLabel = "Harder Kulm Ridge";
+      else if (currentAltitude <= 2500) locationLabel = "Interlaken Crest";
+      else if (currentAltitude <= 3400) locationLabel = "Eiger Glacier Pass";
+      else locationLabel = "Jungfrau Glacier Summit";
+
+      document.getElementById('headerLocationName').textContent = locationLabel;
+      document.getElementById('heroLocationName').textContent = locationLabel;
+      document.getElementById('altitudeDisplay').textContent = `${currentAltitude.toLocaleString()}m (${locationLabel})`;
+      document.getElementById('heroAltitudeMeta').textContent = `Bernese Oberland • ${currentAltitude.toLocaleString()}m ASL`;
+
+      // Big Temp & Feelings
+      document.getElementById('bigTemp').textContent = `${temp}°`;
+      const lapseDelta = Math.round((valleyTemp - temp) * 10) / 10;
+      const feelsLike = Math.round(temp - (windSpeed * 0.15));
+      document.getElementById('feelsLikeText').textContent = `Feels like ${feelsLike}°C • Lapse delta: -${lapseDelta}°C from valley base`;
+
+      // Telemetry Bar
+      document.getElementById('teleFreezingLine').textContent = `${freezingLineAlt.toLocaleString()}m ASL`;
+      const diffFromFreeze = currentAltitude - freezingLineAlt;
+      const freezeTag = document.getElementById('teleFreezingRel');
+      if (diffFromFreeze > 0) {
+        freezeTag.textContent = `Current: +${diffFromFreeze}m above 0°C line`;
+        freezeTag.className = "text-[10px] text-blue-300 mt-0.5";
+      } else {
+        freezeTag.textContent = `Current: ${Math.abs(diffFromFreeze)}m below 0°C line`;
+        freezeTag.className = "text-[10px] text-emerald-400 mt-0.5";
+      }
+
+      // Precipitation phase
+      const phaseBadge = document.getElementById('telePrecipPhase');
+      const phaseDesc = document.getElementById('telePrecipDesc');
+      const heroPhaseLabel = document.getElementById('heroPhaseLabel');
+      const heroEmoji = document.getElementById('heroEmoji');
+      const heroSubtext = document.getElementById('heroSubtext');
+
+      if (temp > 5) {
+        phaseBadge.textContent = "Liquid Rain / Drizzle";
+        phaseBadge.className = "font-black text-sm text-cyan-300 mt-0.5";
+        phaseDesc.textContent = "100% Liquid Phase";
+        heroPhaseLabel.textContent = "Valley Rain";
+        heroEmoji.textContent = currentMode === 'day' ? "🌧️" : "🌧️";
+        heroSubtext.textContent = `Warm valley stratum • Ambient ${temp}°C • Liquid precipitation trail`;
+      } else if (temp > 0) {
+        phaseBadge.textContent = "Sleet & Mixed Phase";
+        phaseBadge.className = "font-black text-sm text-indigo-300 mt-0.5";
+        phaseDesc.textContent = "Transition Boundary";
+        heroPhaseLabel.textContent = "Sleet / Mix";
+        heroEmoji.textContent = "🌨️";
+        heroSubtext.textContent = `Freezing line proximity (${temp}°C) • Wet snow, graupel, and slush risk`;
+      } else if (temp > -6) {
+        phaseBadge.textContent = "Crystalline Snow Flurry";
+        phaseBadge.className = "font-black text-sm text-purple-300 mt-0.5";
+        phaseDesc.textContent = "Powder Snow Pack";
+        heroPhaseLabel.textContent = "Alpine Snow";
+        heroEmoji.textContent = "❄️";
+        heroSubtext.textContent = `Sub-zero alpine zone (${temp}°C) • Crystalline powder accumulation`;
+      } else {
+        phaseBadge.textContent = "High-Altitude Blizzard";
+        phaseBadge.className = "font-black text-sm text-rose-300 mt-0.5";
+        phaseDesc.textContent = "Severe Glacial Wind Chill";
+        heroPhaseLabel.textContent = "Blizzard";
+        heroEmoji.textContent = "🌪️";
+        heroSubtext.textContent = `Glacial summit whiteout (${temp}°C) • Hypsometric pressure ${pressure} hPa • Extreme frostbite`;
+      }
+
+      // Barometer
+      document.getElementById('teleBaro').textContent = `${pressure} hPa (QNH)`;
+      document.getElementById('heroBaroVal').textContent = `${pressure} hPa`;
+
+      // Strata Cards Live Values
+      document.getElementById('cardTemp1').textContent = `${computeAltitudeTemp(568)}°C`;
+      document.getElementById('cardTemp2').textContent = `${computeAltitudeTemp(1322)}°C`;
+      document.getElementById('cardTemp3').textContent = `${computeAltitudeTemp(2320)}°C`;
+      document.getElementById('cardTemp4').textContent = `${computeAltitudeTemp(3571)}°C`;
+
+      // Dual-tone split values
+      document.getElementById('splitValleyTemp').textContent = `${computeAltitudeTemp(568)}°C`;
+      document.getElementById('splitSummitTemp').textContent = `${computeAltitudeTemp(4158)}°C`;
+      const splitDelta = Math.round(computeAltitudeTemp(568) - computeAltitudeTemp(4158));
+      document.getElementById('splitDeltaPill').textContent = `Lapse Delta: ${splitDelta}°C`;
+
+      // Render recommendations adaptive to altitude
+      renderAltitudeActivities(temp);
+    }
+
+    // Adaptive Activity Generator
+    function renderAltitudeActivities(currentTemp) {
+      const container = document.getElementById('activityContainer');
+      const badge = document.getElementById('activityHeaderBadge');
+
+      let items = [];
+      if (currentAltitude <= 1000) {
+        badge.textContent = "Valley Floor Safe";
+        badge.className = "text-[10px] font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full";
+        items = [
+          { icon: "🛶", title: "Lake Brienz Kayak & Shoreline Run", tag: "Liquid Water", time: "10:00 - 15:30", desc: "Temperate water level, no ice hazard. Rain shell advised." },
+          { icon: "🚴", title: "Lauterbrunnen Valley E-Bike Tour", tag: "Low Altitude", time: "09:00 - 17:00", desc: "Paved trailways clear of frost. Stable barometric pressure." }
+        ];
+      } else if (currentAltitude <= 2200) {
+        badge.textContent = "Ridge Boundary";
+        badge.className = "text-[10px] font-bold text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full";
+        items = [
+          { icon: "🥾", title: "Harder Kulm Alpine Forest Trek", tag: "Crampons Advised", time: "11:00 - 14:30", desc: "Temperature near freezing (0°C to 5°C). Slippery black ice patches on north-facing limestone." },
+          { icon: "☕", title: "Berghaus Alpine Shelter Hearth", tag: "Thermal Haven", time: "Open 24/7", desc: "Warm fireplace lounge insulated against sub-alpine sleet squalls." }
+        ];
+      } else {
+        badge.textContent = "❄️ Glacier Alert";
+        badge.className = "text-[10px] font-bold text-rose-300 bg-rose-500/20 px-2 py-0.5 rounded-full animate-pulse";
+        items = [
+          { icon: "⚠️", title: "CRITICAL: Glacial Summit Blizzard Warning", tag: "Severe Hazard", time: "Avoid Exposed Trails", desc: `Sub-zero reading (${currentTemp}°C) with gale wind chill. Whiteout disorientation risk.` },
+          { icon: "🛡️", title: "Jungfraujoch Subterranean Ice Palace", tag: "100% Weatherproof", time: "Operating", desc: "Interior glacial tunnels carved into permanent permafrost. Fully safe from blizzard." }
+        ];
+      }
+
+      container.innerHTML = items.map(item => `
+        <div class="bubble-glass-soft rounded-2xl p-3 border border-white/10 hover:border-white/25 transition-all">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2.5">
+              <span class="text-xl p-1.5 rounded-xl bg-white/10 flex-shrink-0">${item.icon}</span>
+              <div>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-xs font-bold" style="color: var(--text-main);">${item.title}</span>
+                  <span class="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full bg-white/15 text-cyan-300">${item.tag}</span>
+                </div>
+                <p class="text-[11px] mt-0.5 leading-snug" style="color: var(--text-sub);">${item.desc}</p>
+                <span class="text-[10px] font-semibold text-slate-400 mt-1 block">⏰ ${item.time}</span>
+              </div>
+            </div>
+            <button class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-white/15 hover:bg-white/25 text-white flex-shrink-0">
+              Details
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Diurnal Mode Switcher
+    function setMode(mode) {
+      currentMode = mode;
+      const body = document.getElementById('bodyRoot');
+      const starField = document.getElementById('starField');
+      const celestialOrb = document.getElementById('celestialOrb');
+      const btnNight = document.getElementById('btnNight');
+      const btnTwilight = document.getElementById('btnTwilight');
+      const btnDay = document.getElementById('btnDay');
+
+      [btnNight, btnTwilight, btnDay].forEach(b => {
+        b.className = "px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 text-slate-300 hover:text-white";
+      });
+
+      if (mode === 'night') {
+        body.className = "theme-transition min-h-screen text-slate-100 font-sans relative overflow-x-hidden antialiased" + (particleMode === 'storm' ? ' storm-active' : '');
+        btnNight.className = "px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 bg-brand-amethyst text-white shadow-md";
+        starField.style.opacity = particleMode === 'storm' ? "0" : "1";
+        celestialOrb.style.background = "radial-gradient(circle, rgba(162, 155, 254, 0.45) 0%, rgba(108, 92, 231, 0.15) 60%, transparent 80%)";
+        celestialOrb.style.top = "8%";
+        celestialOrb.style.right = "12%";
+        document.getElementById('heroUVVal').textContent = "0.0";
+        document.getElementById('heroUVDesc').textContent = "Night Starlight";
+        document.getElementById('arcStatusText').textContent = "Zenith: Lunar Arc at 68°";
+      } else if (mode === 'twilight') {
+        body.className = "twilight-mode theme-transition min-h-screen font-sans relative overflow-x-hidden antialiased" + (particleMode === 'storm' ? ' storm-active' : '');
+        btnTwilight.className = "px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 bg-purple-600 text-white shadow-md";
+        starField.style.opacity = particleMode === 'storm' ? "0" : "0.35";
+        celestialOrb.style.background = "radial-gradient(circle, rgba(244, 114, 182, 0.6) 0%, rgba(147, 51, 234, 0.25) 50%, transparent 80%)";
+        celestialOrb.style.top = "18%";
+        celestialOrb.style.right = "24%";
+        document.getElementById('heroUVVal').textContent = "1.5";
+        document.getElementById('heroUVDesc').textContent = "Low Sun Angle";
+        document.getElementById('arcStatusText').textContent = "Sunset Golden Arc: 18:45";
+      } else if (mode === 'day') {
+        body.className = "day-mode theme-transition min-h-screen font-sans relative overflow-x-hidden antialiased" + (particleMode === 'storm' ? ' storm-active' : '');
+        btnDay.className = "px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 bg-sky-500 text-white shadow-md";
+        starField.style.opacity = "0";
+        celestialOrb.style.background = "radial-gradient(circle, rgba(254, 240, 138, 0.75) 0%, rgba(56, 189, 248, 0.35) 60%, transparent 80%)";
+        celestialOrb.style.top = "5%";
+        celestialOrb.style.right = "10%";
+        document.getElementById('heroUVVal').textContent = "4.2";
+        document.getElementById('heroUVDesc').textContent = "Moderate Sun";
+        document.getElementById('arcStatusText').textContent = "Solar Zenith: Peak Daylight";
+      }
+
+      updateAltitudeLapseDisplay();
+    }
+
+    // 24H Slider
+    function onTimeSliderChange(val) {
+      const timeVal = parseFloat(val);
+      const hours = Math.floor(timeVal);
+      const minutes = (timeVal % 1) === 0.5 ? '30' : '00';
+      const formatted = `${hours.toString().padStart(2, '0')}:${minutes}`;
+
+      const arcCircle = document.getElementById('arcIndicatorCircle');
+      const newX = 25 + (timeVal / 24) * 450;
+      const normalizedNorm = (timeVal - 12) / 12;
+      const newY = 15 + (normalizedNorm * normalizedNorm) * 55;
+      arcCircle.setAttribute('cx', newX);
+      arcCircle.setAttribute('cy', newY);
+
+      let phase = " (Starlight Night)";
+      if (timeVal >= 7 && timeVal <= 17) {
+        phase = " (Daylight Glow)";
+        if (currentMode !== 'day') setMode('day');
+      } else if ((timeVal >= 5 && timeVal < 7) || (timeVal > 17 && timeVal <= 19.5)) {
+        phase = " (Twilight Transition)";
+        if (currentMode !== 'twilight') setMode('twilight');
+      } else {
+        if (currentMode !== 'night') setMode('night');
+      }
+
+      document.getElementById('sliderTimeDisplay').textContent = `${formatted} ${phase}`;
+    }
+
+    // Web Audio Procedural Thunder Synthesizer
+    function playThunderSound() {
+      if (!thunderAudioEnabled) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        if (!audioCtx) audioCtx = new AudioContext();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const oscGain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(80, now);
+        osc.frequency.exponentialRampToValueAtTime(32, now + 1.2);
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(280, now);
+        filter.frequency.exponentialRampToValueAtTime(70, now + 1.6);
+
+        const bufferSize = audioCtx.sampleRate * 1.5;
+        const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioCtx.sampleRate * 0.35));
+        }
+        const whiteNoise = audioCtx.createBufferSource();
+        whiteNoise.buffer = noiseBuffer;
+        const noiseGain = audioCtx.createGain();
+
+        noiseGain.gain.setValueAtTime(0.4, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 1.4);
+        oscGain.gain.setValueAtTime(0.35, now);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, now + 1.8);
+
+        whiteNoise.connect(filter);
+        osc.connect(filter);
+        filter.connect(audioCtx.destination);
+
+        whiteNoise.start(now);
+        osc.start(now);
+        whiteNoise.stop(now + 1.8);
+        osc.stop(now + 1.8);
+      } catch (e) {}
+    }
+
+    function toggleThunderAudio() {
+      thunderAudioEnabled = !thunderAudioEnabled;
+      document.getElementById('audioIcon').textContent = thunderAudioEnabled ? '🔊' : '🔇';
+      document.getElementById('audioStatusText').textContent = thunderAudioEnabled ? 'Thunder Audio: On' : 'Thunder Audio: Muted';
+    }
+
+    // Procedural Lightning Bolt Class
+    class LightningBolt {
+      constructor(startX, startY, endX, endY) {
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
+        this.alpha = 1.0;
+        this.decay = 0.06 + Math.random() * 0.04;
+        this.segments = this.createSegments(startX, startY, endX, endY, 5, 40);
+      }
+
+      createSegments(x1, y1, x2, y2, depth, disp) {
+        let pts = [{ x: x1, y: y1 }, { x: x2, y: y2 }];
+        for (let i = 0; i < depth; i++) {
+          let next = [];
+          for (let j = 0; j < pts.length - 1; j++) {
+            const p1 = pts[j];
+            const p2 = pts[j + 1];
+            const mx = (p1.x + p2.x) / 2 + (Math.random() * 2 - 1) * disp;
+            const my = (p1.y + p2.y) / 2 + (Math.random() * 2 - 1) * (disp * 0.4);
+            next.push(p1);
+            next.push({ x: mx, y: my });
+          }
+          next.push(pts[pts.length - 1]);
+          pts = next;
+          disp *= 0.55;
+        }
+        return pts;
+      }
+
+      update() {
+        this.alpha -= this.decay;
+        return this.alpha > 0;
+      }
+
+      draw(c) {
+        if (this.alpha <= 0) return;
+        c.save();
+        c.beginPath();
+        c.moveTo(this.segments[0].x, this.segments[0].y);
+        for (let i = 1; i < this.segments.length; i++) {
+          c.lineTo(this.segments[i].x, this.segments[i].y);
+        }
+        c.strokeStyle = `rgba(196, 181, 253, ${this.alpha * 0.9})`;
+        c.lineWidth = 4;
+        c.shadowColor = 'rgba(56, 189, 248, 0.9)';
+        c.shadowBlur = 16;
+        c.stroke();
+
+        c.strokeStyle = `rgba(255, 255, 255, ${this.alpha})`;
+        c.lineWidth = 1.8;
+        c.stroke();
+        c.restore();
+      }
+    }
+
+    function spawnLightningBolt(targetX = null, targetY = null) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const sx = targetX !== null ? targetX + (Math.random() * 60 - 30) : Math.random() * (w * 0.8) + (w * 0.1);
+      const sy = Math.random() * 30;
+      const ex = targetX !== null ? targetX : sx + (Math.random() * 200 - 100);
+      const ey = targetY !== null ? targetY : Math.random() * (h * 0.4) + (h * 0.5);
+
+      activeBolts.push(new LightningBolt(sx, sy, ex, ey));
+
+      // Sky flash
+      const flash = document.getElementById('ambientFlash');
+      flash.style.background = 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(196,181,253,0.8) 40%, rgba(56,189,248,0.2) 100%)';
+      flash.style.opacity = '0.85';
+      setTimeout(() => { flash.style.opacity = '0.2'; }, 60);
+      setTimeout(() => { flash.style.opacity = '0.7'; }, 110);
+      setTimeout(() => { flash.style.opacity = '0'; }, 350);
+
+      // Shake
+      const container = document.getElementById('mainContainer');
+      container.classList.remove('shake-active');
+      void container.offsetWidth;
+      container.classList.add('shake-active');
+
+      playThunderSound();
+      strikeCount++;
+      document.getElementById('strikeCounterPill').textContent = `Strikes: ${strikeCount}`;
+      document.getElementById('strikeStatusPill').textContent = `Discharge at ${(Math.random() * 3 + 1).toFixed(1)} km`;
+    }
+
+    function triggerLightningManually() {
+      spawnLightningBolt();
+    }
+
+    window.addEventListener('click', (e) => {
+      if (e.target.closest('button, input, a, select')) return;
+      spawnLightningBolt(e.clientX, e.clientY);
+    });
+
+    function scheduleNextLightning() {
+      if (lightningTimer) clearTimeout(lightningTimer);
+      if (lightningFreq === 0) return;
+      let interval = 5000;
+      if (lightningFreq === 1) interval = 12000;
+      else if (lightningFreq === 2) interval = 5000;
+      else if (lightningFreq === 3) interval = 2200;
+
+      lightningTimer = setTimeout(() => {
+        if (particleMode === 'storm' || lightningFreq >= 2) {
+          spawnLightningBolt();
+        }
+        scheduleNextLightning();
+      }, interval + Math.random() * 2000);
+    }
+
+    function onLightningFreqChange(val) {
+      lightningFreq = parseInt(val, 10);
+      const labels = ['Off', 'Occasional (~12s)', 'Active (~5s)', 'Severe (~2s)'];
+      document.getElementById('lightningFreqLabel').textContent = labels[lightningFreq];
+      scheduleNextLightning();
+    }
+
+    // ==========================================
+    // 60FPS ATMOSPHERIC PARTICLE SIMULATOR (DUAL-PHASE)
+    // ==========================================
+    const canvas = document.getElementById('atmospheric-particles');
+    const ctx = canvas.getContext('2d');
+    let width = 0, height = 0;
+    let particles = [];
+    const mouse = { x: -1000, y: -1000, radius: 120 };
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      rebuildParticles();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    class AtmosphericParticle {
+      constructor() {
+        this.reset(true);
+      }
+
+      reset(init = false) {
+        this.x = init ? Math.random() * width : Math.random() * width;
+        this.y = init ? Math.random() * height : -20;
+        this.size = Math.random() * 2 + 1;
+        this.alpha = Math.random() * 0.7 + 0.3;
+        this.phase = Math.random() * Math.PI * 2;
+        this.speed = Math.random() * 0.5 + 0.8;
+      }
+
+      update() {
+        const rad = (windAngleDeg * Math.PI) / 180;
+        const currentTemp = computeAltitudeTemp(currentAltitude);
+        // Is this particle frozen? If particleMode is 'snow' or altitude temperature <= 0
+        const isFrozen = (particleMode === 'snow') || (currentTemp <= 0 && particleMode !== 'stars' && particleMode !== 'wind');
+
+        let vx = Math.sin(rad) * windSpeed * 0.3 * this.speed;
+        let vy = 12 * this.speed;
+
+        if (particleMode === 'stars') {
+          vx = Math.sin(this.phase) * 0.2;
+          vy = Math.cos(this.phase) * 0.15;
+          this.phase += 0.03;
+        } else if (particleMode === 'wind') {
+          vx = Math.sin(rad) * windSpeed * 0.8;
+          vy = Math.cos(rad) * 4 + Math.sin(this.phase) * 2;
+          this.phase += 0.05;
+        } else if (isFrozen) {
+          // Fluttering crystalline snow / blizzard drift
+          this.phase += 0.04;
+          vx += Math.sin(this.phase) * (currentAltitude > 3000 ? 4 : 2);
+          vy = (currentAltitude > 3000 ? 10 : 3.5) * this.speed; // High wind blizzard falls faster
+        } else {
+          // Liquid rain fall
+          vy = 16 * this.speed;
+          if (particleMode === 'storm') vy = 22 * this.speed;
+        }
+
+        // Mouse deflection
+        const dx = this.x - mouse.x;
+        const dy = this.y - mouse.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < mouse.radius) {
+          const force = (1 - dist / mouse.radius) * 8;
+          const angle = Math.atan2(dy, dx);
+          vx += Math.cos(angle) * force;
+          vy += Math.sin(angle) * force;
+        }
+
+        this.x += vx;
+        this.y += vy;
+
+        if (this.y > height + 20 || this.x < -40 || this.x > width + 40) {
+          this.reset(false);
+        }
+      }
+
+      draw() {
+        const currentTemp = computeAltitudeTemp(currentAltitude);
+        const isFrozen = (particleMode === 'snow') || (currentTemp <= 0 && particleMode !== 'stars' && particleMode !== 'wind');
+
+        ctx.save();
+        if (particleMode === 'stars') {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size * 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(198, 191, 255, ${this.alpha * 0.8})`;
+          ctx.fill();
+        } else if (particleMode === 'wind') {
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(this.x - 14, this.y - 4);
+          ctx.strokeStyle = `rgba(67, 215, 247, ${this.alpha * 0.6})`;
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+        } else if (isFrozen) {
+          // Crystalline snowflake
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha * 0.9})`;
+          ctx.shadowColor = 'rgba(162, 218, 255, 0.7)';
+          ctx.shadowBlur = 4;
+          ctx.fill();
+        } else {
+          // Liquid rain streak
+          const length = particleMode === 'storm' ? 22 : 14;
+          const rad = (windAngleDeg * Math.PI) / 180;
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(this.x - Math.sin(rad) * length, this.y - Math.cos(rad) * length);
+          ctx.strokeStyle = particleMode === 'storm' ? `rgba(196, 181, 253, ${this.alpha * 0.85})` : `rgba(162, 218, 255, ${this.alpha * 0.75})`;
+          ctx.lineWidth = particleMode === 'storm' ? 1.6 : 1.2;
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+    }
+
+    function rebuildParticles() {
+      particles = [];
+      const count = particleMode === 'storm' ? 280 : particleCount;
+      for (let i = 0; i < count; i++) {
+        particles.push(new AtmosphericParticle());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Bolts
+      for (let i = activeBolts.length - 1; i >= 0; i--) {
+        const bolt = activeBolts[i];
+        bolt.draw(ctx);
+        if (!bolt.update()) activeBolts.splice(i, 1);
+      }
+
+      // Particles
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    function setParticleMode(mode) {
+      particleMode = mode;
+      const modes = ['stars', 'wind', 'rain', 'snow', 'storm'];
+      const btnMap = {
+        stars: document.getElementById('pModeStars'),
+        wind: document.getElementById('pModeWind'),
+        rain: document.getElementById('pModeRain'),
+        snow: document.getElementById('pModeSnow'),
+        storm: document.getElementById('pModeStorm')
+      };
+
+      modes.forEach(m => {
+        if (!btnMap[m]) return;
+        if (m === mode) {
+          btnMap[m].className = m === 'storm' 
+            ? "px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-amber-500 to-purple-600 text-white shadow-lg border border-amber-300"
+            : "px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-brand-amethyst text-white shadow-md";
+        } else {
+          btnMap[m].className = m === 'storm'
+            ? "px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-amber-300 hover:text-white border border-amber-400/30"
+            : "px-3 py-1.5 rounded-xl text-xs font-semibold transition-all text-slate-300 hover:text-white";
+        }
+      });
+
+      if (mode === 'storm') {
+        document.body.classList.add('storm-active');
+        spawnLightningBolt();
+      } else {
+        document.body.classList.remove('storm-active');
+      }
+
+      rebuildParticles();
+      updateAltitudeLapseDisplay();
+    }
+
+    function onWindSpeedChange(val) {
+      windSpeed = parseInt(val, 10);
+      document.getElementById('windSpeedLabel').textContent = `${windSpeed} km/h`;
+      document.getElementById('heroWindVal').textContent = `${windSpeed} km/h`;
+      updateAltitudeLapseDisplay();
+    }
+
+    function onParticleDensityChange(val) {
+      particleCount = parseInt(val, 10);
+      document.getElementById('precipDensityLabel').textContent = `${particleCount} qty`;
+      rebuildParticles();
+    }
+
+    function onWindAngleChange(val) {
+      windAngleDeg = parseInt(val, 10);
+      document.getElementById('windAngleLabel').textContent = windAngleDeg > 0 ? `+${windAngleDeg}° East` : `${windAngleDeg}° West`;
+    }
+
+    function generateStars() {
+      const starField = document.getElementById('starField');
+      starField.innerHTML = '';
+      for (let i = 0; i < 50; i++) {
+        const s = document.createElement('div');
+        s.className = 'floating-star';
+        const sz = Math.random() * 2 + 1;
+        s.style.width = sz + 'px';
+        s.style.height = sz + 'px';
+        s.style.top = Math.random() * 80 + '%';
+        s.style.left = Math.random() * 100 + '%';
+        s.style.opacity = (Math.random() * 0.7 + 0.3).toString();
+        starField.appendChild(s);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      generateStars();
+      resizeCanvas();
+      setMode('night');
+      setParticleMode('rain');
+      updateAltitudeLapseDisplay();
+      onTimeSliderChange(2);
+      scheduleNextLightning();
+      animate();
+    });
+  </script>
+</body></html>

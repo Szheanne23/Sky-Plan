@@ -3,7 +3,7 @@ import { cn } from '../../lib/utils';
 import Spinner from './Spinner';
 
 /**
- * Reusable Button Component adhering to Google Stitch UI specifications.
+ * Reusable Button Component conforming to Google Stitch Pill Action Specifications.
  */
 export default function Button({
   children,
@@ -17,20 +17,21 @@ export default function Button({
   onClick,
   ...props
 }) {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98]';
+  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98] shadow-specular-inset';
 
   const variants = {
-    primary: 'bg-sky-600 hover:bg-sky-500 text-white shadow-sm hover:shadow-glow focus:ring-sky-500 border border-sky-500/30',
-    secondary: 'bg-slate-900 hover:bg-slate-800 text-white shadow-sm focus:ring-slate-900 border border-slate-800',
-    outline: 'bg-white/60 backdrop-blur-xs hover:bg-slate-100 text-slate-700 border border-slate-300 shadow-sm focus:ring-sky-500',
-    ghost: 'hover:bg-slate-100/80 text-slate-600 hover:text-slate-900 focus:ring-slate-400',
-    danger: 'bg-rose-600 hover:bg-rose-500 text-white shadow-sm focus:ring-rose-500 border border-rose-500/30',
+    primary: 'bg-gradient-to-r from-primary-container to-secondary-container hover:from-primary hover:to-secondary-container text-white shadow-glow hover:shadow-glow focus:ring-primary border border-white/20 font-semibold',
+    secondary: 'bg-surface-container-high/90 hover:bg-surface-container-highest text-on-surface border border-white/15 hover:border-white/25 focus:ring-primary',
+    outline: 'bg-white/5 hover:bg-white/10 text-on-surface border border-white/15 hover:border-white/30 backdrop-blur-md focus:ring-primary',
+    ghost: 'hover:bg-surface-container text-on-surface-variant hover:text-on-surface focus:ring-outline shadow-none',
+    danger: 'bg-error-container/40 hover:bg-error-container/60 text-error border border-error/30 focus:ring-error shadow-none',
+    caution: 'bg-tertiary-container/20 hover:bg-tertiary-container/30 text-tertiary border border-tertiary/40 focus:ring-tertiary shadow-glow-amber',
   };
 
   const sizes = {
-    sm: 'text-xs px-3 py-1.5 gap-1.5',
-    md: 'text-sm px-4 py-2.5 gap-2',
-    lg: 'text-base px-6 py-3.5 gap-2.5',
+    sm: 'text-xs px-3.5 py-1.5 gap-1.5 font-medium',
+    md: 'text-sm px-5 py-2.5 gap-2 font-medium',
+    lg: 'text-base px-6 py-3.5 gap-2.5 font-semibold',
   };
 
   return (
@@ -38,7 +39,7 @@ export default function Button({
       type={type}
       disabled={disabled || isLoading}
       onClick={onClick}
-      className={cn(baseStyles, variants[variant], sizes[size], className)}
+      className={cn(baseStyles, variants[variant] || variants.primary, sizes[size] || sizes.md, className)}
       {...props}
     >
       {isLoading ? (

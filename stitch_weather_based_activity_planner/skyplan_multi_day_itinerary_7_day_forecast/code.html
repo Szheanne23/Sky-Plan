@@ -1,0 +1,695 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"secondary-container":"#006be3","secondary-fixed-dim":"#adc6ff","surface-dim":"#0a122a","secondary":"#adc6ff","error-container":"#93000a","surface-tint":"#4cd6fb","surface-container-highest":"#2c344d","error":"#ffb4ab","on-primary-fixed-variant":"#004e5f","on-error-container":"#ffdad6","on-error":"#690005","primary":"#4cd6fb","on-secondary-fixed-variant":"#004494","surface-container-high":"#212942","surface-container-lowest":"#050d25","tertiary":"#ffb781","outline-variant":"#3d494d","tertiary-container":"#fc8602","inverse-primary":"#00677d","primary-container":"#00b4d8","on-surface":"#dbe1ff","surface-bright":"#313852","on-tertiary-fixed-variant":"#703800","primary-fixed":"#b3ebff","on-background":"#dbe1ff","secondary-fixed":"#d8e2ff","on-tertiary-container":"#5e2e00","surface-container-low":"#131a33","on-secondary-fixed":"#001a41","tertiary-fixed-dim":"#ffb781","surface":"#0a122a","on-tertiary-fixed":"#301400","on-surface-variant":"#bcc9ce","on-secondary":"#002e69","surface-variant":"#2c344d","on-secondary-container":"#f2f4ff","on-primary-container":"#00414f","on-primary-fixed":"#001f27","tertiary-fixed":"#ffdcc4","background":"#0a122a","on-tertiary":"#4e2500","surface-container":"#171e37","inverse-on-surface":"#282f49","inverse-surface":"#dbe1ff","primary-fixed-dim":"#4cd6fb","outline":"#869398","on-primary":"#003642"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-xl":"2.5rem","space-lg":"1.5rem",gutter:"1.5rem",margin:"3rem","space-sm":"0.5rem","space-md":"1rem","space-xs":"0.25rem","gutter-mobile":"1rem","margin-mobile":"1.25rem"},fontFamily:{"headline-sm":["Plus Jakarta Sans"],"body-lg":["Inter"],"body-md":["Inter"],"headline-md":["Plus Jakarta Sans"],"body-sm":["Inter"],"metric-display":["Plus Jakarta Sans"],"label-sm":["Inter"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"display-xl":["Plus Jakarta Sans"],"label-md":["Inter"]},fontSize:{"headline-sm":["20px",{lineHeight:"28px",fontWeight:"600"}],"body-lg":["18px",{lineHeight:"28px",fontWeight:"400"}],"body-md":["15px",{lineHeight:"22px",fontWeight:"400"}],"headline-md":["24px",{lineHeight:"32px",letterSpacing:"-0.01em",fontWeight:"600"}],"body-sm":["13px",{lineHeight:"18px",fontWeight:"400"}],"metric-display":["48px",{lineHeight:"52px",letterSpacing:"-0.03em",fontWeight:"700"}],"label-sm":["11px",{lineHeight:"14px",letterSpacing:"0.05em",fontWeight:"700"}],"headline-lg-mobile":["28px",{lineHeight:"36px",letterSpacing:"-0.01em",fontWeight:"700"}],"headline-lg":["36px",{lineHeight:"44px",letterSpacing:"-0.02em",fontWeight:"700"}],"display-xl":["56px",{lineHeight:"64px",letterSpacing:"-0.03em",fontWeight:"800"}],"label-md":["13px",{lineHeight:"16px",letterSpacing:"0.02em",fontWeight:"600"}]}}}};</script></head><body class="bg-surface text-on-surface min-h-screen selection:bg-primary selection:text-on-primary"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-dim/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.25)]"><div class="h-28 max-w-[1360px] mx-auto px-margin flex flex-col justify-between py-space-xs"><div class="flex items-center justify-between gap-space-md pt-space-xs"><div class="flex items-center gap-space-lg flex-1 min-w-0"><div class="flex items-center gap-space-sm shrink-0"><img alt="SkyPlan Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1U43KUnj2eD2G-p64tZmsCZOOvGQPBQM2kkW78kmg5lLChpK_tbmH7AfJwxL6AJPks4RV92PMZgDji1i5lHZyLuFcDxHixtXwkJJLlsKu-5tmFDJi3jJfXOr_FC4T0gHOGjvELF_2W8rioROWkLIaj9jfX5ifw2SHRQgyPhkatmbIhR5U_2Fx4zScpYUBNM_nSpvtjobEuJgCPl1HnoTBf0c6fgTgqGA0z2Jfzhqucg2u59sss1gZ2Zpg"><span class="font-headline-md text-headline-md tracking-tight text-on-surface">SkyPlan</span></div><div class="flex items-center gap-space-xs bg-surface-container-high/70 backdrop-blur-md rounded-xl px-space-md py-space-xs max-w-lg w-full"><span class="material-symbols-outlined text-primary text-[20px]">location_on</span><input class="bg-transparent w-full text-on-surface placeholder:text-outline font-body-sm text-body-sm focus:outline-none" placeholder="Search city, state or coordinates... e.g. Interlaken, Vancouver, Denver" type="text"><div class="flex items-center gap-space-xs pl-space-xs text-outline"><span class="material-symbols-outlined text-[18px]">calendar_today</span><span class="font-label-sm text-label-sm whitespace-nowrap">Today</span></div></div></div><div class="flex items-center gap-space-md shrink-0"><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-1 bg-surface-container rounded-full"><span class="material-symbols-outlined text-tertiary text-[16px]">explore</span><span class="font-label-sm text-label-sm text-tertiary uppercase">Outdoor Explorer</span></div><div class="flex items-center bg-surface-container-low rounded-lg p-0.5"><button class="px-space-xs py-0.5 rounded font-label-sm text-label-sm bg-primary-container text-on-primary-container font-semibold" type="button">°C</button><button class="px-space-xs py-0.5 rounded font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" type="button">°F</button></div><button class="relative p-space-xs rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-tertiary-container shadow-[0_0_8px_rgba(252,134,2,0.8)]"></span></button><div class="flex items-center gap-space-sm pl-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDljOsxHnq0Rtoky0DWB-qQdR-r8VAZLWh20MJp5kEQdZhVo9nkvzT4J4CDjm3tBm-r4M-vbRl5wnID3nbCDRhW4GmEaclg1jMkZ-DWgqmMqiRZzfsrrMneiBlLLftI-nkJ6yZBizsj_5v0h4MZD1CTynM0rsC6wKNa2JKWg9ufeQ92D6iynYfoL6noQxX_XUdiNYCOOfc4_MfhjqYSabpOOcwmtCQDHTVcZRXdPASEmnLXrmlMPPM"><div class="hidden lg:flex flex-col"><span class="font-label-md text-label-md text-on-surface leading-tight">Elena Vance</span><span class="font-label-sm text-label-sm text-outline leading-tight">Pro Member</span></div></div></div></div><div class="flex items-center justify-between gap-space-md pb-space-xs"><nav class="flex items-center gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-lg shadow-[0_0_12px_rgba(0,180,216,0.3)]"><a class="px-space-md py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="forecast-and-activities" href="#">Forecast &amp; Activities</a><a aria-current="page" class="px-space-md py-1.5 transition-colors bg-primary-container text-on-primary-container font-semibold rounded-lg shadow-[0_0_12px_rgba(0,180,216,0.3)]" data-path="multi-day-itinerary" href="#">Multi-Day Itinerary</a><a class="px-space-md py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="saved-places" href="#">Saved Places (4)</a><a class="px-space-md py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="admin-rules-engine" href="#">Admin Rules Engine</a><a class="px-space-md py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="analytics" href="#">Analytics</a></nav><div class="hidden md:flex items-center gap-space-xs overflow-x-auto"><span class="font-label-sm text-label-sm text-outline shrink-0 mr-1">Saved:</span><div class="flex items-center gap-space-xs"><button class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container/60 hover:bg-surface-container-high rounded-full font-label-sm text-label-sm text-on-surface-variant transition-colors whitespace-nowrap" type="button"><span>Interlaken</span><span class="text-primary font-semibold">19°C</span><span>⛅</span></button><button class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container/60 hover:bg-surface-container-high rounded-full font-label-sm text-label-sm text-on-surface-variant transition-colors whitespace-nowrap" type="button"><span>Boulder</span><span class="text-tertiary font-semibold">22°C</span><span>☀️</span></button><button class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container/60 hover:bg-surface-container-high rounded-full font-label-sm text-label-sm text-on-surface-variant transition-colors whitespace-nowrap" type="button"><span>Kyoto</span><span class="text-secondary font-semibold">16°C</span><span>🌧️</span></button><button class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container/60 hover:bg-surface-container-high rounded-full font-label-sm text-label-sm text-on-surface-variant transition-colors whitespace-nowrap" type="button"><span>Reykjavík</span><span class="text-on-surface-variant font-semibold">8°C</span><span>💨</span></button></div></div></div></div></header><main class="w-full pt-28 bg-surface min-h-[calc(100vh-140px)]"><div class="max-w-[1360px] mx-auto px-margin py-space-lg"><div class="flex flex-col w-full gap-y-space-xl">
+<!-- Trip Header & Interactive Controls Bento Bar -->
+<section class="flex flex-col gap-space-md">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md bg-surface-container-low p-space-lg rounded-xl shadow-xl">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="px-space-sm py-0.5 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm tracking-wider uppercase">Active Expedition</span>
+<span class="text-outline-variant font-body-sm text-body-sm">•</span>
+<span class="font-label-sm text-label-sm text-tertiary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+            Sync Frequency: 15m
+          </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+          Swiss Alps Autumn Getaway
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">calendar_month</span>
+          5-Day Plan (Oct 14 - Oct 18) • Bernese Oberland Basecamp
+        </p>
+</div>
+<!-- Action Suite & Comparator -->
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="flex items-center bg-surface-container-high rounded-xl p-1 shadow-inner">
+<button class="px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md shadow-sm transition-all" id="locInterlaken" type="button">
+            Interlaken
+          </button>
+<button class="flex items-center gap-1 px-space-md py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all" id="locCompare" type="button">
+<span class="material-symbols-outlined text-[16px]">compare_arrows</span>
+<span>vs. Zermatt</span>
+</button>
+</div>
+<div class="h-8 w-px bg-surface-container-highest hidden sm:block"></div>
+<button class="flex items-center gap-space-xs px-space-md py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface transition-all" id="rescoreBtn" type="button">
+<span class="material-symbols-outlined text-primary text-[18px]" id="refreshIcon">autorenew</span>
+<span class="font-label-md text-label-md">Re-score Live API</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface transition-all" type="button">
+<span class="material-symbols-outlined text-tertiary text-[18px]">add_task</span>
+<span class="font-label-md text-label-md">+ Custom Activity</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-2 rounded-xl bg-gradient-to-r from-secondary-container to-primary-container text-on-secondary-container hover:brightness-110 shadow-lg shadow-primary-container/20 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">ios_share</span>
+<span class="font-label-md text-label-md">Export (PDF/ICS)</span>
+</button>
+</div>
+</div>
+<!-- Filter Pills Bar & Dynamic Mode Banner -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md px-space-xs">
+<div class="flex items-center gap-space-xs overflow-x-auto pb-1">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider mr-2 shrink-0">Filter By:</span>
+<button class="filter-chip px-space-md py-1 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md shadow-sm" type="button">All Activities</button>
+<button class="filter-chip px-space-md py-1 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md transition-colors" type="button">High Match (&gt;85%)</button>
+<button class="filter-chip px-space-md py-1 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md transition-colors" type="button">Outdoor Only</button>
+<button class="filter-chip px-space-md py-1 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md transition-colors" type="button">Rain Contingencies</button>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Live Synced with SwissMeteo Radar 04</span>
+</div>
+</div>
+</section>
+<!-- 7-Day Weather Trend & Outlook Bar (Interactive Ribbon) -->
+<section class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between px-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">ssid_chart</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Atmospheric 7-Day Horizon</h2>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Click day to reveal itinerary schedule</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-space-sm">
+<!-- Sat Oct 14 (Selected) -->
+<div class="day-card group cursor-pointer p-space-md rounded-xl bg-surface-container-high shadow-lg transition-all flex flex-col justify-between h-44 relative overflow-hidden" data-day="sat">
+<div class="absolute top-0 left-0 right-0 h-1 bg-primary"></div>
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface">Sat 14</span>
+<span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary font-label-sm text-label-sm">Active</span>
+</div>
+<div class="flex items-center justify-between my-2">
+<span class="text-3xl">⛅</span>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-on-surface">19°</span>
+<span class="font-body-sm text-body-sm text-outline">/ 11°</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Rain: 10%</span>
+<span class="text-primary font-semibold">98% Opt</span>
+</div>
+<p class="font-label-sm text-label-sm text-primary truncate font-medium">Excellent (Hiking)</p>
+</div>
+</div>
+<!-- Sun Oct 15 -->
+<div class="day-card group cursor-pointer p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all flex flex-col justify-between h-44" data-day="sun">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface-variant group-hover:text-on-surface">Sun 15</span>
+<span class="material-symbols-outlined text-tertiary text-[18px]">wb_sunny</span>
+</div>
+<div class="flex items-center justify-between my-2">
+<span class="text-3xl">☀️</span>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-on-surface">18°</span>
+<span class="font-body-sm text-body-sm text-outline">/ 10°</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Rain: 5%</span>
+<span class="text-tertiary font-semibold">99% Opt</span>
+</div>
+<p class="font-label-sm text-label-sm text-tertiary truncate font-medium">Peak Outdoor Day</p>
+</div>
+</div>
+<!-- Mon Oct 16 -->
+<div class="day-card group cursor-pointer p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all flex flex-col justify-between h-44" data-day="mon">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface-variant group-hover:text-on-surface">Mon 16</span>
+<span class="px-1.5 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm">Alert</span>
+</div>
+<div class="flex items-center justify-between my-2">
+<span class="text-3xl">🌧️</span>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-on-surface">14°</span>
+<span class="font-body-sm text-body-sm text-outline">/ 8°</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-label-sm text-label-sm text-error">
+<span>Rain: 75%</span>
+<span>Swapped</span>
+</div>
+<p class="font-label-sm text-label-sm text-secondary truncate font-medium">Indoor Day (Spas)</p>
+</div>
+</div>
+<!-- Tue Oct 17 -->
+<div class="day-card group cursor-pointer p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all flex flex-col justify-between h-44" data-day="tue">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface-variant group-hover:text-on-surface">Tue 17</span>
+<span class="material-symbols-outlined text-outline text-[18px]">foggy</span>
+</div>
+<div class="flex items-center justify-between my-2">
+<span class="text-3xl">⛅</span>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-on-surface">16°</span>
+<span class="font-body-sm text-body-sm text-outline">/ 9°</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Rain: 25%</span>
+<span>74% Opt</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant truncate font-medium">Clearing Mist</p>
+</div>
+</div>
+<!-- Wed Oct 18 -->
+<div class="day-card group cursor-pointer p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container transition-all flex flex-col justify-between h-44" data-day="wed">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface-variant group-hover:text-on-surface">Wed 18</span>
+<span class="material-symbols-outlined text-primary text-[18px]">air</span>
+</div>
+<div class="flex items-center justify-between my-2">
+<span class="text-3xl">🌤️</span>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-on-surface">20°</span>
+<span class="font-body-sm text-body-sm text-outline">/ 12°</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Rain: 15%</span>
+<span class="text-primary font-semibold">92% Opt</span>
+</div>
+<p class="font-label-sm text-label-sm text-primary truncate font-medium">Mild &amp; Breezy</p>
+</div>
+</div>
+<!-- Thu Oct 19 Outlook Preview -->
+<div class="day-card p-space-md rounded-xl bg-surface-container-lowest opacity-75 hover:opacity-100 transition-all flex flex-col justify-between h-44">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-outline">Thu 19</span>
+<span class="font-label-sm text-label-sm text-outline-variant">Outlook</span>
+</div>
+<div class="flex items-center justify-between my-2">
+<span class="text-2xl">🌦️</span>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-on-surface-variant">15°</span>
+<span class="font-body-sm text-body-sm text-outline">/ 8°</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-label-sm text-label-sm text-outline">
+<span>Rain: 40%</span>
+<span>Unstable</span>
+</div>
+<p class="font-label-sm text-label-sm text-outline-variant truncate">Alpine Showers</p>
+</div>
+</div>
+<!-- Fri Oct 20 Outlook Preview -->
+<div class="day-card p-space-md rounded-xl bg-surface-container-lowest opacity-75 hover:opacity-100 transition-all flex flex-col justify-between h-44">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-outline">Fri 20</span>
+<span class="font-label-sm text-label-sm text-outline-variant">Outlook</span>
+</div>
+<div class="flex items-center justify-between my-2">
+<span class="text-2xl">☀️</span>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-on-surface-variant">17°</span>
+<span class="font-body-sm text-body-sm text-outline">/ 9°</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-label-sm text-label-sm text-outline">
+<span>Rain: 10%</span>
+<span>Stable</span>
+</div>
+<p class="font-label-sm text-label-sm text-outline-variant truncate">Sunny Ridge</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Workspace: Timeline + Contingency Swap & Side Panel -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- Main Itinerary & Hourly Matrix (8 Cols) -->
+<div class="lg:col-span-8 flex flex-col gap-space-lg">
+<!-- Current Day Section Card: Saturday Oct 14 -->
+<div class="flex flex-col bg-surface-container-low rounded-xl p-space-lg shadow-xl gap-space-lg">
+<!-- Day Banner & Alpine Micro-conditions -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-md border-b-0">
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-sm text-label-sm">Day 1 of 5</span>
+<span class="font-headline-md text-headline-md text-on-surface">Saturday, October 14 Schedule</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ideal high ridge trekking conditions. Low wind shear &amp; high UV penetration index.</p>
+</div>
+<div class="flex items-center gap-space-sm bg-surface-container px-space-md py-space-xs rounded-xl">
+<div class="flex flex-col items-center px-space-xs">
+<span class="font-label-sm text-label-sm text-outline">Cloud Cover</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">18%</span>
+</div>
+<div class="h-6 w-px bg-surface-container-highest"></div>
+<div class="flex flex-col items-center px-space-xs">
+<span class="font-label-sm text-label-sm text-outline">Wind Peak</span>
+<span class="font-headline-sm text-headline-sm text-primary">12 km/h</span>
+</div>
+<div class="h-6 w-px bg-surface-container-highest"></div>
+<div class="flex flex-col items-center px-space-xs">
+<span class="font-label-sm text-label-sm text-outline">Atm. Press.</span>
+<span class="font-headline-sm text-headline-sm text-tertiary">1018 hPa</span>
+</div>
+</div>
+</div>
+<!-- Atmospheric Spline Curve / Temperature & UV Visualization -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-tertiary">wb_twilight</span>
+              Diurnal Solar Cycle &amp; Wind Velocity Curve
+            </span>
+<span class="font-label-sm text-label-sm text-primary">Peak Trekking Window: 10:00 - 14:00</span>
+</div>
+<div class="w-full h-24 relative overflow-hidden">
+<svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 600 80">
+<defs>
+<linearGradient id="tempGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#4cd6fb" stop-opacity="0.35"></stop>
+<stop offset="100%" stop-color="#4cd6fb" stop-opacity="0.0"></stop>
+</linearGradient>
+<linearGradient id="strokeGradient" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0%" stop-color="#00b4d8"></stop>
+<stop offset="50%" stop-color="#ffb781"></stop>
+<stop offset="100%" stop-color="#006be3"></stop>
+</linearGradient>
+</defs>
+<path d="M0,65 Q100,60 180,30 T360,18 T500,45 T600,60 L600,80 L0,80 Z" fill="url(#tempGradient)"></path>
+<path d="M0,65 Q100,60 180,30 T360,18 T500,45 T600,60" fill="none" stroke="url(#strokeGradient)" stroke-linecap="round" stroke-width="3"></path>
+<!-- Scrub marker for Hardergrat -->
+<circle class="animate-ping opacity-75" cx="260" cy="22" fill="#ffb781" r="5"></circle>
+<circle cx="260" cy="22" fill="#ffffff" r="4"></circle>
+</svg>
+<div class="absolute top-1 left-[40%] px-2 py-0.5 rounded bg-surface-container-highest/90 text-on-surface font-label-sm text-label-sm shadow-md pointer-events-none">
+              11:30 AM • 19°C (Max Clarity)
+            </div>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-outline px-1">
+<span>08:00 (12°C)</span>
+<span>11:00 (17°C)</span>
+<span>14:00 (19°C)</span>
+<span>17:00 (16°C)</span>
+<span>20:00 (13°C)</span>
+</div>
+</div>
+<!-- Chronological Schedule Stack -->
+<div class="flex flex-col gap-space-md">
+<!-- Item 1: Breakfast -->
+<div class="flex items-start gap-space-md p-space-md rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex flex-col items-center shrink-0 w-16">
+<span class="font-headline-sm text-headline-sm text-on-surface">08:30</span>
+<span class="font-label-sm text-label-sm text-outline uppercase">AM</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center shrink-0 text-tertiary">
+<span class="material-symbols-outlined text-[24px]">coffee</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-space-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Alpine Espresso &amp; Morning Pastry</h3>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm shrink-0">14°C • Patio Safe</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Cafe de Paris, Interlaken Promenade. Unshaded terrace with direct morning sun.</p>
+</div>
+</div>
+<!-- Item 2: Hero Hike Hardergrat (Expanded with Pack Suggestion) -->
+<div class="flex flex-col gap-space-sm p-space-lg rounded-xl bg-gradient-to-br from-surface-container to-surface-container-high shadow-lg">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<div class="flex items-start gap-space-md">
+<div class="flex flex-col items-center shrink-0 w-16">
+<span class="font-headline-sm text-headline-sm text-primary">10:00</span>
+<span class="font-label-sm text-label-sm text-outline uppercase">01:30 PM</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-primary-container/20 flex items-center justify-center shrink-0 text-primary">
+<span class="material-symbols-outlined text-[26px]">hiking</span>
+</div>
+<div>
+<div class="flex items-center gap-space-xs flex-wrap">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Hardergrat Panorama Trail Hike</h3>
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-label-sm text-label-sm flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                      Optimal Score 98%
+                    </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Ridge crest trail offering uninterrupted views of Lake Brienz, Lake Thun &amp; the Eiger.</p>
+</div>
+</div>
+<div class="flex items-center gap-space-xs self-start md:self-center">
+<button class="p-2 rounded-lg bg-surface-container-highest text-on-surface hover:text-primary transition-colors" title="View Altitude Profile" type="button">
+<span class="material-symbols-outlined text-[18px]">altitude</span>
+</button>
+<button class="p-2 rounded-lg bg-surface-container-highest text-on-surface hover:text-primary transition-colors" title="Waypoint Map" type="button">
+<span class="material-symbols-outlined text-[18px]">map</span>
+</button>
+</div>
+</div>
+<!-- UV and Trail Condition Alerts + Pack Suggestions -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm mt-space-xs pt-space-sm bg-surface-container-lowest/60 rounded-xl p-space-md">
+<div class="flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-tertiary text-[20px] shrink-0">wb_sunny</span>
+<div>
+<span class="font-label-md text-label-md text-tertiary">Real-time UV Index: 6.8 (High)</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Intense ridge reflection. Ridge gusts &lt; 14 km/h will maintain comfortable perceived temps.</p>
+</div>
+</div>
+<div class="flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0">backpack</span>
+<div>
+<span class="font-label-md text-label-md text-primary">Required Pack List</span>
+<div class="flex items-center gap-space-xs mt-1 flex-wrap">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm">Windbreaker</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm">1.5L Hydration</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm">Cat-3 Sunglasses</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Trail Photo Strip -->
+<div class="grid grid-cols-2 gap-space-sm mt-space-xs">
+<div class="h-28 rounded-lg overflow-hidden relative group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Breathtaking panoramic shot of the Hardergrat ridge trail overlooking Lake Brienz with morning mist dispersing in warm golden sunlight and emerald mountain slopes." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCB8FVBIQ9vzoT7_hxMaV2Ckj3Nc20XwXmpm_wQoipoNnGy34O_nwhr_g4NWZctqkqPdg4pMVtCjEOZvj4-by5DlokGEbenuH4JBgLWo1ByTEiP3EnMjhmWbY60qFA4E4Z5LyA3jvRtaIuQNFZJJ0xKOh9RLBMHTIJNMPYA0SvG6EK3fjSFyzZN7iqT1UvMOJCnm0qNgMBjC_Imk7fHy91IoYaIxQ7PG0HZu0V7x4Ej2672JcC5h0g">
+<div class="absolute bottom-1.5 left-2 px-2 py-0.5 rounded bg-surface-container-lowest/80 text-on-surface font-label-sm text-label-sm">Harder Kulm Ascent</div>
+</div>
+<div class="h-28 rounded-lg overflow-hidden relative group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="High angle shot of turquoise Swiss alpine lake surrounded by towering pine trees and sheer limestone cliffs under a crisp clear autumn blue sky." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5IGlpLKhob1pvc1TeJxPxTHybK8zKupScnjasX-GMfK426zBiN3bI8iVHKVrD8sl1gMhMhRN_c_Z-hBDhYn8Wc8AXmuFqKc_TzQEc7i0JKhGn8GqzmZ4878NTws5ngoPBPzMJiq7JPKGc7uDjET1WodvyzzR8XSdqtCpFb7Et7Sh7XnfjDNjmEOS7naE4DqrszX8Nh7tQRH4E8bST0Ah_wRfR-UDJb7wBB0w0BGUTG_4Picue-s4">
+<div class="absolute bottom-1.5 left-2 px-2 py-0.5 rounded bg-surface-container-lowest/80 text-on-surface font-label-sm text-label-sm">Brienz Ridge Crest</div>
+</div>
+</div>
+</div>
+<!-- Item 3: Lake Ferry -->
+<div class="flex items-start gap-space-md p-space-md rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex flex-col items-center shrink-0 w-16">
+<span class="font-headline-sm text-headline-sm text-on-surface">02:30</span>
+<span class="font-label-sm text-label-sm text-outline uppercase">04:30 PM</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-secondary-container/20 flex items-center justify-center shrink-0 text-secondary">
+<span class="material-symbols-outlined text-[24px]">directions_boat</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Brienz Lake Ferry &amp; Photo Session</h3>
+<span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary font-label-sm text-label-sm">Score 91%</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Interlaken Ost Pier</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Calm water conditions. Ideal light angle for reflections of the Bernese Oberland peaks.</p>
+</div>
+</div>
+<!-- Item 4: Dinner -->
+<div class="flex items-start gap-space-md p-space-md rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex flex-col items-center shrink-0 w-16">
+<span class="font-headline-sm text-headline-sm text-on-surface">06:30</span>
+<span class="font-label-sm text-label-sm text-outline uppercase">PM</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-tertiary-container/20 flex items-center justify-center shrink-0 text-tertiary">
+<span class="material-symbols-outlined text-[24px]">restaurant</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-space-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Dinner in Unterseen Old Town</h3>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">15°C • Clear Evening</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Fondue &amp; raclette spot beside the historic river weir. Crisp autumn evening air.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Monday Contingency Swap Demonstration Panel -->
+<div class="flex flex-col bg-surface-container-low rounded-xl p-space-lg shadow-xl gap-space-md relative overflow-hidden">
+<div class="absolute -right-16 -top-16 w-48 h-48 rounded-full bg-error-container/10 blur-3xl pointer-events-none"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="w-3 h-3 rounded-full bg-tertiary-container animate-pulse"></span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Autonomous Weather Protection System</h3>
+</div>
+<span class="px-2.5 py-0.5 rounded-full bg-error-container/40 text-error font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+            Active Swap (Mon Oct 16)
+          </span>
+</div>
+<!-- Contingency Banner -->
+<div class="bg-surface-container p-space-md rounded-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-sm">
+<div class="p-2 rounded-lg bg-error-container text-on-error-container shrink-0">
+<span class="material-symbols-outlined text-[22px]">thunderstorm</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface font-semibold">Precipitation Spike Detected for Monday Afternoon (75%)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                Automated rule #R-41 swapped outdoor high-altitude itinerary item <span class="line-through text-outline">Schilthorn Cable Car &amp; Skyline Walk</span> for all-weather indoor alternatives.
+              </p>
+</div>
+</div>
+<button class="shrink-0 px-space-md py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-primary font-label-md text-label-md transition-colors" type="button">
+            Rule Settings
+          </button>
+</div>
+<!-- Replacement Cards Side-by-Side Comparison -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Deselected Outdoor -->
+<div class="p-space-md rounded-xl bg-surface-container/40 opacity-60 flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-error font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">cancel</span>
+                Postponed: Gusts &gt; 55 km/h
+              </span>
+<span class="text-xs text-outline line-through">Mon 01:00 PM</span>
+</div>
+<h5 class="font-headline-sm text-headline-sm text-outline mt-2 line-through">Schilthorn Piz Gloria Cable Car</h5>
+<p class="font-body-sm text-body-sm text-outline mt-1">Zero visibility expected at 2,970m summit with potential lift halts.</p>
+</div>
+<!-- Autonomous Replacement -->
+<div class="p-space-md rounded-xl bg-surface-container-high flex flex-col justify-between shadow-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                Confirmed Replacement
+              </span>
+<span class="font-label-sm text-label-sm text-on-surface">Mon 01:30 PM</span>
+</div>
+<h5 class="font-headline-sm text-headline-sm text-on-surface mt-2">Thermal Mineral Baths &amp; Interlaken Art Museum</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Hydrotherapy pool heated to 36°C with indoor panoramic glass facing the rain-drenched valley.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Panel: Smart Packing Checklist & System Health (4 Cols) -->
+<div class="lg:col-span-4 flex flex-col gap-space-lg">
+<!-- Smart Packing Checklist -->
+<div class="flex flex-col bg-surface-container-low rounded-xl p-space-lg shadow-xl gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">luggage</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Dynamic Pack List</h3>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant" id="packProgressText">3/6 Packed</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Generated from 7-day atmospheric gradient (19°C drop to 8°C with mountain rain).</p>
+<!-- Dynamic Progress Bar -->
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full transition-all duration-300" id="packBar" style="width: 50%;"></div>
+</div>
+<!-- Checklist Items -->
+<div class="flex flex-col gap-space-xs mt-2" id="checklistContainer">
+<label class="flex items-center gap-space-sm p-space-sm rounded-lg hover:bg-surface-container cursor-pointer transition-colors">
+<input checked="" class="pack-item w-4 h-4 rounded text-primary focus:ring-0 bg-surface-container-highest" type="checkbox">
+<div class="flex-1">
+<span class="font-body-md text-body-md text-on-surface block">Waterproof Gore-Tex Shell</span>
+<span class="font-label-sm text-label-sm text-outline">Crucial for Monday 75% precipitation</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-primary">umbrella</span>
+</label>
+<label class="flex items-center gap-space-sm p-space-sm rounded-lg hover:bg-surface-container cursor-pointer transition-colors">
+<input checked="" class="pack-item w-4 h-4 rounded text-primary focus:ring-0 bg-surface-container-highest" type="checkbox">
+<div class="flex-1">
+<span class="font-body-md text-body-md text-on-surface block">Trekking Poles (Pair)</span>
+<span class="font-label-sm text-label-sm text-outline">Hardergrat ridge incline support</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-tertiary">nordic_walking</span>
+</label>
+<label class="flex items-center gap-space-sm p-space-sm rounded-lg hover:bg-surface-container cursor-pointer transition-colors">
+<input checked="" class="pack-item w-4 h-4 rounded text-primary focus:ring-0 bg-surface-container-highest" type="checkbox">
+<div class="flex-1">
+<span class="font-body-md text-body-md text-on-surface block">UV 50+ Broad-Spectrum Balm</span>
+<span class="font-label-sm text-label-sm text-outline">High alpine UV index Saturday &amp; Sunday</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-tertiary">wb_sunny</span>
+</label>
+<label class="flex items-center gap-space-sm p-space-sm rounded-lg hover:bg-surface-container cursor-pointer transition-colors">
+<input class="pack-item w-4 h-4 rounded text-primary focus:ring-0 bg-surface-container-highest" type="checkbox">
+<div class="flex-1">
+<span class="font-body-md text-body-md text-on-surface block">Merino Thermal Base Layer</span>
+<span class="font-label-sm text-label-sm text-outline">Tues evening drops to 8°C</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-secondary">ac_unit</span>
+</label>
+<label class="flex items-center gap-space-sm p-space-sm rounded-lg hover:bg-surface-container cursor-pointer transition-colors">
+<input class="pack-item w-4 h-4 rounded text-primary focus:ring-0 bg-surface-container-highest" type="checkbox">
+<div class="flex-1">
+<span class="font-body-md text-body-md text-on-surface block">Headlamp (350+ Lumens)</span>
+<span class="font-label-sm text-label-sm text-outline">Sunset occurs at 18:24 CET</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-outline">flashlight_on</span>
+</label>
+<label class="flex items-center gap-space-sm p-space-sm rounded-lg hover:bg-surface-container cursor-pointer transition-colors">
+<input class="pack-item w-4 h-4 rounded text-primary focus:ring-0 bg-surface-container-highest" type="checkbox">
+<div class="flex-1">
+<span class="font-body-md text-body-md text-on-surface block">Microfiber Towel &amp; Swimwear</span>
+<span class="font-label-sm text-label-sm text-outline">Required for Monday Spa swap</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-primary">hot_tub</span>
+</label>
+</div>
+</div>
+<!-- Real-Time OpenWeatherMap Live Sync Status Widget -->
+<div class="flex flex-col bg-surface-container-low rounded-xl p-space-lg shadow-xl gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">sensors</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Data Telemetry</h3>
+</div>
+<span class="flex items-center gap-1 font-label-sm text-label-sm text-emerald-400">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            Operational
+          </span>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="bg-surface-container p-space-sm rounded-lg">
+<span class="font-label-sm text-label-sm text-outline block">Sync Latency</span>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="font-headline-md text-headline-md text-primary">142</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">ms</span>
+</div>
+</div>
+<div class="bg-surface-container p-space-sm rounded-lg">
+<span class="font-label-sm text-label-sm text-outline block">Confidence</span>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="font-headline-md text-headline-md text-tertiary">94</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">%</span>
+</div>
+</div>
+</div>
+<div class="space-y-2 pt-1">
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Satellite Feed</span>
+<span class="text-on-surface font-mono">EUMETSAT-11 HRIT</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Forecast Model</span>
+<span class="text-on-surface font-mono">ECMWF IFS 0.1° High-Res</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Next Station Pass</span>
+<span class="text-primary font-mono" id="syncCountdown">08:14 min</span>
+</div>
+</div>
+<!-- Embedded Mini Elevation Map Preview -->
+<div class="mt-space-xs rounded-xl overflow-hidden relative">
+<div class="w-full h-36 bg-cover bg-center rounded-xl relative" data-location="Interlaken, Switzerland" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBPjtwde-LfFmToIcbbQ1p5BDCrVw6SBFxjk-T_OJD8XOhhzzVP7uw4exfOLxQBLnfv7HpxWwrlxBhFNiH1jtwPhJBPvph0zlzN5uwIqDc4QVfz9QUXILuVN1GWdTBJRm_HsQMzQ2pbfresrgIaSAqGUdHogyP6y0rllsRSxzhOAyVQHTXX6fEJT-ztREghdlrE2esewY3T6Hq2jCmgfaojFLRGmqHW1lCjmlTQpnV10ePAL0De2JM')">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent"></div>
+<div class="absolute bottom-2 left-2 right-2 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold bg-surface-container-highest/80 px-2 py-0.5 rounded backdrop-blur-sm">
+                Interlaken Station (566m)
+              </span>
+<span class="font-label-sm text-label-sm text-primary bg-surface-container-highest/80 px-2 py-0.5 rounded backdrop-blur-sm">
+                46.6863° N, 7.8632° E
+              </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Itinerary Notes -->
+<div class="flex flex-col bg-surface-container-low rounded-xl p-space-md shadow-xl">
+<div class="flex items-center gap-space-xs text-on-surface-variant mb-2">
+<span class="material-symbols-outlined text-[18px] text-tertiary">lightbulb</span>
+<span class="font-label-md text-label-md text-on-surface">Expedition Note</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Daylight hours diminish sharply after 17:30 in valleys between Eiger and Jungfrau. Plan returns before dusk to avoid ice sheen on limestone tracks.
+        </p>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple interactive micro-interactions for the itinerary screen
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Checklist tracker
+    const checkboxes = document.querySelectorAll('.pack-item');
+    const packBar = document.getElementById('packBar');
+    const progressText = document.getElementById('packProgressText');
+
+    function updateChecklist() {
+      const total = checkboxes.length;
+      const checked = document.querySelectorAll('.pack-item:checked').length;
+      const pct = Math.round((checked / total) * 100);
+      if (packBar) packBar.style.width = pct + '%';
+      if (progressText) progressText.textContent = checked + '/' + total + ' Packed';
+    }
+
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', updateChecklist);
+    });
+
+    // 2. Day card switcher visual feedback
+    const dayCards = document.querySelectorAll('.day-card');
+    dayCards.forEach(card => {
+      card.addEventListener('click', () => {
+        dayCards.forEach(c => {
+          c.classList.remove('bg-surface-container-high', 'shadow-lg');
+          c.classList.add('bg-surface-container-low');
+          const indicator = c.querySelector('.bg-primary');
+          if (indicator && indicator.classList.contains('absolute')) indicator.remove();
+        });
+        card.classList.remove('bg-surface-container-low');
+        card.classList.add('bg-surface-container-high', 'shadow-lg');
+      });
+    });
+
+    // 3. Re-score Live API micro-animation
+    const rescoreBtn = document.getElementById('rescoreBtn');
+    const refreshIcon = document.getElementById('refreshIcon');
+    if (rescoreBtn && refreshIcon) {
+      rescoreBtn.addEventListener('click', () => {
+        refreshIcon.classList.add('animate-spin');
+        rescoreBtn.classList.add('opacity-75');
+        setTimeout(() => {
+          refreshIcon.classList.remove('animate-spin');
+          rescoreBtn.classList.remove('opacity-75');
+        }, 1200);
+      });
+    }
+
+    // 4. Comparison toggle interaction
+    const compareBtn = document.getElementById('locCompare');
+    const interlakenBtn = document.getElementById('locInterlaken');
+    if (compareBtn && interlakenBtn) {
+      compareBtn.addEventListener('click', () => {
+        const isComparing = compareBtn.classList.contains('bg-primary-container');
+        if (!isComparing) {
+          compareBtn.className = 'flex items-center gap-1 px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md shadow-sm transition-all';
+          interlakenBtn.className = 'px-space-md py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all';
+        } else {
+          interlakenBtn.className = 'px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md shadow-sm transition-all';
+          compareBtn.className = 'flex items-center gap-1 px-space-md py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all';
+        }
+      });
+      interlakenBtn.addEventListener('click', () => {
+        interlakenBtn.className = 'px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md shadow-sm transition-all';
+        compareBtn.className = 'flex items-center gap-1 px-space-md py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all';
+      });
+    }
+
+    // 5. Filter chips state toggle
+    const filterChips = document.querySelectorAll('.filter-chip');
+    filterChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        filterChips.forEach(c => {
+          c.className = 'filter-chip px-space-md py-1 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md transition-colors';
+        });
+        chip.className = 'filter-chip px-space-md py-1 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md shadow-sm';
+      });
+    });
+  });
+</script></div></main><footer class="w-full bg-surface-container-lowest mt-space-xl py-space-lg"><div class="max-w-[1360px] mx-auto px-margin flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-sm"><img alt="SkyPlan Brand Logo" class="h-6 w-auto opacity-75 object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1U43KUnj2eD2G-p64tZmsCZOOvGQPBQM2kkW78kmg5lLChpK_tbmH7AfJwxL6AJPks4RV92PMZgDji1i5lHZyLuFcDxHixtXwkJJLlsKu-5tmFDJi3jJfXOr_FC4T0gHOGjvELF_2W8rioROWkLIaj9jfX5ifw2SHRQgyPhkatmbIhR5U_2Fx4zScpYUBNM_nSpvtjobEuJgCPl1HnoTBf0c6fgTgqGA0z2Jfzhqucg2u59sss1gZ2Zpg"><span class="font-label-md text-label-md text-outline">SkyPlan Atmospheric Intelligence Platform</span></div><div class="flex items-center gap-space-lg"><span class="font-label-sm text-label-sm text-outline">Station Sync: Interlaken Radar 2m ago</span><span class="font-label-sm text-label-sm text-outline">© 2024 SkyPlan Technologies Inc.</span></div></div></footer></body></html>

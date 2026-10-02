@@ -1,0 +1,1157 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkyPlan - Föhn Wind &amp; Thermal Inversion Simulator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            'brand-cyan': '#38BDF8',
+            'brand-violet': '#7C3AED',
+            'brand-amethyst': '#6C5CE7',
+            'brand-periwinkle': '#A29BFE',
+            'brand-fohn': '#F59E0B',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-sky-top: #0a0b1e;
+      --bg-sky-mid: #141738;
+      --bg-sky-bottom: #1f1b4b;
+      --bubble-bg: rgba(26, 24, 56, 0.65);
+      --bubble-border: rgba(162, 155, 254, 0.22);
+      --bubble-glow: rgba(108, 92, 231, 0.25);
+      --text-main: #FFFFFF;
+      --text-sub: #A5B4FC;
+      --accent-glow: #6C5CE7;
+      --tag-bg: rgba(124, 58, 237, 0.25);
+    }
+    body.regime-inversion {
+      --bg-sky-top: #080d24;
+      --bg-sky-mid: #101a3c;
+      --bg-sky-bottom: #1f274e;
+      --bubble-border: rgba(147, 197, 253, 0.3);
+      --bubble-glow: rgba(56, 189, 248, 0.25);
+      --accent-glow: #38bdf8;
+      --tag-bg: rgba(56, 189, 248, 0.2);
+    }
+    body.regime-fohn {
+      --bg-sky-top: #1f0d06;
+      --bg-sky-mid: #3b1716;
+      --bg-sky-bottom: #52201d;
+      --bubble-bg: rgba(43, 20, 24, 0.72);
+      --bubble-border: rgba(245, 158, 11, 0.35);
+      --bubble-glow: rgba(245, 158, 11, 0.28);
+      --accent-glow: #f59e0b;
+      --tag-bg: rgba(245, 158, 11, 0.25);
+      --text-sub: #fed7aa;
+    }
+    body.day-mode {
+      --bg-sky-top: #38bdf8;
+      --bg-sky-mid: #818cf8;
+      --bg-sky-bottom: #c084fc;
+      --bubble-bg: rgba(255, 255, 255, 0.8);
+      --bubble-border: rgba(255, 255, 255, 0.75);
+      --bubble-glow: rgba(56, 189, 248, 0.25);
+      --text-main: #0F172A;
+      --text-sub: #334155;
+      --accent-glow: #0284c7;
+      --tag-bg: rgba(56, 189, 248, 0.22);
+    }
+    body.day-mode.regime-fohn {
+      --bg-sky-top: #fb923c;
+      --bg-sky-mid: #f59e0b;
+      --bg-sky-bottom: #fcd34d;
+      --bubble-bg: rgba(255, 247, 237, 0.88);
+      --bubble-border: rgba(245, 158, 11, 0.5);
+      --text-main: #431407;
+      --text-sub: #7c2d12;
+      --accent-glow: #ea580c;
+    }
+    body.twilight-mode {
+      --bg-sky-top: #1e1b4b;
+      --bg-sky-mid: #4c1d95;
+      --bg-sky-bottom: #831843;
+      --bubble-bg: rgba(30, 27, 75, 0.7);
+      --bubble-border: rgba(192, 132, 252, 0.3);
+      --text-main: #FDF4FF;
+      --text-sub: #E9D5FF;
+      --accent-glow: #C084FC;
+    }
+    .theme-transition {
+      transition: background 0.6s ease, border-color 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+    }
+    .bubble-glass {
+      background: var(--bubble-bg);
+      border: 1px solid var(--bubble-border);
+      box-shadow: 0 12px 36px 0 var(--bubble-glow), inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .bubble-glass-soft {
+      background: var(--bubble-bg);
+      border: 1px solid var(--bubble-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 9999px;
+      height: 6px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 0 12px var(--accent-glow);
+      cursor: pointer;
+      border: 2px solid var(--accent-glow);
+      transition: transform 0.15s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+    .regime-active {
+      box-shadow: 0 0 20px var(--accent-glow), inset 0 0 8px rgba(255, 255, 255, 0.25);
+      border-color: var(--accent-glow) !important;
+    }
+  </style>
+</head>
+<body id="bodyRoot" class="theme-transition min-h-screen text-slate-100 font-sans relative overflow-x-hidden antialiased" style="background: linear-gradient(175deg, var(--bg-sky-top) 0%, var(--bg-sky-mid) 48%, var(--bg-sky-bottom) 100%);">
+  <div id="ambientFlash" class="fixed inset-0 pointer-events-none z-10 transition-opacity duration-75 opacity-0 mix-blend-screen"></div>
+  <canvas id="atmospheric-particles" class="fixed inset-0 pointer-events-none z-10 w-full h-full cursor-crosshair"></canvas>
+  
+  <!-- Celestial Sun/Moon Halo -->
+  <div id="celestialOrb" class="absolute pointer-events-none transition-all duration-1000 ease-out z-0 rounded-full blur-3xl opacity-75" style="width: 440px; height: 440px; top: 6%; right: 10%; background: radial-gradient(circle, rgba(162, 155, 254, 0.45) 0%, rgba(108, 92, 231, 0.15) 60%, transparent 80%);"></div>
+
+  <!-- Header -->
+  <header class="relative z-30 border-b border-white/10 theme-transition bg-black/25 backdrop-blur-xl px-5 lg:px-10 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-violet via-brand-amethyst to-brand-fohn p-0.5 shadow-lg flex items-center justify-center">
+          <div class="w-full h-full bg-[#0e112a] rounded-[14px] flex items-center justify-center text-brand-fohn font-bold text-lg">
+            🌪️
+          </div>
+        </div>
+        <div>
+          <span class="font-display font-black text-xl tracking-tight text-white flex items-center gap-1">Sky<span class="text-brand-fohn">Plan</span></span>
+          <span class="text-[9px] font-bold tracking-widest uppercase text-brand-periwinkle/90 block -mt-1">Föhn Wind &amp; Thermal Inversion Simulator</span>
+        </div>
+      </div>
+      <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bubble-glass text-xs" style="color: var(--text-main);">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span id="headerLocationName" class="font-semibold">Interlaken Crest</span>
+        <span class="opacity-40">|</span>
+        <span id="headerElevationTag" class="font-bold text-brand-cyan">2,163m ASL</span>
+        <span class="opacity-40">•</span>
+        <span id="headerTemp" class="font-semibold text-purple-300">6.0°C</span>
+      </div>
+    </div>
+
+    <!-- Center Mode Switcher -->
+    <div class="bubble-glass rounded-full p-1 flex items-center gap-1 shadow-xl">
+      <button id="btnNight" onclick="setMode('night')" class="px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 bg-brand-amethyst text-white shadow-md">
+        <span>🌙 Starlight</span>
+      </button>
+      <button id="btnTwilight" onclick="setMode('twilight')" class="px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 text-slate-300 hover:text-white">
+        <span>🌅 Twilight</span>
+      </button>
+      <button id="btnDay" onclick="setMode('day')" class="px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 text-slate-300 hover:text-white">
+        <span>☀️ Daylight</span>
+      </button>
+    </div>
+
+    <!-- Right Telemetry Badge -->
+    <div class="flex items-center gap-3">
+      <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bubble-glass text-xs font-semibold" style="color: var(--text-main);">
+        <span class="text-[10px] uppercase tracking-wider text-brand-fohn">Active Regime</span>
+        <span id="headerRegimeBadge" class="font-mono text-cyan-300 font-bold">Standard Lapse</span>
+      </div>
+      <button onclick="triggerLightningManually()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bubble-glass text-xs font-medium text-amber-300 border-amber-400/30 hover:bg-amber-400/10 transition-colors">
+        <span>⚡ Strike Sky</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Grid -->
+  <main id="mainContainer" class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- 1. METEOROLOGICAL THERMODYNAMIC REGIME SELECTOR -->
+    <section class="bubble-glass rounded-3xl p-5 sm:p-6 theme-transition shadow-2xl space-y-4 border border-white/20">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-1" style="background: var(--tag-bg); color: var(--accent-glow);">
+            <span class="animate-pulse">🌀</span>
+            <span>Atmospheric Boundary Layer &amp; Lapse Dynamics</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-black font-display tracking-tight" style="color: var(--text-main);">
+            Thermal Inversions &amp; Alpine Föhn Dynamics
+          </h2>
+          <p class="text-xs sm:text-sm mt-0.5" style="color: var(--text-sub);">
+            Simulate radiation fog cold pools where low valleys stay freezing while peaks bathe in mild warmth, or high-speed katabatic Föhn heating.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="regimeDeltaTag" class="text-xs px-3 py-1 rounded-full bubble-glass-soft font-mono font-bold text-cyan-300">
+            Γ = -6.5°C / km
+          </span>
+        </div>
+      </div>
+
+      <!-- 3 Thermodynamic Regime Toggle Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <!-- Option A: Standard Lapse Rate -->
+        <button id="cardRegimeStandard" onclick="setThermodynamicRegime('standard')" class="text-left rounded-2xl p-4 transition-all duration-300 bubble-glass-soft border-2 regime-active flex flex-col justify-between group">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold tracking-wider uppercase text-cyan-300 flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> Standard Lapse
+            </span>
+            <span class="text-2xl">⛰️</span>
+          </div>
+          <div class="mt-2">
+            <div class="font-bold text-sm" style="color: var(--text-main);">Normal Adiabatic Lapse Rate</div>
+            <div class="text-[11px] mt-1 leading-relaxed opacity-85" style="color: var(--text-sub);">
+              Classic hypsometric cooling: -6.5°C per 1,000m ascent. Valley rain transitions into mountain snow.
+            </div>
+          </div>
+          <div class="mt-3 flex items-center justify-between text-[10px] font-bold text-cyan-400 pt-2 border-t border-white/10">
+            <span>Γ = -6.5°C / km</span>
+            <span class="bg-cyan-500/20 px-2 py-0.5 rounded-full">Standard Profile</span>
+          </div>
+        </button>
+
+        <!-- Option B: Thermal Valley Inversion -->
+        <button id="cardRegimeInversion" onclick="setThermodynamicRegime('inversion')" class="text-left rounded-2xl p-4 transition-all duration-300 bubble-glass-soft border flex flex-col justify-between group">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold tracking-wider uppercase text-sky-300 flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse"></span> Valley Inversion
+            </span>
+            <span class="text-2xl">🌫️</span>
+          </div>
+          <div class="mt-2">
+            <div class="font-bold text-sm" style="color: var(--text-main);">Thermal Valley Inversion (Kaltluftsee)</div>
+            <div class="text-[11px] mt-1 leading-relaxed opacity-85" style="color: var(--text-sub);">
+              Valleys colder than summits! Dense sea of fog (Nebeldecke) trapped below warm sunny thermal belts (+8°C to +12°C).
+            </div>
+          </div>
+          <div class="mt-3 flex items-center justify-between text-[10px] font-bold text-sky-400 pt-2 border-t border-white/10">
+            <span>Inversion Cap: ~1,400m</span>
+            <span class="bg-sky-500/20 px-2 py-0.5 rounded-full">Fog Trap (Nebelflucht)</span>
+          </div>
+        </button>
+
+        <!-- Option C: South Föhn Storm -->
+        <button id="cardRegimeFohn" onclick="setThermodynamicRegime('fohn')" class="text-left rounded-2xl p-4 transition-all duration-300 bubble-glass-soft border flex flex-col justify-between group">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold tracking-wider uppercase text-amber-300 flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span> South Föhn Storm
+            </span>
+            <span class="text-2xl">💨</span>
+          </div>
+          <div class="mt-2">
+            <div class="font-bold text-sm" style="color: var(--text-main);">Alpine Chinook (Katabatic Heating)</div>
+            <div class="text-[11px] mt-1 leading-relaxed opacity-85" style="color: var(--text-sub);">
+              Dry adiabatic compression (+10°C/km descent). Valley heats abnormally to +21°C with 95 km/h gusts &amp; 18% RH!
+            </div>
+          </div>
+          <div class="mt-3 flex items-center justify-between text-[10px] font-bold text-amber-400 pt-2 border-t border-white/10">
+            <span>ΔP: 10 hPa Gradient</span>
+            <span class="bg-amber-500/20 px-2 py-0.5 rounded-full">Gale &amp; Lenticulars</span>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- 2. ELEVATION & THERMODYNAMIC SCRUBBERS -->
+    <section class="bubble-glass rounded-3xl p-6 theme-transition shadow-2xl space-y-5">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3 border-b border-white/10">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-1" style="background: var(--tag-bg); color: var(--accent-glow);">
+            <span id="lapseHeaderBadgeIcon">⛰️</span>
+            <span id="lapseHeaderBadgeTitle">Dynamic Altitude Telemetry</span>
+          </div>
+          <h1 id="lapseTitle" class="text-2xl lg:text-3xl font-extrabold tracking-tight font-display" style="color: var(--text-main);">
+            Hypsometric Lapse &amp; Boundary Stratum
+          </h1>
+          <p id="lapseDescription" class="text-xs sm:text-sm mt-0.5 leading-relaxed" style="color: var(--text-sub);">
+            Simulating environmental temperature lapse (<span class="font-mono text-cyan-300 font-semibold">-6.5°C per 1,000m</span>) from valley rain showers to alpine glacier blizzards.
+          </p>
+        </div>
+        <!-- 4 Quick Altitude Buttons -->
+        <div class="flex flex-wrap items-center gap-1.5 self-start lg:self-center">
+          <button onclick="setAltitudePreset(568)" class="px-3 py-1.5 rounded-xl text-xs font-bold bubble-glass-soft text-slate-200 hover:text-white border border-white/15">
+            🏞️ Valley <span class="text-cyan-300 ml-1">568m</span>
+          </button>
+          <button onclick="setAltitudePreset(1322)" class="px-3 py-1.5 rounded-xl text-xs font-bold bubble-glass-soft text-slate-200 hover:text-white border border-white/15">
+            🌲 Ridge <span class="text-cyan-300 ml-1">1,322m</span>
+          </button>
+          <button onclick="setAltitudePreset(2320)" class="px-3 py-1.5 rounded-xl text-xs font-bold bubble-glass-soft text-slate-200 hover:text-white border border-white/15">
+            🏔️ Crest <span class="text-cyan-300 ml-1">2,320m</span>
+          </button>
+          <button onclick="setAltitudePreset(4158)" class="px-3 py-1.5 rounded-xl text-xs font-bold bubble-glass-soft text-slate-200 hover:text-white border border-white/15">
+            ❄️ Summit <span class="text-cyan-300 ml-1">4,158m</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Elevation & 24H Slider Row -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs font-semibold" style="color: var(--text-sub);">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+              <span>Elevation Stratum:</span>
+            </span>
+            <span id="altitudeDisplay" class="font-extrabold text-sm px-2.5 py-0.5 rounded-full bubble-glass-soft text-cyan-300">
+              2,163m (Interlaken Crest)
+            </span>
+          </div>
+          <input id="altitudeSlider" type="range" min="568" max="4158" step="25" value="2163" oninput="onAltitudeChange(this.value)" class="w-full cursor-ew-resize">
+          <div class="flex justify-between text-[11px] font-medium opacity-60" style="color: var(--text-sub);">
+            <span>568m (Lake Brienz)</span>
+            <span id="altitudeMidMarker">1,400m (Inversion Lid / Thermal Belt)</span>
+            <span>4,158m (Jungfrau Summit)</span>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs font-semibold" style="color: var(--text-sub);">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+              <span>Diurnal Time Progression:</span>
+            </span>
+            <span id="sliderTimeDisplay" class="font-extrabold text-sm px-2.5 py-0.5 rounded-full bubble-glass-soft" style="color: var(--text-main);">
+              02:00 (Starlight Night)
+            </span>
+          </div>
+          <input id="timeScrubber" type="range" min="0" max="24" step="0.5" value="2" oninput="onTimeSliderChange(this.value)" class="w-full cursor-ew-resize">
+          <div class="flex justify-between text-[11px] font-medium opacity-60" style="color: var(--text-sub);">
+            <span>00:00 (Night)</span>
+            <span>06:00 (Dawn)</span>
+            <span>12:00 (Noon)</span>
+            <span>18:00 (Dusk)</span>
+            <span>24:00 (Midnight)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Regime Parameter Sliders (Inversion Strength, Fog Lid, Föhn ΔP) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-white/10 text-xs">
+        <div id="boxInversionStrength" class="bubble-glass-soft rounded-2xl p-3 space-y-1.5 opacity-60 transition-opacity">
+          <div class="flex items-center justify-between font-semibold" style="color: var(--text-main);">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+              <span>Inversion Cap Strength:</span>
+            </span>
+            <span id="invStrengthLabel" class="text-sky-300 font-bold">+8.5°C Delta</span>
+          </div>
+          <input id="invStrengthSlider" type="range" min="2" max="14" step="0.5" value="8.5" oninput="onInversionStrengthChange(this.value)" class="w-full">
+          <div class="flex justify-between text-[10px] text-slate-400">
+            <span>Weak (+2°C)</span>
+            <span>Moderate (+8.5°C)</span>
+            <span>Extreme (+14°C)</span>
+          </div>
+        </div>
+
+        <div id="boxFogBoundary" class="bubble-glass-soft rounded-2xl p-3 space-y-1.5 opacity-60 transition-opacity">
+          <div class="flex items-center justify-between font-semibold" style="color: var(--text-main);">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+              <span>Fog Lid (Nebeldecke):</span>
+            </span>
+            <span id="fogLidLabel" class="text-indigo-300 font-bold">1,350m ASL</span>
+          </div>
+          <input id="fogLidSlider" type="range" min="800" max="1800" step="50" value="1350" oninput="onFogLidChange(this.value)" class="w-full">
+          <div class="flex justify-between text-[10px] text-slate-400">
+            <span>800m Low Fog</span>
+            <span>1,350m Thermal Belt</span>
+            <span>1,800m High Cap</span>
+          </div>
+        </div>
+
+        <div id="boxFohnDeltaP" class="bubble-glass-soft rounded-2xl p-3 space-y-1.5 opacity-60 transition-opacity">
+          <div class="flex items-center justify-between font-semibold" style="color: var(--text-main);">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span>Föhn ΔP Gradient:</span>
+            </span>
+            <span id="fohnDeltaPLabel" class="text-amber-300 font-bold">10 hPa (Active Storm)</span>
+          </div>
+          <input id="fohnDeltaPSlider" type="range" min="3" max="18" step="1" value="10" oninput="onFohnDeltaPChange(this.value)" class="w-full">
+          <div class="flex justify-between text-[10px] text-slate-400">
+            <span>4 hPa Gentle</span>
+            <span>10 hPa Moderate</span>
+            <span>16+ hPa Hurricane</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-Time Telemetry Bar -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-1 text-xs">
+        <div class="bubble-glass-soft rounded-2xl p-2.5 text-center">
+          <span id="teleLabel1" class="text-[10px] uppercase font-bold tracking-wider opacity-60" style="color: var(--text-sub);">Freezing Line (0°C)</span>
+          <div id="teleFreezingLine" class="font-black text-sm text-cyan-300 mt-0.5">2,100m ASL</div>
+          <div id="teleFreezingRel" class="text-[10px] text-slate-400 mt-0.5">Current: +63m above line</div>
+        </div>
+        <div class="bubble-glass-soft rounded-2xl p-2.5 text-center">
+          <span id="teleLabel2" class="text-[10px] uppercase font-bold tracking-wider opacity-60" style="color: var(--text-sub);">Boundary Layer Phase</span>
+          <div id="telePrecipPhase" class="font-black text-sm text-indigo-300 mt-0.5">Sleet &amp; Mixed Flurry</div>
+          <div id="telePrecipDesc" class="text-[10px] text-emerald-400 mt-0.5">Transitioning to Snow</div>
+        </div>
+        <div class="bubble-glass-soft rounded-2xl p-2.5 text-center">
+          <span class="text-[10px] uppercase font-bold tracking-wider opacity-60" style="color: var(--text-sub);">Barometric Pressure</span>
+          <div id="teleBaro" class="font-black text-sm text-purple-300 mt-0.5">782 hPa (QNH)</div>
+          <div id="teleDensityAlt" class="text-[10px] text-slate-400 mt-0.5">Relative Humidity: 78%</div>
+        </div>
+        <div class="bubble-glass-soft rounded-2xl p-2.5 text-center">
+          <span id="teleLabel4" class="text-[10px] uppercase font-bold tracking-wider opacity-60" style="color: var(--text-sub);">Atmospheric Stratum</span>
+          <div id="teleSpecial1" class="font-black text-sm text-amber-300 mt-0.5">1,400m Cloud Base</div>
+          <div id="teleSpecial2" class="text-[10px] text-slate-400 mt-0.5">Adiabatic Lapse State</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. SIMULATOR DOCK & WEATHER DISPLAY -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <!-- Left Hero Card -->
+      <div id="heroWeatherCard" class="lg:col-span-7 bubble-glass rounded-3xl p-6 sm:p-8 space-y-5 theme-transition relative overflow-hidden">
+        <div class="flex items-start justify-between relative z-10">
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="heroStationPill" class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-white/15" style="color: var(--text-main);">Live Stratum</span>
+              <span id="heroAltitudeMeta" class="text-xs font-semibold" style="color: var(--text-sub);">Bernese Oberland • 2,163m ASL</span>
+            </div>
+            <h2 id="heroLocationName" class="text-3xl lg:text-4xl font-black mt-1 font-display tracking-tight" style="color: var(--text-main);">
+              Interlaken Crest
+            </h2>
+            <p id="heroSubtext" class="text-xs sm:text-sm mt-0.5 font-medium" style="color: var(--text-sub);">
+              Alpine Freezing Line • Mixed Flurries • Relative Humidity 86%
+            </p>
+          </div>
+          <div id="weatherIconBox" class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl p-2 flex flex-col items-center justify-center shadow-xl transition-all" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.45) 0%, rgba(56, 189, 248, 0.35) 100%); border: 1px solid rgba(255,255,255,0.4);">
+            <div id="heroEmoji" class="text-4xl">❄️</div>
+            <div id="heroPhaseLabel" class="text-[10px] font-bold uppercase tracking-wider mt-1 text-white/90 text-center">Alpine Crest</div>
+          </div>
+        </div>
+
+        <!-- Big Temperature & Lapse Feedback -->
+        <div class="flex items-baseline gap-4 pt-1">
+          <span id="bigTemp" class="text-7xl lg:text-8xl font-black tracking-tighter font-display" style="color: var(--text-main);">6.0°</span>
+          <div>
+            <div id="tempUnit" class="text-2xl font-bold opacity-80" style="color: var(--accent-glow);">Celsius</div>
+            <div id="feelsLikeText" class="text-xs font-semibold" style="color: var(--text-sub);">Feels like 3.2°C • Lapse delta: -10.4°C from valley floor</div>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+          <div class="bubble-glass-soft rounded-2xl p-3 text-center">
+            <div class="text-[10px] font-bold uppercase tracking-wider opacity-70" style="color: var(--text-sub);">Precipitation / Fog</div>
+            <div id="heroRainVal" class="text-lg font-extrabold mt-0.5" style="color: var(--text-main);">1.8 mm</div>
+            <div id="heroRainDesc" class="text-[10px] text-cyan-300 font-semibold truncate">Sleet / Graupel</div>
+          </div>
+          <div class="bubble-glass-soft rounded-2xl p-3 text-center">
+            <div class="text-[10px] font-bold uppercase tracking-wider opacity-70" style="color: var(--text-sub);">Wind Vector</div>
+            <div id="heroWindVal" class="text-lg font-extrabold mt-0.5" style="color: var(--text-main);">24 km/h</div>
+            <div id="heroWindDesc" class="text-[10px] text-slate-300 font-semibold truncate">Ridge Inversion</div>
+          </div>
+          <div class="bubble-glass-soft rounded-2xl p-3 text-center">
+            <div class="text-[10px] font-bold uppercase tracking-wider opacity-70" style="color: var(--text-sub);">Relative Humidity</div>
+            <div id="heroHumidityVal" class="text-lg font-extrabold mt-0.5" style="color: var(--text-main);">86%</div>
+            <div id="heroHumidityDesc" class="text-[10px] text-brand-periwinkle font-semibold truncate">Saturated Layer</div>
+          </div>
+          <div class="bubble-glass-soft rounded-2xl p-3 text-center">
+            <div class="text-[10px] font-bold uppercase tracking-wider opacity-70" style="color: var(--text-sub);">Barometer QNH</div>
+            <div id="heroBaroVal" class="text-lg font-extrabold mt-0.5 text-emerald-400">782 hPa</div>
+            <div id="heroBaroDesc" class="text-[10px] font-semibold truncate" style="color: var(--text-sub);">Hypsometric Std</div>
+          </div>
+        </div>
+
+        <!-- Particle Engine Controls Strip -->
+        <div class="pt-2 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-[11px] font-semibold opacity-70">Simulation FX:</span>
+            <button id="pModeStars" onclick="setParticleMode('stars')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-white/10 hover:bg-white/20">✨ Stars</button>
+            <button id="pModeFog" onclick="setParticleMode('fog')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-white/10 hover:bg-white/20">🌫️ Fog Sea</button>
+            <button id="pModeWind" onclick="setParticleMode('wind')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-white/10 hover:bg-white/20">💨 Föhn Wave</button>
+            <button id="pModeRain" onclick="setParticleMode('rain')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-white/10 hover:bg-white/20">🌧️ Rain</button>
+            <button id="pModeSnow" onclick="setParticleMode('snow')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-white/10 hover:bg-white/20">❄️ Blizzard</button>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-amber-300 font-mono" id="particleStats">60 FPS Particle Core</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Dual-Tone Contrast & Adaptive Recommendations -->
+      <div class="lg:col-span-5 space-y-6">
+        <!-- Dual-Tone Split -->
+        <div class="bubble-glass rounded-3xl p-6 theme-transition shadow-xl space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold flex items-center gap-1.5" style="color: var(--text-main);">
+              <span class="text-brand-cyan">✦</span> Dual-Tone Altitude Contrast
+            </h3>
+            <span id="splitDeltaPill" class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 font-semibold" style="color: var(--text-sub);">Lapse Delta: 22°C</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div id="cardSplitValley" class="rounded-2xl p-3.5 bg-gradient-to-br from-sky-400/20 to-indigo-500/10 border border-white/20">
+              <div class="flex items-center justify-between">
+                <span id="splitValleyLabel" class="text-xs font-black text-sky-300 uppercase tracking-wider">Valley Floor</span>
+                <span id="splitValleyIcon" class="text-lg">🌧️</span>
+              </div>
+              <div id="splitValleyTemp" class="text-2xl font-black mt-1 text-white">16.0°C</div>
+              <div class="text-[11px] font-medium text-slate-300">568m • Lake Brienz</div>
+              <div id="splitValleyTag" class="text-[9px] text-sky-200 mt-2 bg-sky-500/20 px-2 py-0.5 rounded inline-block">Liquid Rain • 1013 hPa</div>
+            </div>
+            <div id="cardSplitSummit" class="rounded-2xl p-3.5 bg-gradient-to-br from-purple-900/40 to-slate-900/40 border border-purple-400/30">
+              <div class="flex items-center justify-between">
+                <span id="splitSummitLabel" class="text-xs font-black text-purple-300 uppercase tracking-wider">Glacial Peak</span>
+                <span id="splitSummitIcon" class="text-lg">❄️</span>
+              </div>
+              <div id="splitSummitTemp" class="text-2xl font-black mt-1 text-white">-7.3°C</div>
+              <div class="text-[11px] font-medium text-slate-300">4,158m • Jungfrau</div>
+              <div id="splitSummitTag" class="text-[9px] text-purple-200 mt-2 bg-purple-500/20 px-2 py-0.5 rounded inline-block">Blizzard Powder • 602 hPa</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Meteorological Guidance & Safety -->
+        <div class="bubble-glass rounded-3xl p-6 theme-transition shadow-xl space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold flex items-center gap-1.5" style="color: var(--text-main);">
+              <span class="text-emerald-400">✓</span> Meteorological Guidance &amp; Safety
+            </h3>
+            <span id="activityHeaderBadge" class="text-[10px] font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full">
+              Ridge Match
+            </span>
+          </div>
+          <div id="activityContainer" class="space-y-2.5">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. ATMOSPHERIC ELEVATION STRATA DECK -->
+    <section class="bubble-glass rounded-3xl p-6 theme-transition shadow-2xl space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-black tracking-tight font-display" style="color: var(--text-main);">
+            Atmospheric Elevation Strata Deck
+          </h3>
+          <p class="text-xs mt-0.5" style="color: var(--text-sub);">
+            Click any stratum card to instantly synchronize altitude lapse calculations, phase changes, and boundary physics.
+          </p>
+        </div>
+        <span class="text-xs font-semibold px-3 py-1 rounded-full bubble-glass-soft" style="color: var(--text-main);">
+          4 Strata Synchronized
+        </span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+        <div id="stratumCard1" onclick="setAltitudePreset(568)" class="bubble-glass-soft rounded-2xl p-4 cursor-pointer hover:border-brand-cyan transition-all group">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+            <span class="font-bold text-cyan-300">STRATUM 1</span>
+            <span>568m ASL</span>
+          </div>
+          <div class="text-sm font-bold" style="color: var(--text-main);">Lake Brienz Valley</div>
+          <div id="cardTemp1" class="text-3xl font-black mt-1 text-cyan-300">16.0°C</div>
+          <div id="cardCondition1" class="text-[11px] font-semibold text-emerald-400 mt-1">Liquid Rain • 1013 hPa</div>
+          <p id="cardDesc1" class="text-[10px] mt-1 text-slate-300">Dense atmosphere, no freezing risk. Kayak &amp; low trail accessible.</p>
+        </div>
+
+        <div id="stratumCard2" onclick="setAltitudePreset(1322)" class="bubble-glass-soft rounded-2xl p-4 cursor-pointer hover:border-brand-violet transition-all group">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+            <span class="font-bold text-purple-300">STRATUM 2</span>
+            <span>1,322m ASL</span>
+          </div>
+          <div class="text-sm font-bold" style="color: var(--text-main);">Harder Kulm Ridge</div>
+          <div id="cardTemp2" class="text-3xl font-black mt-1 text-purple-300">11.1°C</div>
+          <div id="cardCondition2" class="text-[11px] font-semibold text-purple-200 mt-1">Cloud Inversion • 868 hPa</div>
+          <p id="cardDesc2" class="text-[10px] mt-1 text-slate-300">Below freezing level. Cool mist and intermittent rain squalls.</p>
+        </div>
+
+        <div id="stratumCard3" onclick="setAltitudePreset(2320)" class="bubble-glass-soft rounded-2xl p-4 cursor-pointer hover:border-amber-400 transition-all group">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+            <span class="font-bold text-amber-300">STRATUM 3</span>
+            <span>2,320m ASL</span>
+          </div>
+          <div class="text-sm font-bold" style="color: var(--text-main);">Männlichen Crest</div>
+          <div id="cardTemp3" class="text-3xl font-black mt-1 text-amber-300">4.6°C</div>
+          <div id="cardCondition3" class="text-[11px] font-semibold text-amber-200 mt-1">Freezing Boundary • 765 hPa</div>
+          <p id="cardDesc3" class="text-[10px] mt-1 text-slate-300">Phase shift zone: Rain converts into wet snow &amp; black ice crust.</p>
+        </div>
+
+        <div id="stratumCard4" onclick="setAltitudePreset(3571)" class="bubble-glass-soft rounded-2xl p-4 cursor-pointer hover:border-blue-400 transition-all group">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+            <span class="font-bold text-blue-300">STRATUM 4</span>
+            <span>3,571m ASL</span>
+          </div>
+          <div class="text-sm font-bold" style="color: var(--text-main);">Jungfraujoch Sphinx</div>
+          <div id="cardTemp4" class="text-3xl font-black mt-1 text-blue-300">-3.5°C</div>
+          <div id="cardCondition4" class="text-[11px] font-semibold text-rose-300 mt-1">Glacial Blizzard • 650 hPa</div>
+          <p id="cardDesc4" class="text-[10px] mt-1 text-slate-300">Perpetual frost zone, 100% crystalline powder snow and severe gale.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-20 border-t border-white/10 theme-transition bg-black/25 backdrop-blur-md px-6 py-4 mt-8 text-center text-xs" style="color: var(--text-sub);">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span id="footerRegimeLabel">Hypsometric Engine: Thermodynamic Multi-Regime</span>
+        <span class="opacity-40">•</span>
+        <span>ECMWF 0.1° / SwissMeteo High-Res Sync</span>
+      </div>
+      <div>© 2025 SkyPlan Celestial Weather &amp; Föhn/Inversion Intelligence</div>
+    </div>
+  </footer>
+
+  <!-- Simulation Script -->
+  <script>
+    let currentRegime = 'standard'; // 'standard' | 'inversion' | 'fohn'
+    let currentMode = 'night'; // 'night' | 'twilight' | 'day'
+    let particleMode = 'rain'; // 'stars' | 'wind' | 'fog' | 'rain' | 'snow'
+    let currentAltitude = 2163;
+    const BASE_ALT = 568;
+    const LAPSE_STD = 0.0065; // -6.5°C/km
+
+    let inversionStrength = 8.5; // °C warming delta
+    let fogBoundaryAlt = 1350; // meters ASL
+    let fohnDeltaP = 10; // hPa
+
+    let windSpeed = 14;
+    let particles = [];
+    const canvas = document.getElementById('atmospheric-particles');
+    const ctx = canvas.getContext('2d');
+    let width = window.innerWidth, height = window.innerHeight;
+
+    function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      initParticles();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    function getValleyBaseTemp() {
+      if (currentRegime === 'fohn') {
+        const warming = 7.0 + (fohnDeltaP * 0.65);
+        return currentMode === 'day' ? 16 + warming : 12 + warming; // e.g. ~18.5°C - 22.5°C
+      } else if (currentRegime === 'inversion') {
+        return currentMode === 'day' ? 1.0 : -1.8; // Cold pool trap in valley
+      } else {
+        return currentMode === 'day' ? 22.0 : (currentMode === 'twilight' ? 18.0 : 16.0);
+      }
+    }
+
+    function computeAltitudeTemp(alt) {
+      if (currentRegime === 'standard') {
+        const base = getValleyBaseTemp();
+        return Math.round((base - (alt - BASE_ALT) * LAPSE_STD) * 10) / 10;
+      } else if (currentRegime === 'inversion') {
+        const valleyPool = getValleyBaseTemp();
+        const peakWarm = valleyPool + inversionStrength; // Peak of thermal belt
+        if (alt <= fogBoundaryAlt) {
+          const ratio = (alt - BASE_ALT) / Math.max(100, fogBoundaryAlt - BASE_ALT);
+          return Math.round((valleyPool + ratio * inversionStrength) * 10) / 10;
+        } else {
+          // Standard cooling above the warm thermal lid
+          const cooling = (alt - fogBoundaryAlt) * LAPSE_STD;
+          return Math.round((peakWarm - cooling) * 10) / 10;
+        }
+      } else if (currentRegime === 'fohn') {
+        const base = getValleyBaseTemp();
+        const DALR = 0.0098; // ~9.8°C/km dry adiabatic lapse
+        return Math.round((base - (alt - BASE_ALT) * DALR) * 10) / 10;
+      }
+    }
+
+    function computeRelativeHumidity(alt) {
+      if (currentRegime === 'inversion') {
+        return alt <= fogBoundaryAlt ? 96 : Math.max(28, Math.round(48 - (alt - fogBoundaryAlt) * 0.008));
+      } else if (currentRegime === 'fohn') {
+        return Math.max(18, Math.round(26 - (alt - BASE_ALT) * 0.002));
+      } else {
+        return Math.min(95, Math.max(50, Math.round(86 - (alt - BASE_ALT) * 0.007)));
+      }
+    }
+
+    function computePressure(alt) {
+      let baseP = currentRegime === 'fohn' ? (1013.25 - fohnDeltaP * 0.5) : 1013.25;
+      return Math.round(baseP * Math.pow(1 - (2.25577e-5 * alt), 5.25588));
+    }
+
+    function setAltitudePreset(meters) {
+      currentAltitude = meters;
+      document.getElementById('altitudeSlider').value = meters;
+      updateDisplay();
+    }
+
+    function onAltitudeChange(val) {
+      currentAltitude = parseInt(val, 10);
+      updateDisplay();
+    }
+
+    function onInversionStrengthChange(val) {
+      inversionStrength = parseFloat(val);
+      document.getElementById('invStrengthLabel').textContent = `+${inversionStrength.toFixed(1)}°C Delta`;
+      updateDisplay();
+    }
+
+    function onFogLidChange(val) {
+      fogBoundaryAlt = parseInt(val, 10);
+      document.getElementById('fogLidLabel').textContent = `${fogBoundaryAlt.toLocaleString()}m ASL`;
+      updateDisplay();
+    }
+
+    function onFohnDeltaPChange(val) {
+      fohnDeltaP = parseInt(val, 10);
+      let desc = fohnDeltaP >= 14 ? "Severe Föhnsturm" : (fohnDeltaP >= 8 ? "Active Storm" : "Moderate");
+      document.getElementById('fohnDeltaPLabel').textContent = `${fohnDeltaP} hPa (${desc})`;
+      if (currentRegime === 'fohn') {
+        windSpeed = Math.round(35 + fohnDeltaP * 4.5);
+      }
+      updateDisplay();
+    }
+
+    function setThermodynamicRegime(regime) {
+      currentRegime = regime;
+      const body = document.getElementById('bodyRoot');
+      const cardStd = document.getElementById('cardRegimeStandard');
+      const cardInv = document.getElementById('cardRegimeInversion');
+      const cardFohn = document.getElementById('cardRegimeFohn');
+      const boxInv = document.getElementById('boxInversionStrength');
+      const boxFog = document.getElementById('boxFogBoundary');
+      const boxFohn = document.getElementById('boxFohnDeltaP');
+
+      [cardStd, cardInv, cardFohn].forEach(c => c.classList.remove('regime-active', 'border-2'));
+      body.classList.remove('regime-inversion', 'regime-fohn');
+
+      if (regime === 'standard') {
+        cardStd.classList.add('regime-active', 'border-2');
+        document.getElementById('headerRegimeBadge').textContent = 'Standard Lapse';
+        document.getElementById('headerRegimeBadge').className = 'font-mono text-cyan-300 font-bold';
+        document.getElementById('regimeDeltaTag').textContent = 'Γ = -6.5°C / km';
+        document.getElementById('lapseTitle').textContent = 'Hypsometric Lapse & Boundary Stratum';
+        document.getElementById('lapseDescription').innerHTML = 'Standard environmental lapse (<span class="font-mono text-cyan-300 font-semibold">-6.5°C per 1,000m</span>) from valley rain showers to summit blizzards.';
+        boxInv.style.opacity = '0.5';
+        boxFog.style.opacity = '0.5';
+        boxFohn.style.opacity = '0.5';
+        windSpeed = 14;
+        setParticleMode('rain');
+      } else if (regime === 'inversion') {
+        body.classList.add('regime-inversion');
+        cardInv.classList.add('regime-active', 'border-2');
+        document.getElementById('headerRegimeBadge').textContent = 'Valley Inversion';
+        document.getElementById('headerRegimeBadge').className = 'font-mono text-sky-300 font-bold';
+        document.getElementById('regimeDeltaTag').textContent = `Inversion: +${inversionStrength}°C Cap`;
+        document.getElementById('lapseTitle').textContent = 'Thermal Valley Inversion (Kaltluftsee)';
+        document.getElementById('lapseDescription').innerHTML = 'Dense cold air pool trapped in lowlands (<span class="font-mono text-sky-300 font-semibold">Sub-zero Fog Basin</span>), while peaks experience warmer thermal sunshine & starlight.';
+        boxInv.style.opacity = '1.0';
+        boxFog.style.opacity = '1.0';
+        boxFohn.style.opacity = '0.5';
+        windSpeed = 6;
+        setParticleMode('fog');
+      } else if (regime === 'fohn') {
+        body.classList.add('regime-fohn');
+        cardFohn.classList.add('regime-active', 'border-2');
+        document.getElementById('headerRegimeBadge').textContent = 'South Föhn Storm';
+        document.getElementById('headerRegimeBadge').className = 'font-mono text-amber-300 font-bold';
+        document.getElementById('regimeDeltaTag').textContent = `Föhn ΔP: ${fohnDeltaP} hPa`;
+        document.getElementById('lapseTitle').textContent = 'South Föhn Storm (Alpine Chinook)';
+        document.getElementById('lapseDescription').innerHTML = 'Katabatic adiabatic compression warming (<span class="font-mono text-amber-300 font-semibold">+10°C/km descent</span>). Gale winds, plunging humidity, and turbulent lee-wave clouds.';
+        boxInv.style.opacity = '0.5';
+        boxFog.style.opacity = '0.5';
+        boxFohn.style.opacity = '1.0';
+        windSpeed = Math.round(40 + fohnDeltaP * 4.5);
+        setParticleMode('wind');
+      }
+
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      const temp = computeAltitudeTemp(currentAltitude);
+      const humidity = computeRelativeHumidity(currentAltitude);
+      const pressure = computePressure(currentAltitude);
+      const valleyTemp = computeAltitudeTemp(BASE_ALT);
+      const summitTemp = computeAltitudeTemp(4158);
+
+      // Header & Main Stats
+      let locationLabel = currentAltitude <= 800 ? "Lake Brienz Valley" : (currentAltitude <= 1600 ? "Harder Kulm Ridge" : (currentAltitude <= 2600 ? "Interlaken Crest" : "Jungfraujoch Sphinx"));
+      document.getElementById('headerLocationName').textContent = locationLabel;
+      document.getElementById('headerElevationTag').textContent = `${currentAltitude.toLocaleString()}m ASL`;
+      document.getElementById('headerTemp').textContent = `${temp.toFixed(1)}°C`;
+      document.getElementById('altitudeDisplay').textContent = `${currentAltitude.toLocaleString()}m (${locationLabel})`;
+      document.getElementById('heroAltitudeMeta').textContent = `Bernese Oberland • ${currentAltitude.toLocaleString()}m ASL`;
+      document.getElementById('heroLocationName').textContent = locationLabel;
+      document.getElementById('bigTemp').textContent = `${temp.toFixed(1)}°`;
+
+      // Description & Feels like
+      const feelsLike = Math.round(temp - (windSpeed * 0.12));
+      let lapseMsg = `Feels like ${feelsLike}°C • Lapse delta: ${(valleyTemp - temp).toFixed(1)}°C from valley floor`;
+      if (currentRegime === 'inversion') {
+        lapseMsg = currentAltitude > BASE_ALT && temp > valleyTemp
+          ? `Feels like ${feelsLike}°C • Thermal Belt: +${(temp - valleyTemp).toFixed(1)}°C WARMER than freezing valley floor!`
+          : `Feels like ${feelsLike}°C • Trapped inside freezing nocturnal cold pool`;
+      } else if (currentRegime === 'fohn') {
+        lapseMsg = `Feels like ${feelsLike}°C • Katabatic Föhn warming: +10°C/km dry compression gale`;
+      }
+      document.getElementById('feelsLikeText').textContent = lapseMsg;
+
+      // Telemetry metrics
+      document.getElementById('heroHumidityVal').textContent = `${humidity}%`;
+      document.getElementById('heroWindVal').textContent = `${windSpeed} km/h`;
+      document.getElementById('heroBaroVal').textContent = `${pressure} hPa`;
+      document.getElementById('teleBaro').textContent = `${pressure} hPa (QNH)`;
+      document.getElementById('teleDensityAlt').textContent = `Relative Humidity: ${humidity}%`;
+
+      // Subtexts and badges
+      const emojiEl = document.getElementById('heroEmoji');
+      const phaseLabelEl = document.getElementById('heroPhaseLabel');
+      const subtextEl = document.getElementById('heroSubtext');
+
+      if (currentRegime === 'inversion') {
+        document.getElementById('teleLabel1').textContent = "Inversion Boundary";
+        document.getElementById('teleFreezingLine').textContent = `${fogBoundaryAlt}m ASL`;
+        if (currentAltitude <= fogBoundaryAlt) {
+          emojiEl.textContent = "🌫️";
+          phaseLabelEl.textContent = "Valley Fog";
+          subtextEl.textContent = `Cold nocturnal inversion pool (${temp.toFixed(1)}°C) • Trapped sea of fog, stagnant cold air, high dampness`;
+          document.getElementById('teleFreezingRel').textContent = "Currently Inside Fog Pool";
+          document.getElementById('telePrecipPhase').textContent = "Trapped Dense Fog (Nebeldecke)";
+          document.getElementById('telePrecipDesc').textContent = `High Humidity (${humidity}%) • Smog Lid`;
+          document.getElementById('heroRainVal').textContent = "0.0 mm";
+          document.getElementById('heroRainDesc').textContent = "Freezing Mist";
+        } else {
+          emojiEl.textContent = currentMode === 'day' ? "☀️" : "✨";
+          phaseLabelEl.textContent = "Thermal Belt";
+          subtextEl.textContent = `Warm thermal belt (${temp.toFixed(1)}°C) • Uncoupled crisp skies above the sea of clouds`;
+          document.getElementById('teleFreezingRel').textContent = "Above Fog Lid (Nebelflucht)";
+          document.getElementById('telePrecipPhase').textContent = "Warm Thermal Belt (Crisp Air)";
+          document.getElementById('telePrecipDesc').textContent = `Subalpine Warmth (+${inversionStrength}°C)`;
+          document.getElementById('heroRainVal').textContent = "0.0 mm";
+          document.getElementById('heroRainDesc').textContent = "Crystal Bortle-1 Air";
+        }
+      } else if (currentRegime === 'fohn') {
+        emojiEl.textContent = "💨";
+        phaseLabelEl.textContent = "South Föhn";
+        subtextEl.textContent = `Föhn windstorm (${windSpeed} km/h) • Intense dry adiabatic warming (${temp.toFixed(1)}°C), lenticular clouds`;
+        document.getElementById('teleLabel1').textContent = "Föhn Pressure Gradient";
+        document.getElementById('teleFreezingLine').textContent = `ΔP = ${fohnDeltaP} hPa`;
+        document.getElementById('teleFreezingRel').textContent = "Katabatic Compression Gale";
+        document.getElementById('telePrecipPhase').textContent = "Katabatic Windstorm";
+        document.getElementById('telePrecipDesc').textContent = `Plunging Humidity (${humidity}%) • Warm Gale`;
+        document.getElementById('heroRainVal').textContent = "0.0 mm";
+        document.getElementById('heroRainDesc').textContent = "Dry Katabatic Wave";
+      } else {
+        emojiEl.textContent = temp <= 0 ? "❄️" : "🌧️";
+        phaseLabelEl.textContent = temp <= 0 ? "Alpine Snow" : "Valley Rain";
+        subtextEl.textContent = `Standard adiabatic profile • Ambient ${temp.toFixed(1)}°C • ${temp <= 0 ? 'Crystalline snow flurries' : 'Liquid rain shower'}`;
+        document.getElementById('teleLabel1').textContent = "Freezing Line (0°C)";
+        document.getElementById('teleFreezingLine').textContent = "2,100m ASL";
+        document.getElementById('teleFreezingRel').textContent = currentAltitude > 2100 ? "Above 0°C Isotherm" : "Below 0°C Isotherm";
+        document.getElementById('telePrecipPhase').textContent = temp <= 0 ? "Crystalline Snow Flurry" : "Liquid Rain / Drizzle";
+        document.getElementById('telePrecipDesc').textContent = temp <= 0 ? "Powder Snow Pack" : "100% Liquid Phase";
+        document.getElementById('heroRainVal').textContent = temp <= 0 ? "2.4 cm" : "1.8 mm";
+        document.getElementById('heroRainDesc').textContent = temp <= 0 ? "Snow Accumulation" : "Rain Shower";
+      }
+
+      // Dual-Tone Split
+      document.getElementById('splitValleyTemp').textContent = `${valleyTemp.toFixed(1)}°C`;
+      document.getElementById('splitSummitTemp').textContent = `${summitTemp.toFixed(1)}°C`;
+      if (currentRegime === 'inversion') {
+        const delta = (summitTemp - valleyTemp).toFixed(1);
+        document.getElementById('splitDeltaPill').textContent = `Inversion Gap: Peaks ${delta > 0 ? '+'+delta : delta}°C`;
+        document.getElementById('splitValleyIcon').textContent = "🌫️";
+        document.getElementById('splitSummitIcon').textContent = "✨";
+        document.getElementById('splitValleyTag').textContent = "Cold Pool Trap • 96% RH";
+        document.getElementById('splitSummitTag').textContent = "Warm Starlight • 602 hPa";
+      } else if (currentRegime === 'fohn') {
+        document.getElementById('splitDeltaPill').textContent = `Föhn Gradient: ${(valleyTemp - summitTemp).toFixed(1)}°C Delta`;
+        document.getElementById('splitValleyIcon').textContent = "💨";
+        document.getElementById('splitSummitIcon').textContent = "🌪️";
+        document.getElementById('splitValleyTag').textContent = "Katabatic Heat • 19% RH";
+        document.getElementById('splitSummitTag').textContent = "Hurricane Ridge • 95 km/h";
+      } else {
+        document.getElementById('splitDeltaPill').textContent = `Lapse Delta: ${(valleyTemp - summitTemp).toFixed(1)}°C`;
+        document.getElementById('splitValleyIcon').textContent = "🌧️";
+        document.getElementById('splitSummitIcon').textContent = "❄️";
+        document.getElementById('splitValleyTag').textContent = "Liquid Rain • 1013 hPa";
+        document.getElementById('splitSummitTag').textContent = "Blizzard Powder • 602 hPa";
+      }
+
+      // Strata Cards
+      const t1 = computeAltitudeTemp(568);
+      const t2 = computeAltitudeTemp(1322);
+      const t3 = computeAltitudeTemp(2320);
+      const t4 = computeAltitudeTemp(3571);
+      document.getElementById('cardTemp1').textContent = `${t1.toFixed(1)}°C`;
+      document.getElementById('cardTemp2').textContent = `${t2.toFixed(1)}°C`;
+      document.getElementById('cardTemp3').textContent = `${t3.toFixed(1)}°C`;
+      document.getElementById('cardTemp4').textContent = `${t4.toFixed(1)}°C`;
+
+      if (currentRegime === 'inversion') {
+        document.getElementById('cardCondition1').textContent = "Cold Air Pool (Kaltluftsee) • 96% RH";
+        document.getElementById('cardDesc1').textContent = "Dense freezing fog trapped below 1,350m. Sub-zero pool.";
+        document.getElementById('cardCondition2').textContent = "Thermal Belt Lid • Above Nebeldecke";
+        document.getElementById('cardDesc2').textContent = "Breaking out into sunny warmth & thermal inversion (+9°C warmer!).";
+      } else if (currentRegime === 'fohn') {
+        document.getElementById('cardCondition1').textContent = "Katabatic Heatwave • 19% RH Plunge";
+        document.getElementById('cardDesc1').textContent = "Dry adiabatic compression warming (+10°C/km). Gale winds.";
+        document.getElementById('cardCondition2').textContent = "Föhn Lee Eddy • Turbulent Gale";
+        document.getElementById('cardDesc2').textContent = "Severe shear zone. Lenticular cloud formations sweeping ridge.";
+      } else {
+        document.getElementById('cardCondition1').textContent = "Liquid Rain • 1013 hPa";
+        document.getElementById('cardDesc1').textContent = "Dense atmosphere, no freezing risk. Kayak & low trail accessible.";
+        document.getElementById('cardCondition2').textContent = "Cloud Inversion • 868 hPa";
+        document.getElementById('cardDesc2').textContent = "Below freezing level. Cool mist and intermittent rain squalls.";
+      }
+
+      renderActivities(temp);
+    }
+
+    function renderActivities(temp) {
+      const container = document.getElementById('activityContainer');
+      const badge = document.getElementById('activityHeaderBadge');
+      let items = [];
+
+      if (currentRegime === 'inversion') {
+        if (currentAltitude <= fogBoundaryAlt) {
+          badge.textContent = "Fog Trap Alert (Nebeldecke)";
+          badge.className = "text-[10px] font-bold text-sky-300 bg-sky-500/20 px-2 py-0.5 rounded-full";
+          items = [
+            { icon: "🚡", title: "Escape the Valley Fog (Nebelflucht)", tag: "High Recommendation", time: "Depart Valley 09:30", desc: `Ascend above ${fogBoundaryAlt}m ASL to Harder Kulm or Männlichen! Escape freezing valley pool (${temp.toFixed(1)}°C) for sunny thermal warmth (+${inversionStrength}°C).` },
+            { icon: "⚠️", title: "Lowland Smog & Black Ice Warning", tag: "Low Visibility", time: "All Day", desc: "Dense freezing fog below 1,200m with trapped particulates and black ice along lake shores." }
+          ];
+        } else {
+          badge.textContent = "Sun & Starlight Haven";
+          badge.className = "text-[10px] font-bold text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full";
+          items = [
+            { icon: "✨", title: "Astronomical Stargazing & Panoramic Terraces", tag: "Prime Conditions", time: "Optimal 20:00 - 04:00", desc: `Crystal-clear Bortle Class 1 night skies uncoupled from valley fog. Warm thermal belt (${temp.toFixed(1)}°C) with zero distortion.` },
+            { icon: "🥾", title: "Männlichen Ridge Sun Terrace Walk", tag: "Thermal Belt", time: "Open & Sunny", desc: "Dry mountain trails above the cloud ocean (Wolkenmeer). Mild ambient air and high solar radiation." }
+          ];
+        }
+      } else if (currentRegime === 'fohn') {
+        badge.textContent = "Föhnsturm Gale & Headache Alert";
+        badge.className = "text-[10px] font-bold text-rose-300 bg-rose-500/20 px-2 py-0.5 rounded-full animate-pulse";
+        items = [
+          { icon: "🚨", title: "Severe High-Altitude Gale Warning (95 km/h)", tag: "Cable Cars Closed", time: "Immediate Alert", desc: "Cancel all exposed via ferrata, ridge traverses, and glacier ascents. Intense mechanical turbulence across peaks." },
+          { icon: "🌲", title: "Sheltered Valley Forest Walk & Hydration", tag: "Föhn Headache", time: "Stay Sheltered", desc: `Dry katabatic air (${temp.toFixed(1)}°C, 18% RH) causes barometric headache & dehydration. Stick to low-altitude sheltered forest trails.` }
+        ];
+      } else {
+        badge.textContent = temp <= 0 ? "❄️ Glacier Alert" : "Valley Safe";
+        badge.className = temp <= 0 ? "text-[10px] font-bold text-rose-300 bg-rose-500/20 px-2 py-0.5 rounded-full" : "text-[10px] font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full";
+        items = temp <= 0 ? [
+          { icon: "⚠️", title: "Glacial Summit Blizzard Hazard", tag: "Frost Alert", time: "Restricted", desc: `Sub-zero reading (${temp.toFixed(1)}°C) with high wind chill. Whiteout disorientation risk.` },
+          { icon: "🛡️", title: "Jungfraujoch Subterranean Ice Palace", tag: "100% Weatherproof", time: "Operating", desc: "Interior glacial tunnels carved into permanent permafrost. Fully safe from storm." }
+        ] : [
+          { icon: "🛶", title: "Lake Brienz Kayak & Shoreline Run", tag: "Liquid Water", time: "10:00 - 15:30", desc: "Temperate water level, no ice hazard. Light rain shell advised." },
+          { icon: "🚴", title: "Lauterbrunnen Valley E-Bike Tour", tag: "Low Altitude", time: "09:00 - 17:00", desc: "Paved trailways clear of frost. Stable barometric pressure." }
+        ];
+      }
+
+      container.innerHTML = items.map(item => `
+        <div class="bubble-glass-soft rounded-2xl p-3 border border-white/10 hover:border-white/25 transition-all">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2.5">
+              <span class="text-xl p-1.5 rounded-xl bg-white/10 flex-shrink-0">${item.icon}</span>
+              <div>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-xs font-bold" style="color: var(--text-main);">${item.title}</span>
+                  <span class="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full bg-white/15 text-cyan-300">${item.tag}</span>
+                </div>
+                <p class="text-[11px] mt-0.5 leading-snug" style="color: var(--text-sub);">${item.desc}</p>
+                <span class="text-[10px] font-semibold text-slate-400 mt-1 block">⏰ ${item.time}</span>
+              </div>
+            </div>
+            <button class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-white/15 hover:bg-white/25 text-white flex-shrink-0">
+              Details
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      const body = document.getElementById('bodyRoot');
+      const bNight = document.getElementById('btnNight');
+      const bTwilight = document.getElementById('btnTwilight');
+      const bDay = document.getElementById('btnDay');
+
+      [bNight, bTwilight, bDay].forEach(b => b.className = "px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 text-slate-300 hover:text-white");
+      body.classList.remove('day-mode', 'twilight-mode');
+
+      if (mode === 'night') {
+        bNight.className = "px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 bg-brand-amethyst text-white shadow-md";
+      } else if (mode === 'twilight') {
+        body.classList.add('twilight-mode');
+        bTwilight.className = "px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 bg-purple-600 text-white shadow-md";
+      } else if (mode === 'day') {
+        body.classList.add('day-mode');
+        bDay.className = "px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 bg-sky-500 text-white shadow-md";
+      }
+      updateDisplay();
+    }
+
+    function onTimeSliderChange(val) {
+      const timeVal = parseFloat(val);
+      const hours = Math.floor(timeVal);
+      const minutes = (timeVal % 1) === 0.5 ? '30' : '00';
+      const formatted = `${hours.toString().padStart(2, '0')}:${minutes}`;
+      let phase = " (Starlight Night)";
+      if (timeVal >= 7 && timeVal <= 17) {
+        phase = " (Daylight Glow)";
+        if (currentMode !== 'day') setMode('day');
+      } else if ((timeVal >= 5 && timeVal < 7) || (timeVal > 17 && timeVal <= 19.5)) {
+        phase = " (Twilight Transition)";
+        if (currentMode !== 'twilight') setMode('twilight');
+      } else {
+        if (currentMode !== 'night') setMode('night');
+      }
+      document.getElementById('sliderTimeDisplay').textContent = `${formatted} ${phase}`;
+    }
+
+    function setParticleMode(mode) {
+      particleMode = mode;
+      initParticles();
+    }
+
+    function triggerLightningManually() {
+      const flash = document.getElementById('ambientFlash');
+      flash.style.background = currentRegime === 'fohn'
+        ? 'radial-gradient(circle, rgba(254, 243, 199, 0.9) 0%, rgba(245, 158, 11, 0.7) 40%, rgba(220, 38, 38, 0.2) 100%)'
+        : 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(196,181,253,0.8) 40%, rgba(56,189,248,0.2) 100%)';
+      flash.style.opacity = '0.85';
+      setTimeout(() => { flash.style.opacity = '0.1'; }, 60);
+      setTimeout(() => { flash.style.opacity = '0.7'; }, 110);
+      setTimeout(() => { flash.style.opacity = '0'; }, 300);
+    }
+
+    class Particle {
+      constructor() { this.reset(true); }
+      reset(init = false) {
+        this.x = Math.random() * width;
+        this.y = init ? Math.random() * height : -20;
+        this.size = Math.random() * 2 + 1;
+        this.alpha = Math.random() * 0.7 + 0.3;
+        this.speed = Math.random() * 0.5 + 0.8;
+        this.phase = Math.random() * Math.PI * 2;
+        this.fogRadius = Math.random() * 28 + 14;
+      }
+      update() {
+        const isFrozen = (particleMode === 'snow') || (computeAltitudeTemp(currentAltitude) <= 0 && particleMode !== 'stars' && particleMode !== 'wind' && particleMode !== 'fog');
+        if (particleMode === 'fog' || currentRegime === 'inversion') {
+          this.phase += 0.02;
+          this.x += (Math.cos(this.phase) * 0.7 + 0.4) * this.speed;
+          this.y += Math.sin(this.phase * 0.8) * 0.3;
+          if (this.x > width + 60) this.x = -60;
+          return;
+        }
+        if (particleMode === 'stars') {
+          this.phase += 0.03;
+          this.x += Math.sin(this.phase) * 0.2;
+          this.y += Math.cos(this.phase) * 0.15;
+          return;
+        }
+        if (particleMode === 'wind' || currentRegime === 'fohn') {
+          this.phase += 0.08;
+          this.x += (windSpeed * 0.6 + Math.sin(this.phase) * 4) * this.speed;
+          this.y += (6 + Math.sin(this.phase * 1.5) * 2) * this.speed;
+        } else if (isFrozen) {
+          this.phase += 0.04;
+          this.x += Math.sin(this.phase) * 2.5;
+          this.y += 3.8 * this.speed;
+        } else {
+          this.x += 2.5;
+          this.y += 14 * this.speed;
+        }
+        if (this.y > height + 30 || this.x < -60 || this.x > width + 60) this.reset(false);
+      }
+      draw() {
+        const isFrozen = (particleMode === 'snow') || (computeAltitudeTemp(currentAltitude) <= 0 && particleMode !== 'stars' && particleMode !== 'wind' && particleMode !== 'fog');
+        ctx.save();
+        if (particleMode === 'fog' || currentRegime === 'inversion') {
+          const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.fogRadius);
+          grad.addColorStop(0, `rgba(224, 242, 254, ${this.alpha * 0.24})`);
+          grad.addColorStop(0.7, `rgba(186, 230, 253, ${this.alpha * 0.1})`);
+          grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.fogRadius * 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (particleMode === 'stars') {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size * 1.4, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(198, 191, 255, ${this.alpha * 0.8})`;
+          ctx.fill();
+        } else if (particleMode === 'wind' || currentRegime === 'fohn') {
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(this.x - (windSpeed * 0.45 + 10), this.y - 4);
+          ctx.strokeStyle = `rgba(245, 158, 11, ${this.alpha * 0.6})`;
+          ctx.lineWidth = 1.8;
+          ctx.stroke();
+        } else if (isFrozen) {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size * 1.6, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(240, 248, 255, ${this.alpha * 0.85})`;
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(this.x - 3, this.y - 12);
+          ctx.strokeStyle = `rgba(125, 211, 252, ${this.alpha * 0.7})`;
+          ctx.lineWidth = 1.6;
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      const count = (particleMode === 'fog' || currentRegime === 'inversion') ? 90 : 150;
+      for (let i = 0; i < count; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      for (let p of particles) {
+        p.update();
+        p.draw();
+      }
+      requestAnimationFrame(animate);
+    }
+
+    window.onload = () => {
+      resizeCanvas();
+      animate();
+      updateDisplay();
+    };
+  </script>
+
+</body></html>

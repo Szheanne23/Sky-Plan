@@ -6,35 +6,60 @@ export default function Badge({
   variant = 'neutral',
   size = 'md',
   icon: Icon,
+  pulse = false,
   className,
   ...props
 }) {
   const variants = {
-    primary: 'bg-sky-50 text-sky-700 border-sky-200/80',
-    success: 'bg-emerald-50 text-emerald-700 border-emerald-200/80',
-    warning: 'bg-amber-50 text-amber-800 border-amber-200/80',
-    danger: 'bg-rose-50 text-rose-700 border-rose-200/80',
-    neutral: 'bg-slate-100 text-slate-700 border-slate-200',
-    indoor: 'bg-indigo-50 text-indigo-700 border-indigo-200/80',
-    outdoor: 'bg-teal-50 text-teal-700 border-teal-200/80',
+    primary: 'bg-primary-container/20 text-primary border-primary/30 shadow-specular-inset',
+    secondary: 'bg-secondary-container/20 text-secondary border-secondary/30 shadow-specular-inset',
+    tertiary: 'bg-tertiary-container/20 text-tertiary border-tertiary/40 shadow-specular-inset',
+    success: 'bg-optimal/15 text-optimal border-optimal/40 shadow-specular-inset',
+    optimal: 'bg-optimal/15 text-optimal border-optimal/40 shadow-specular-inset',
+    warning: 'bg-caution/15 text-caution border-caution/40 shadow-specular-inset',
+    caution: 'bg-caution/15 text-caution border-caution/40 shadow-specular-inset',
+    danger: 'bg-error-container/30 text-error border-error/40 shadow-specular-inset',
+    neutral: 'bg-surface-container-high/90 text-on-surface-variant border-white/10 shadow-specular-inset',
+    indoor: 'bg-azure/15 text-secondary border-azure/35 shadow-specular-inset',
+    outdoor: 'bg-optimal/15 text-optimal border-optimal/35 shadow-specular-inset',
+  };
+
+  const pulseColors = {
+    primary: 'bg-primary',
+    secondary: 'bg-secondary',
+    tertiary: 'bg-tertiary',
+    success: 'bg-optimal',
+    optimal: 'bg-optimal',
+    warning: 'bg-caution',
+    caution: 'bg-caution',
+    danger: 'bg-error',
+    neutral: 'bg-outline',
+    indoor: 'bg-secondary',
+    outdoor: 'bg-optimal',
   };
 
   const sizes = {
-    sm: 'text-[11px] px-2 py-0.5 gap-1',
-    md: 'text-xs px-2.5 py-1 gap-1.5',
-    lg: 'text-sm px-3 py-1.5 gap-2',
+    sm: 'text-[10px] px-2.5 py-0.5 gap-1 font-bold uppercase tracking-wider',
+    md: 'text-xs px-3 py-1 gap-1.5 font-medium',
+    lg: 'text-sm px-3.5 py-1.5 gap-2 font-semibold',
   };
 
   return (
     <span
       className={cn(
-        'inline-flex items-center font-medium rounded-full border transition-colors',
+        'inline-flex items-center rounded-full border transition-colors',
         variants[variant] || variants.neutral,
         sizes[size] || sizes.md,
         className
       )}
       {...props}
     >
+      {pulse && (
+        <span className="relative flex h-2 w-2">
+          <span className={cn('animate-ping absolute inline-flex h-full w-full rounded-full opacity-75', pulseColors[variant] || 'bg-primary')} />
+          <span className={cn('relative inline-flex rounded-full h-2 w-2', pulseColors[variant] || 'bg-primary')} />
+        </span>
+      )}
       {Icon && <Icon className={cn(size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5')} />}
       <span>{children}</span>
     </span>

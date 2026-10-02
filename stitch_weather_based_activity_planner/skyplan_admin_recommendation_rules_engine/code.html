@@ -1,0 +1,641 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"secondary-container":"#006be3","secondary-fixed-dim":"#adc6ff","surface-dim":"#0a122a","secondary":"#adc6ff","error-container":"#93000a","surface-tint":"#4cd6fb","surface-container-highest":"#2c344d","error":"#ffb4ab","on-primary-fixed-variant":"#004e5f","on-error-container":"#ffdad6","on-error":"#690005","primary":"#4cd6fb","on-secondary-fixed-variant":"#004494","surface-container-high":"#212942","surface-container-lowest":"#050d25","tertiary":"#ffb781","outline-variant":"#3d494d","tertiary-container":"#fc8602","inverse-primary":"#00677d","primary-container":"#00b4d8","on-surface":"#dbe1ff","surface-bright":"#313852","on-tertiary-fixed-variant":"#703800","primary-fixed":"#b3ebff","on-background":"#dbe1ff","secondary-fixed":"#d8e2ff","on-tertiary-container":"#5e2e00","surface-container-low":"#131a33","on-secondary-fixed":"#001a41","tertiary-fixed-dim":"#ffb781","surface":"#0a122a","on-tertiary-fixed":"#301400","on-surface-variant":"#bcc9ce","on-secondary":"#002e69","surface-variant":"#2c344d","on-secondary-container":"#f2f4ff","on-primary-container":"#00414f","on-primary-fixed":"#001f27","tertiary-fixed":"#ffdcc4","background":"#0a122a","on-tertiary":"#4e2500","surface-container":"#171e37","inverse-on-surface":"#282f49","inverse-surface":"#dbe1ff","primary-fixed-dim":"#4cd6fb","outline":"#869398","on-primary":"#003642"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-xl":"2.5rem","space-lg":"1.5rem",gutter:"1.5rem",margin:"3rem","space-sm":"0.5rem","space-md":"1rem","space-xs":"0.25rem","gutter-mobile":"1rem","margin-mobile":"1.25rem"},fontFamily:{"headline-sm":["Plus Jakarta Sans"],"body-lg":["Inter"],"body-md":["Inter"],"headline-md":["Plus Jakarta Sans"],"body-sm":["Inter"],"metric-display":["Plus Jakarta Sans"],"label-sm":["Inter"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"display-xl":["Plus Jakarta Sans"],"label-md":["Inter"]},fontSize:{"headline-sm":["20px",{lineHeight:"28px",fontWeight:"600"}],"body-lg":["18px",{lineHeight:"28px",fontWeight:"400"}],"body-md":["15px",{lineHeight:"22px",fontWeight:"400"}],"headline-md":["24px",{lineHeight:"32px",letterSpacing:"-0.01em",fontWeight:"600"}],"body-sm":["13px",{lineHeight:"18px",fontWeight:"400"}],"metric-display":["48px",{lineHeight:"52px",letterSpacing:"-0.03em",fontWeight:"700"}],"label-sm":["11px",{lineHeight:"14px",letterSpacing:"0.05em",fontWeight:"700"}],"headline-lg-mobile":["28px",{lineHeight:"36px",letterSpacing:"-0.01em",fontWeight:"700"}],"headline-lg":["36px",{lineHeight:"44px",letterSpacing:"-0.02em",fontWeight:"700"}],"display-xl":["56px",{lineHeight:"64px",letterSpacing:"-0.03em",fontWeight:"800"}],"label-md":["13px",{lineHeight:"16px",letterSpacing:"0.02em",fontWeight:"600"}]}}}};</script></head><body class="bg-surface text-on-surface min-h-screen selection:bg-primary selection:text-on-primary"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-dim/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.25)]"><div class="h-28 max-w-[1360px] mx-auto px-margin flex flex-col justify-between py-space-xs"><div class="flex items-center justify-between gap-space-md pt-space-xs"><div class="flex items-center gap-space-lg flex-1 min-w-0"><div class="flex items-center gap-space-sm shrink-0"><img alt="SkyPlan Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1U43KUnj2eD2G-p64tZmsCZOOvGQPBQM2kkW78kmg5lLChpK_tbmH7AfJwxL6AJPks4RV92PMZgDji1i5lHZyLuFcDxHixtXwkJJLlsKu-5tmFDJi3jJfXOr_FC4T0gHOGjvELF_2W8rioROWkLIaj9jfX5ifw2SHRQgyPhkatmbIhR5U_2Fx4zScpYUBNM_nSpvtjobEuJgCPl1HnoTBf0c6fgTgqGA0z2Jfzhqucg2u59sss1gZ2Zpg"><span class="font-headline-md text-headline-md tracking-tight text-on-surface">SkyPlan</span></div><div class="flex items-center gap-space-xs bg-surface-container-high/70 backdrop-blur-md rounded-xl px-space-md py-space-xs max-w-lg w-full"><span class="material-symbols-outlined text-primary text-[20px]">location_on</span><input class="bg-transparent w-full text-on-surface placeholder:text-outline font-body-sm text-body-sm focus:outline-none" placeholder="Search city, state or coordinates... e.g. Interlaken, Vancouver, Denver" type="text"><div class="flex items-center gap-space-xs pl-space-xs text-outline"><span class="material-symbols-outlined text-[18px]">calendar_today</span><span class="font-label-sm text-label-sm whitespace-nowrap">Today</span></div></div></div><div class="flex items-center gap-space-md shrink-0"><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-1 bg-surface-container rounded-full"><span class="material-symbols-outlined text-tertiary text-[16px]">explore</span><span class="font-label-sm text-label-sm text-tertiary uppercase">Outdoor Explorer</span></div><div class="flex items-center bg-surface-container-low rounded-lg p-0.5"><button class="px-space-xs py-0.5 rounded font-label-sm text-label-sm bg-primary-container text-on-primary-container font-semibold" type="button">°C</button><button class="px-space-xs py-0.5 rounded font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" type="button">°F</button></div><button class="relative p-space-xs rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-tertiary-container shadow-[0_0_8px_rgba(252,134,2,0.8)]"></span></button><div class="flex items-center gap-space-sm pl-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDljOsxHnq0Rtoky0DWB-qQdR-r8VAZLWh20MJp5kEQdZhVo9nkvzT4J4CDjm3tBm-r4M-vbRl5wnID3nbCDRhW4GmEaclg1jMkZ-DWgqmMqiRZzfsrrMneiBlLLftI-nkJ6yZBizsj_5v0h4MZD1CTynM0rsC6wKNa2JKWg9ufeQ92D6iynYfoL6noQxX_XUdiNYCOOfc4_MfhjqYSabpOOcwmtCQDHTVcZRXdPASEmnLXrmlMPPM"><div class="hidden lg:flex flex-col"><span class="font-label-md text-label-md text-on-surface leading-tight">Elena Vance</span><span class="font-label-sm text-label-sm text-outline leading-tight">Pro Member</span></div></div></div></div><div class="flex items-center justify-between gap-space-md pb-space-xs"><nav class="flex items-center gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-lg shadow-[0_0_12px_rgba(0,180,216,0.3)]"><a class="px-space-md py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="forecast-and-activities" href="#">Forecast &amp; Activities</a><a class="px-space-md py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="multi-day-itinerary" href="#">Multi-Day Itinerary</a><a class="px-space-md py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="saved-places" href="#">Saved Places (4)</a><a aria-current="page" class="px-space-md py-1.5 transition-colors bg-primary-container text-on-primary-container font-semibold rounded-lg shadow-[0_0_12px_rgba(0,180,216,0.3)]" data-path="admin-rules-engine" href="#">Admin Rules Engine</a><a class="px-space-md py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="analytics" href="#">Analytics</a></nav><div class="hidden md:flex items-center gap-space-xs overflow-x-auto"><span class="font-label-sm text-label-sm text-outline shrink-0 mr-1">Saved:</span><div class="flex items-center gap-space-xs"><button class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container/60 hover:bg-surface-container-high rounded-full font-label-sm text-label-sm text-on-surface-variant transition-colors whitespace-nowrap" type="button"><span>Interlaken</span><span class="text-primary font-semibold">19°C</span><span>⛅</span></button><button class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container/60 hover:bg-surface-container-high rounded-full font-label-sm text-label-sm text-on-surface-variant transition-colors whitespace-nowrap" type="button"><span>Boulder</span><span class="text-tertiary font-semibold">22°C</span><span>☀️</span></button><button class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container/60 hover:bg-surface-container-high rounded-full font-label-sm text-label-sm text-on-surface-variant transition-colors whitespace-nowrap" type="button"><span>Kyoto</span><span class="text-secondary font-semibold">16°C</span><span>🌧️</span></button><button class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container/60 hover:bg-surface-container-high rounded-full font-label-sm text-label-sm text-on-surface-variant transition-colors whitespace-nowrap" type="button"><span>Reykjavík</span><span class="text-on-surface-variant font-semibold">8°C</span><span>💨</span></button></div></div></div></div></header><main class="w-full pt-28 bg-surface min-h-[calc(100vh-140px)]"><div class="max-w-[1360px] mx-auto px-margin py-space-lg"><div class="flex flex-col w-full">
+<!-- System Diagnostic Banner & Health Indicators -->
+<div class="w-full flex flex-col xl:flex-row xl:items-center justify-between gap-space-md mb-space-lg">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary px-space-sm py-0.5 rounded-full bg-surface-container-high">Engine Configuration</span>
+<span class="flex h-2 w-2 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="font-label-sm text-label-sm text-outline">Cluster node: eu-central-alps-04</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Recommendation Rules Engine &amp; Meteorological Thresholds</h1>
+</div>
+<!-- Quick Actions -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<button class="flex items-center gap-space-xs px-space-md py-2.5 rounded-xl bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-md text-label-md shadow-sm transition-all duration-200" type="button">
+<span class="material-symbols-outlined text-[18px] text-tertiary">code</span>
+<span>Export JSON Schema</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-2.5 rounded-xl bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-md text-label-md shadow-sm transition-all duration-200" onclick="document.getElementById('simulator-panel').scrollIntoView({behavior: 'smooth'})" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">science</span>
+<span>Test Rules in Sandbox</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-lg py-2.5 rounded-xl bg-gradient-to-r from-primary-container to-secondary-container hover:shadow-[0_0_20px_rgba(0,180,216,0.4)] text-on-primary-container font-headline-sm text-headline-sm transition-all duration-200" type="button">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>Create New Rule</span>
+</button>
+</div>
+</div>
+<!-- Telemetry Bar Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md mb-space-xl">
+<!-- Active Rules -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">Active Rules</span>
+<span class="font-metric-display text-metric-display text-on-surface mt-1">18</span>
+<span class="font-body-sm text-body-sm text-primary flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> 100% operational
+        </span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">tune</span>
+</div>
+</div>
+<!-- API Rate Limit & Utilization -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">OpenWeatherMap API</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">84.2%</span>
+</div>
+<div class="mt-2">
+<div class="flex items-baseline justify-between mb-1">
+<span class="font-headline-sm text-headline-sm text-on-surface">842 <span class="font-body-sm text-body-sm text-outline">/ 1,000 calls</span></span>
+<span class="font-label-sm text-label-sm text-tertiary-fixed">Free Tier</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+<div class="bg-gradient-to-r from-primary to-tertiary h-full rounded-full" style="width: 84.2%"></div>
+</div>
+</div>
+<span class="font-body-sm text-body-sm text-outline mt-1">Resets in 3h 18m</span>
+</div>
+<!-- Latency -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">Engine Latency</span>
+<span class="font-metric-display text-metric-display text-on-surface mt-1">32<span class="font-body-lg text-body-lg text-outline">ms</span></span>
+<span class="font-body-sm text-body-sm text-primary flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">bolt</span> Sub-50ms target met
+        </span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[24px]">speed</span>
+</div>
+</div>
+<!-- Engine Version & Synced State -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">Rule Configuration</span>
+<span class="font-metric-display text-metric-display text-tertiary mt-1">v2.4.1</span>
+<span class="font-body-sm text-body-sm text-outline flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">commit</span> Staged commit #a9c7b2
+        </span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[24px]">published_with_changes</span>
+</div>
+</div>
+</div>
+<!-- Main Content Layout: Rule Builder & Simulator -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-lg mb-space-xl">
+<!-- Visual Rule Builder (Interactive Editor) -->
+<div class="xl:col-span-8 flex flex-col bg-surface-container-low rounded-xl p-space-lg shadow-xl relative overflow-hidden">
+<!-- Glow background accent -->
+<div class="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
+<!-- Editor Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[22px]">account_tree</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Editing Rule #SP-1092</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-secondary-container/20 text-secondary">Draft Auto-Saved</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Optimal High-Altitude Hiking &amp; Trail Running</h2>
+</div>
+</div>
+<div class="flex items-center gap-space-xs shrink-0">
+<button class="p-2 rounded-lg bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="Revert Changes" type="button">
+<span class="material-symbols-outlined text-[20px]">undo</span>
+</button>
+<button class="p-2 rounded-lg bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="Clone Rule Schema" type="button">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+</button>
+<button class="px-space-md py-2 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold hover:shadow-lg transition-all" type="button">
+            Deploy Rule Update
+          </button>
+</div>
+</div>
+<!-- Condition Blocks Canvas -->
+<div class="mt-space-md flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Meteorological Condition Pipeline</span>
+<span class="font-body-sm text-body-sm text-outline">Evaluated via real-time ECMWF &amp; OWM telemetry</span>
+</div>
+<!-- Block 1 -->
+<div class="bg-surface-container rounded-xl p-space-md shadow-sm relative group hover:bg-surface-container-high transition-colors">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-md">
+<span class="w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center font-label-sm text-label-sm text-primary font-bold">1</span>
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Precipitation Probability</span>
+<span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm">Weather Parameter</span>
+<span class="font-body-md text-body-md text-secondary font-mono">IS LESS THAN</span>
+<span class="font-headline-sm text-headline-sm text-on-surface bg-surface-container-lowest px-3 py-1 rounded-lg font-mono">20%</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs opacity-75 group-hover:opacity-100 transition-opacity">
+<span class="font-label-sm text-label-sm text-outline">Weight: 1.0</span>
+<button class="p-1 rounded text-outline hover:text-on-surface" type="button"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</div>
+</div>
+</div>
+<!-- Connector logic: AND -->
+<div class="flex items-center justify-center -my-2 relative z-10">
+<span class="px-space-md py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold shadow-sm uppercase tracking-widest">AND</span>
+</div>
+<!-- Block 2 -->
+<div class="bg-surface-container rounded-xl p-space-md shadow-sm relative group hover:bg-surface-container-high transition-colors">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-md">
+<span class="w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center font-label-sm text-label-sm text-primary font-bold">2</span>
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Surface Temperature</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary font-label-sm text-label-sm">Thermal Profile</span>
+<span class="font-body-md text-body-md text-secondary font-mono">BETWEEN</span>
+<span class="font-headline-sm text-headline-sm text-on-surface bg-surface-container-lowest px-3 py-1 rounded-lg font-mono">14°C</span>
+<span class="font-body-md text-body-md text-outline">AND</span>
+<span class="font-headline-sm text-headline-sm text-on-surface bg-surface-container-lowest px-3 py-1 rounded-lg font-mono">24°C</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs opacity-75 group-hover:opacity-100 transition-opacity">
+<span class="font-label-sm text-label-sm text-outline">Weight: 0.95</span>
+<button class="p-1 rounded text-outline hover:text-on-surface" type="button"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</div>
+</div>
+</div>
+<!-- Connector logic: AND -->
+<div class="flex items-center justify-center -my-2 relative z-10">
+<span class="px-space-md py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold shadow-sm uppercase tracking-widest">AND</span>
+</div>
+<!-- Block 3 -->
+<div class="bg-surface-container rounded-xl p-space-md shadow-sm relative group hover:bg-surface-container-high transition-colors">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-md">
+<span class="w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center font-label-sm text-label-sm text-primary font-bold">3</span>
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Sustained Wind Speed</span>
+<span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm">Kinetic Vector</span>
+<span class="font-body-md text-body-md text-secondary font-mono">IS LESS THAN</span>
+<span class="font-headline-sm text-headline-sm text-on-surface bg-surface-container-lowest px-3 py-1 rounded-lg font-mono">25 km/h</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs opacity-75 group-hover:opacity-100 transition-opacity">
+<span class="font-label-sm text-label-sm text-outline">Weight: 0.85</span>
+<button class="p-1 rounded text-outline hover:text-on-surface" type="button"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</div>
+</div>
+</div>
+<!-- Connector logic: AND -->
+<div class="flex items-center justify-center -my-2 relative z-10">
+<span class="px-space-md py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold shadow-sm uppercase tracking-widest">AND</span>
+</div>
+<!-- Block 4 -->
+<div class="bg-surface-container rounded-xl p-space-md shadow-sm relative group hover:bg-surface-container-high transition-colors">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-md">
+<span class="w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center font-label-sm text-label-sm text-primary font-bold">4</span>
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Cloud Cover &lt; 65%</span>
+<span class="font-body-md text-body-md text-secondary font-mono">AND</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">Visibility &gt; 10 km</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary/10 text-secondary font-label-sm text-label-sm">Aerosols &amp; Sight</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs opacity-75 group-hover:opacity-100 transition-opacity">
+<span class="font-label-sm text-label-sm text-outline">Weight: 0.70</span>
+<button class="p-1 rounded text-outline hover:text-on-surface" type="button"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</div>
+</div>
+</div>
+<!-- Add Condition Button -->
+<button class="w-full py-2.5 rounded-xl bg-surface-container/60 hover:bg-surface-container text-outline hover:text-on-surface font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+<span>Add Meteorological Constraint Block</span>
+</button>
+</div>
+<!-- Action & Scoring Output Box -->
+<div class="mt-space-lg p-space-md rounded-xl bg-surface-container-high flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">verified</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Scoring &amp; Recommendation Output</span>
+</div>
+<span class="font-label-sm text-label-sm px-2.5 py-0.5 rounded-full bg-primary/10 text-primary uppercase font-bold">Optimal Tier</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Score -->
+<div class="p-space-sm rounded-lg bg-surface-container-lowest">
+<span class="font-label-sm text-label-sm text-outline block">Computed Suitability Range</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">95% – 100%</span>
+<span class="font-body-sm text-body-sm text-outline block mt-0.5">Golden hour bonus applied</span>
+</div>
+<!-- Badge Output -->
+<div class="p-space-sm rounded-lg bg-surface-container-lowest">
+<span class="font-label-sm text-label-sm text-outline block">Display Pill / Badge</span>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 text-primary font-label-sm text-label-sm font-semibold mt-1">
+<span class="h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+              Prime Mountain Conditions
+            </div>
+</div>
+<!-- Targeted Tags -->
+<div class="p-space-sm rounded-lg bg-surface-container-lowest">
+<span class="font-label-sm text-label-sm text-outline block">Target User Tags</span>
+<div class="flex flex-wrap gap-1 mt-1">
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Hiking</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Trail Running</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">Landscape Photography</span>
+</div>
+</div>
+</div>
+<!-- Fallback Trigger -->
+<div class="p-space-sm rounded-lg bg-surface-container-lowest flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-tertiary-container text-[20px] mt-0.5 shrink-0">crisis_alert</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-tertiary font-bold uppercase tracking-wider">Automatic Fallback Trigger</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+              IF <span class="font-mono text-tertiary font-bold">Precipitation &gt;= 50%</span> OR <span class="font-mono text-tertiary font-bold">Wind &gt; 40 km/h</span> THEN Demote match score to &lt; 30% and dynamically push indoor alternatives:
+              <span class="text-on-surface font-medium underline decoration-primary/40 underline-offset-2 ml-1">Indoor Bouldering</span>, 
+              <span class="text-on-surface font-medium underline decoration-primary/40 underline-offset-2 ml-1">Alpine History Museum</span>.
+            </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Testing Sandbox & Simulator Panel -->
+<div class="xl:col-span-4 flex flex-col bg-surface-container-low rounded-xl p-space-lg shadow-xl relative" id="simulator-panel">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-tertiary text-[22px]">troubleshoot</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Rule Simulator</h2>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary">Realtime Sandbox</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline mb-space-md">Inject mock weather telemetry to verify multi-rule priority sorting and detect threshold deadlocks.</p>
+<!-- Sliders / Numeric Inputs -->
+<div class="flex flex-col gap-space-md bg-surface-container p-space-md rounded-xl">
+<!-- Temperature -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface font-medium">Temperature</span>
+<span class="font-body-md text-body-md font-mono text-primary font-bold" id="val-temp">22°C</span>
+</div>
+<input class="accent-primary w-full h-1.5 bg-surface-container-highest rounded-lg cursor-pointer" id="sim-temp" max="40" min="0" type="range" value="22">
+<div class="flex justify-between font-label-sm text-label-sm text-outline">
+<span>0°C</span>
+<span>20°C</span>
+<span>40°C</span>
+</div>
+</div>
+<!-- Precipitation -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface font-medium">Precipitation Chance</span>
+<span class="font-body-md text-body-md font-mono text-primary font-bold" id="val-rain">10%</span>
+</div>
+<input class="accent-primary w-full h-1.5 bg-surface-container-highest rounded-lg cursor-pointer" id="sim-rain" max="100" min="0" type="range" value="10">
+<div class="flex justify-between font-label-sm text-label-sm text-outline">
+<span>0%</span>
+<span>50%</span>
+<span>100%</span>
+</div>
+</div>
+<!-- Sustained Wind -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface font-medium">Wind Speed</span>
+<span class="font-body-md text-body-md font-mono text-primary font-bold" id="val-wind">12 km/h</span>
+</div>
+<input class="accent-primary w-full h-1.5 bg-surface-container-highest rounded-lg cursor-pointer" id="sim-wind" max="80" min="0" type="range" value="12">
+<div class="flex justify-between font-label-sm text-label-sm text-outline">
+<span>0 km/h</span>
+<span>40 km/h</span>
+<span>80 km/h</span>
+</div>
+</div>
+<!-- Cloud Cover -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface font-medium">Cloud Cover</span>
+<span class="font-body-md text-body-md font-mono text-primary font-bold" id="val-cloud">30%</span>
+</div>
+<input class="accent-primary w-full h-1.5 bg-surface-container-highest rounded-lg cursor-pointer" id="sim-cloud" max="100" min="0" type="range" value="30">
+<div class="flex justify-between font-label-sm text-label-sm text-outline">
+<span>Clear (0%)</span>
+<span>Overcast (100%)</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<button class="font-label-sm text-label-sm text-outline hover:text-on-surface transition-colors flex items-center gap-1" id="reset-sim" type="button">
+<span class="material-symbols-outlined text-[16px]">restart_alt</span> Reset Presets
+          </button>
+<span class="font-label-sm text-label-sm text-secondary font-mono">Location: Interlaken (568m)</span>
+</div>
+</div>
+<!-- Simulation Output Result Box -->
+<div class="mt-space-md flex flex-col gap-space-sm">
+<div class="p-space-md rounded-xl bg-surface-container-highest flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Evaluation Status</span>
+<span class="flex items-center gap-1 font-label-sm text-label-sm text-primary font-bold">
+<span class="material-symbols-outlined text-[16px]">check</span> Ready
+            </span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface" id="sim-result-summary">3 Rules Matched</span>
+<span class="font-body-sm text-body-sm text-outline mt-0.5">Top Recommendation:</span>
+<div class="flex items-center justify-between mt-1 p-2 rounded-lg bg-surface-container-low">
+<span class="font-body-md text-body-md font-semibold text-primary" id="sim-top-rec">Harder Kulm Ridge Hike</span>
+<span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono text-label-sm font-bold" id="sim-top-score">98% Match</span>
+</div>
+</div>
+<!-- Secondary match runner-up -->
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low/60 text-outline">
+<span class="font-body-sm text-body-sm text-on-surface">Outdoor Dining &amp; Picnics</span>
+<span class="font-mono text-label-sm text-tertiary">91% Match</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low/60 text-outline">
+<span class="font-body-sm text-body-sm text-on-surface">Drone &amp; Landscape Photography</span>
+<span class="font-mono text-label-sm text-secondary">87% Match</span>
+</div>
+</div>
+<!-- Conflict & Deadlock Validation Badge -->
+<div class="p-space-sm rounded-xl bg-primary/10 flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0">verified_user</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-primary font-bold">No Conflict Detected</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">No rule overlaps, contradictory scoring, or circular fallbacks found across 18 active rules.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Active Rules Table & Priority Matrix -->
+<div class="w-full flex flex-col bg-surface-container-low rounded-xl p-space-lg shadow-xl">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-lg">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Production Pipeline</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-primary/15 text-primary font-bold">Sorted by Priority Weight</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-0.5">Active Rules &amp; Activity Priority Matrix</h2>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="relative">
+<span class="material-symbols-outlined text-outline absolute left-3 top-2.5 text-[18px]">search</span>
+<input class="bg-surface-container h-10 pl-9 pr-4 rounded-lg text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-high transition-colors text-sm w-64" placeholder="Filter rules by tag or metric..." type="text">
+</div>
+<button class="p-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors" title="Filter View" type="button">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Table Container -->
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container text-outline font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-3 px-4 rounded-l-lg">Rule ID</th>
+<th class="py-3 px-4">Activity Category</th>
+<th class="py-3 px-4">Meteorological Trigger</th>
+<th class="py-3 px-4">Target Tags</th>
+<th class="py-3 px-4">Priority</th>
+<th class="py-3 px-4">24h Matches</th>
+<th class="py-3 px-4">Status</th>
+<th class="py-3 px-4 text-right rounded-r-lg">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 text-on-surface font-body-sm text-body-sm">
+<!-- Row 1: Water Sports -->
+<tr class="hover:bg-surface-container/60 transition-colors group">
+<td class="py-4 px-4 font-mono text-outline">#SP-1088</td>
+<td class="py-4 px-4 font-semibold text-on-surface flex items-center gap-2">
+<span class="w-7 h-7 rounded-lg bg-secondary/15 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[16px]">kayaking</span>
+</span>
+<span>Water Sports &amp; Kayaking</span>
+</td>
+<td class="py-4 px-4">
+<div class="flex flex-wrap gap-1 items-center">
+<span class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-label-sm">Temp &gt; 18°C</span>
+<span class="text-outline font-mono text-label-sm">&amp;&amp;</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-label-sm">Wind &lt; 15 km/h</span>
+<span class="text-outline font-mono text-label-sm">&amp;&amp;</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-label-sm">Rain = 0%</span>
+</div>
+</td>
+<td class="py-4 px-4">
+<span class="px-2 py-0.5 rounded-full bg-secondary-container/20 text-secondary font-label-sm text-label-sm">Watersports</span>
+</td>
+<td class="py-4 px-4 font-mono font-bold text-primary">0.92</td>
+<td class="py-4 px-4 font-mono">1,429</td>
+<td class="py-4 px-4">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-9 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</td>
+<td class="py-4 px-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg hover:bg-surface-container-highest text-outline hover:text-on-surface" title="Edit" type="button"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-highest text-outline hover:text-on-surface" title="Duplicate" type="button"><span class="material-symbols-outlined text-[18px]">content_copy</span></button>
+<button class="p-1.5 rounded-lg hover:bg-error-container/40 text-outline hover:text-error" title="Delete" type="button"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Outdoor Dining -->
+<tr class="hover:bg-surface-container/60 transition-colors group">
+<td class="py-4 px-4 font-mono text-outline">#SP-1089</td>
+<td class="py-4 px-4 font-semibold text-on-surface flex items-center gap-2">
+<span class="w-7 h-7 rounded-lg bg-tertiary/15 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[16px]">restaurant</span>
+</span>
+<span>Outdoor Dining &amp; Picnics</span>
+</td>
+<td class="py-4 px-4">
+<div class="flex flex-wrap gap-1 items-center">
+<span class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-label-sm">Temp &gt; 20°C</span>
+<span class="text-outline font-mono text-label-sm">&amp;&amp;</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-label-sm">UV &lt; 7</span>
+<span class="text-outline font-mono text-label-sm">&amp;&amp;</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-label-sm">Wind &lt; 12 km/h</span>
+</div>
+</td>
+<td class="py-4 px-4">
+<span class="px-2 py-0.5 rounded-full bg-tertiary/20 text-tertiary font-label-sm text-label-sm">Culinary</span>
+</td>
+<td class="py-4 px-4 font-mono font-bold text-primary">0.88</td>
+<td class="py-4 px-4 font-mono">3,891</td>
+<td class="py-4 px-4">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-9 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</td>
+<td class="py-4 px-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg hover:bg-surface-container-highest text-outline hover:text-on-surface" title="Edit" type="button"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-highest text-outline hover:text-on-surface" title="Duplicate" type="button"><span class="material-symbols-outlined text-[18px]">content_copy</span></button>
+<button class="p-1.5 rounded-lg hover:bg-error-container/40 text-outline hover:text-error" title="Delete" type="button"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Indoor Cultural & Spas -->
+<tr class="hover:bg-surface-container/60 transition-colors group">
+<td class="py-4 px-4 font-mono text-outline">#SP-1090</td>
+<td class="py-4 px-4 font-semibold text-on-surface flex items-center gap-2">
+<span class="w-7 h-7 rounded-lg bg-surface-tint/15 flex items-center justify-center text-surface-tint">
+<span class="material-symbols-outlined text-[16px]">museum</span>
+</span>
+<span>Indoor Cultural &amp; Spas</span>
+</td>
+<td class="py-4 px-4">
+<div class="flex flex-wrap gap-1 items-center">
+<span class="px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary-fixed font-mono text-label-sm font-semibold">Rain &gt; 60%</span>
+<span class="text-tertiary font-mono text-label-sm font-bold">||</span>
+<span class="px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary-fixed font-mono text-label-sm font-semibold">Temp &lt; 5°C</span>
+</div>
+</td>
+<td class="py-4 px-4">
+<span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary font-label-sm text-label-sm">Indoor Wellness</span>
+</td>
+<td class="py-4 px-4 font-mono font-bold text-outline">0.75</td>
+<td class="py-4 px-4 font-mono">612</td>
+<td class="py-4 px-4">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-9 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</td>
+<td class="py-4 px-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg hover:bg-surface-container-highest text-outline hover:text-on-surface" title="Edit" type="button"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-highest text-outline hover:text-on-surface" title="Duplicate" type="button"><span class="material-symbols-outlined text-[18px]">content_copy</span></button>
+<button class="p-1.5 rounded-lg hover:bg-error-container/40 text-outline hover:text-error" title="Delete" type="button"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Drone & Photography -->
+<tr class="hover:bg-surface-container/60 transition-colors group">
+<td class="py-4 px-4 font-mono text-outline">#SP-1091</td>
+<td class="py-4 px-4 font-semibold text-on-surface flex items-center gap-2">
+<span class="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[16px]">photo_camera</span>
+</span>
+<span>Drone &amp; Landscape Photography</span>
+</td>
+<td class="py-4 px-4">
+<div class="flex flex-wrap gap-1 items-center">
+<span class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-label-sm">Visibility &gt; 15 km</span>
+<span class="text-outline font-mono text-label-sm">&amp;&amp;</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-label-sm">Wind &lt; 20 km/h</span>
+</div>
+</td>
+<td class="py-4 px-4">
+<span class="px-2 py-0.5 rounded-full bg-secondary-container/20 text-secondary font-label-sm text-label-sm">Creative</span>
+</td>
+<td class="py-4 px-4 font-mono font-bold text-primary">0.96</td>
+<td class="py-4 px-4 font-mono">2,108</td>
+<td class="py-4 px-4">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-9 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</td>
+<td class="py-4 px-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg hover:bg-surface-container-highest text-outline hover:text-on-surface" title="Edit" type="button"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-highest text-outline hover:text-on-surface" title="Duplicate" type="button"><span class="material-symbols-outlined text-[18px]">content_copy</span></button>
+<button class="p-1.5 rounded-lg hover:bg-error-container/40 text-outline hover:text-error" title="Delete" type="button"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Pagination -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pt-space-md mt-space-sm">
+<span class="font-body-sm text-body-sm text-outline">Showing 4 of 18 configured meteorological policy rules</span>
+<div class="flex items-center gap-1">
+<button class="px-3 py-1 rounded bg-surface-container text-outline hover:text-on-surface font-label-sm text-label-sm" type="button">Previous</button>
+<button class="px-3 py-1 rounded bg-primary-container text-on-primary-container font-label-sm text-label-sm font-semibold" type="button">1</button>
+<button class="px-3 py-1 rounded bg-surface-container text-outline hover:text-on-surface font-label-sm text-label-sm" type="button">2</button>
+<button class="px-3 py-1 rounded bg-surface-container text-outline hover:text-on-surface font-label-sm text-label-sm" type="button">3</button>
+<button class="px-3 py-1 rounded bg-surface-container text-outline hover:text-on-surface font-label-sm text-label-sm" type="button">Next</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Interactive Simulator Logic for SkyPlan Admin Thresholds
+  const tempSlider = document.getElementById('sim-temp');
+  const rainSlider = document.getElementById('sim-rain');
+  const windSlider = document.getElementById('sim-wind');
+  const cloudSlider = document.getElementById('sim-cloud');
+
+  const valTemp = document.getElementById('val-temp');
+  const valRain = document.getElementById('val-rain');
+  const valWind = document.getElementById('val-wind');
+  const valCloud = document.getElementById('val-cloud');
+
+  const simResultSummary = document.getElementById('sim-result-summary');
+  const simTopRec = document.getElementById('sim-top-rec');
+  const simTopScore = document.getElementById('sim-top-score');
+  const resetBtn = document.getElementById('reset-sim');
+
+  function evaluateSimulator() {
+    const t = parseInt(tempSlider.value, 10);
+    const r = parseInt(rainSlider.value, 10);
+    const w = parseInt(windSlider.value, 10);
+    const c = parseInt(cloudSlider.value, 10);
+
+    valTemp.textContent = `${t}°C`;
+    valRain.textContent = `${r}%`;
+    valWind.textContent = `${w} km/h`;
+    valCloud.textContent = `${c}%`;
+
+    // Rule Logic Evaluation
+    if (r >= 50 || t < 6) {
+      simResultSummary.textContent = "1 Rule Matched (Fallback Active)";
+      simTopRec.textContent = "Alpine History Museum & Thermal Spa";
+      simTopScore.textContent = "96% Match";
+      simTopScore.className = "px-2 py-0.5 rounded-full bg-tertiary-container/30 text-tertiary font-mono text-label-sm font-bold";
+    } else if (w > 35) {
+      simResultSummary.textContent = "2 Rules Matched (High Wind Warning)";
+      simTopRec.textContent = "Sheltered Valley Forest Run";
+      simTopScore.textContent = "84% Match";
+      simTopScore.className = "px-2 py-0.5 rounded-full bg-secondary-container/30 text-secondary font-mono text-label-sm font-bold";
+    } else if (t >= 14 && t <= 26 && r < 20 && w < 25) {
+      simResultSummary.textContent = "3 Rules Matched • Optimal Peak";
+      simTopRec.textContent = "Harder Kulm Ridge Hike";
+      simTopScore.textContent = "98% Match";
+      simTopScore.className = "px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono text-label-sm font-bold";
+    } else if (t > 20 && r === 0 && w < 15) {
+      simResultSummary.textContent = "4 Rules Matched • Warm Spectrum";
+      simTopRec.textContent = "Lake Brienz Kayak Safari";
+      simTopScore.textContent = "94% Match";
+      simTopScore.className = "px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono text-label-sm font-bold";
+    } else {
+      simResultSummary.textContent = "2 Rules Matched";
+      simTopRec.textContent = "Photography & Town Walking";
+      simTopScore.textContent = "88% Match";
+      simTopScore.className = "px-2 py-0.5 rounded-full bg-secondary-container/20 text-secondary font-mono text-label-sm font-bold";
+    }
+  }
+
+  [tempSlider, rainSlider, windSlider, cloudSlider].forEach(slider => {
+    slider.addEventListener('input', evaluateSimulator);
+  });
+
+  resetBtn.addEventListener('click', () => {
+    tempSlider.value = 22;
+    rainSlider.value = 10;
+    windSlider.value = 12;
+    cloudSlider.value = 30;
+    evaluateSimulator();
+  });
+</script></div></main><footer class="w-full bg-surface-container-lowest mt-space-xl py-space-lg"><div class="max-w-[1360px] mx-auto px-margin flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-sm"><img alt="SkyPlan Brand Logo" class="h-6 w-auto opacity-75 object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1U43KUnj2eD2G-p64tZmsCZOOvGQPBQM2kkW78kmg5lLChpK_tbmH7AfJwxL6AJPks4RV92PMZgDji1i5lHZyLuFcDxHixtXwkJJLlsKu-5tmFDJi3jJfXOr_FC4T0gHOGjvELF_2W8rioROWkLIaj9jfX5ifw2SHRQgyPhkatmbIhR5U_2Fx4zScpYUBNM_nSpvtjobEuJgCPl1HnoTBf0c6fgTgqGA0z2Jfzhqucg2u59sss1gZ2Zpg"><span class="font-label-md text-label-md text-outline">SkyPlan Atmospheric Intelligence Platform</span></div><div class="flex items-center gap-space-lg"><span class="font-label-sm text-label-sm text-outline">Station Sync: Interlaken Radar 2m ago</span><span class="font-label-sm text-label-sm text-outline">© 2024 SkyPlan Technologies Inc.</span></div></div></footer></body></html>

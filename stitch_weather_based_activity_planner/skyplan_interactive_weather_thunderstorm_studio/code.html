@@ -1,0 +1,1840 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SkyPlan - Interactive Night &amp; Day Preview with Atmospheric Particle Engine &amp; Thunderstorm Simulator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Outfit:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            display: ['Outfit', '"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              cyan: '#38BDF8',
+              violet: '#7C3AED',
+              amethyst: '#6C5CE7',
+              periwinkle: '#A29BFE',
+              amber: '#F59E0B',
+              lightning: '#c4b5fd',
+              storm: '#0b0c26'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Smooth CSS variable color transitions across the page */
+    :root {
+      --bg-sky-top: #0a0b1e;
+      --bg-sky-mid: #141738;
+      --bg-sky-bottom: #1f1b4b;
+      --bubble-bg: rgba(26, 24, 56, 0.58);
+      --bubble-border: rgba(162, 155, 254, 0.18);
+      --bubble-glow: rgba(108, 92, 231, 0.22);
+      --text-main: #FFFFFF;
+      --text-sub: #A5B4FC;
+      --accent-glow: #6C5CE7;
+      --tag-bg: rgba(124, 58, 237, 0.25);
+    }
+
+    body.day-mode {
+      --bg-sky-top: #38bdf8;
+      --bg-sky-mid: #818cf8;
+      --bg-sky-bottom: #c084fc;
+      --bubble-bg: rgba(255, 255, 255, 0.72);
+      --bubble-border: rgba(255, 255, 255, 0.65);
+      --bubble-glow: rgba(56, 189, 248, 0.25);
+      --text-main: #0F172A;
+      --text-sub: #334155;
+      --accent-glow: #0284c7;
+      --tag-bg: rgba(56, 189, 248, 0.22);
+    }
+
+    body.twilight-mode {
+      --bg-sky-top: #1e1b4b;
+      --bg-sky-mid: #4c1d95;
+      --bg-sky-bottom: #831843;
+      --bubble-bg: rgba(30, 27, 75, 0.68);
+      --bubble-border: rgba(192, 132, 252, 0.25);
+      --bubble-glow: rgba(192, 132, 252, 0.25);
+      --text-main: #FDF4FF;
+      --text-sub: #E9D5FF;
+      --accent-glow: #C084FC;
+      --tag-bg: rgba(192, 132, 252, 0.25);
+    }
+
+    body.storm-active {
+      --bg-sky-top: #060714;
+      --bg-sky-mid: #10122e;
+      --bg-sky-bottom: #161838;
+      --bubble-border: rgba(196, 181, 253, 0.32);
+      --bubble-glow: rgba(139, 92, 246, 0.35);
+      --accent-glow: #a78bfa;
+    }
+
+    .theme-transition {
+      transition: background 0.7s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .bubble-glass {
+      background: var(--bubble-bg);
+      border: 1px solid var(--bubble-border);
+      box-shadow: 0 12px 36px 0 var(--bubble-glow), inset 0 1px 1px 0 rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .bubble-glass-soft {
+      background: var(--bubble-bg);
+      border: 1px solid var(--bubble-border);
+      box-shadow: 0 8px 24px 0 var(--bubble-glow);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .floating-star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+    }
+
+    /* Custom range slider styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 9999px;
+      height: 6px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 0 14px var(--accent-glow), 0 2px 6px rgba(0,0,0,0.3);
+      cursor: pointer;
+      border: 2px solid var(--accent-glow);
+      transition: transform 0.15s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.18);
+    }
+
+    @keyframes pulseSoft {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+    .animate-pulse-soft {
+      animation: pulseSoft 4s infinite ease-in-out;
+    }
+
+    @keyframes floatOrb {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
+    }
+    .animate-float-orb {
+      animation: floatOrb 6s ease-in-out infinite;
+    }
+
+    /* Shimmer line animation for active particle simulator pill */
+    @keyframes sweepGlow {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .shimmer-active {
+      background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.05) 100%);
+      background-size: 200% 100%;
+      animation: sweepGlow 4s infinite linear;
+    }
+
+    /* Screen shake for lightning strike */
+    @keyframes lightningShake {
+      0% { transform: translate(0, 0); }
+      20% { transform: translate(-3px, 2px); }
+      40% { transform: translate(3px, -2px); }
+      60% { transform: translate(-2px, 1px); }
+      80% { transform: translate(2px, -1px); }
+      100% { transform: translate(0, 0); }
+    }
+    .shake-active {
+      animation: lightningShake 0.35s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    /* Lightning flash specular glare on bubbles */
+    .lightning-specular-flash {
+      box-shadow: 0 0 50px 10px rgba(196, 181, 253, 0.65), inset 0 1px 12px 2px rgba(255, 255, 255, 0.9) !important;
+      border-color: rgba(224, 231, 255, 0.95) !important;
+    }
+  </style>
+</head>
+<body class="theme-transition min-h-screen text-slate-100 font-sans relative overflow-x-hidden antialiased selection:bg-brand-violet selection:text-white" id="bodyRoot" style="background: linear-gradient(175deg, var(--bg-sky-top) 0%, var(--bg-sky-mid) 48%, var(--bg-sky-bottom) 100%);">
+<!-- Ambient Lightning Flash Sky Overlay -->
+<div class="fixed inset-0 pointer-events-none z-10 transition-opacity duration-75 opacity-0 mix-blend-screen" id="ambientFlashOverlay" style="background: radial-gradient(circle at 50% 25%, rgba(255, 255, 255, 0.95) 0%, rgba(196, 181, 253, 0.85) 30%, rgba(129, 140, 248, 0.65) 60%, rgba(14, 165, 233, 0.3) 100%); opacity: 0.9;"></div>
+<!-- Dynamic Starfield for Night / Twilight -->
+<div class="absolute inset-0 pointer-events-none z-0 overflow-hidden theme-transition" id="starField">
+<!-- Generated by JS -->
+</div>
+<!-- High-Performance Canvas for Interactive Wind, Precipitation, and Procedural Lightning Bolts -->
+<canvas class="fixed inset-0 pointer-events-none z-10 w-full h-full cursor-crosshair" id="atmospheric-particles"></canvas>
+<!-- Sun / Moon Celestial Halo in Background -->
+<div class="absolute pointer-events-none transition-all duration-1000 ease-out z-0 rounded-full blur-3xl opacity-75" id="celestialOrb" style="width: 420px; height: 420px; top: 8%; right: 12%; background: radial-gradient(circle, rgba(162, 155, 254, 0.45) 0%, rgba(108, 92, 231, 0.15) 60%, transparent 80%);">
+</div>
+<!-- Scenic Alpine Mountain Silhouette Overlay -->
+<div class="absolute bottom-0 inset-x-0 pointer-events-none z-0 opacity-40 theme-transition" id="scenicMountain">
+<svg class="w-full h-80 object-cover" fill="none" preserveAspectRatio="none" viewBox="0 0 1440 320">
+<path class="text-[#070919] opacity-90 transition-colors duration-700" d="M0,224L48,208C96,192,192,160,288,165.3C384,171,480,213,576,197.3C672,181,768,107,864,106.7C960,107,1056,181,1152,192C1248,203,1344,149,1392,122.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" fill="currentColor" id="mountainPath1"></path>
+<path class="text-[#030511] opacity-95 transition-colors duration-700" d="M0,288L60,266.7C120,245,240,203,360,202.7C480,203,600,245,720,256C840,267,960,245,1080,224C1200,203,1320,181,1380,170.7L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z" fill="currentColor" id="mountainPath2"></path>
+</svg>
+</div>
+<!-- Persistent Shell Header -->
+<header class="relative z-30 border-b border-white/10 theme-transition bg-black/15 backdrop-blur-xl px-6 lg:px-12 py-3.5 flex items-center justify-between">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-violet via-brand-amethyst to-brand-cyan p-0.5 shadow-lg shadow-brand-violet/30 flex items-center justify-center">
+<div class="w-full h-full bg-[#0e112a] rounded-[14px] flex items-center justify-center">
+<svg class="w-5 h-5 text-brand-cyan" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+</svg>
+</div>
+</div>
+<div>
+<span class="font-display font-extrabold text-xl tracking-tight text-white flex items-center gap-1.5">
+            Sky<span class="text-brand-cyan">Plan</span>
+</span>
+<span class="text-[9px] font-semibold tracking-widest uppercase text-brand-periwinkle/80 block -mt-0.5">Atmospheric Intelligence</span>
+</div>
+</div>
+<!-- Quick Location Pill -->
+<div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bubble-glass text-xs" style="color: var(--text-main);">
+<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+<span class="font-medium">Interlaken, Swiss Alps</span>
+<span class="opacity-40">|</span>
+<span class="font-semibold text-brand-cyan" id="headerTemp">14° Starlight</span>
+</div>
+</div>
+<!-- Center Interactive Mode Selector Pill (Night / Twilight / Day) -->
+<div class="bubble-glass rounded-full p-1.5 flex items-center gap-1 shadow-2xl">
+<button class="px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all duration-300 bg-brand-amethyst text-white shadow-md shadow-brand-amethyst/40" id="btnNight" onclick="setMode('night')">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+</svg>
+<span>Starlight Night</span>
+</button>
+<button class="px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all duration-300 text-slate-300 hover:text-white" id="btnTwilight" onclick="setMode('twilight')">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="4"></circle>
+<path d="M12 2v2"></path>
+<path d="M12 20v2"></path>
+<path d="m4.93 4.93 1.41 1.41"></path>
+<path d="m17.66 17.66 1.41 1.41"></path>
+</svg>
+<span>Twilight / Sunset</span>
+</button>
+<button class="px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all duration-300 text-slate-300 hover:text-white" id="btnDay" onclick="setMode('day')">
+<svg class="w-3.5 h-3.5 text-amber-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="5"></circle>
+<line x1="12" x2="12" y1="1" y2="3"></line>
+<line x1="12" x2="12" y1="21" y2="23"></line>
+<line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line>
+<line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line>
+<line x1="1" x2="3" y1="12" y2="12"></line>
+<line x1="21" x2="23" y1="12" y2="12"></line>
+</svg>
+<span>Daylight Glow</span>
+</button>
+</div>
+<!-- Right Controls -->
+<div class="flex items-center gap-3">
+<!-- Interactive Click-Sky-To-Strike Hint Badge -->
+<button class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bubble-glass text-xs font-medium text-amber-300 border-amber-400/40 hover:bg-amber-400/10 transition-colors" onclick="triggerLightningManually()" title="Click anywhere on the sky to strike!">
+<span class="animate-bounce">⚡</span>
+<span>Click Sky to Strike</span>
+</button>
+<div class="bubble-glass px-3 py-1.5 rounded-full flex items-center gap-2 text-xs font-medium" style="color: var(--text-main);">
+<span class="text-xs uppercase tracking-wider opacity-60">Telemetry</span>
+<span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+<span class="font-bold">ECMWF 0.1°</span>
+</div>
+<div class="w-9 h-9 rounded-full overflow-hidden border border-white/30 shadow-md">
+<img alt="Elena Vance" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1U4_bY-4VC_5SfhgVo2XCTDAMJZf_6Pw-1kFIppbB7cipDofEr8WoXidEZGb7vHOCfrKDgar5pbOxOjNdCI0ywJrFJesNOpyl1sePrZr6uyfg4KSAoFVsh0tD3Q0wM4Ah0f93N3nHkB4--naUo3hGE6aEJDEqXsNF7se6olNDaS7SCmQx8_ieDnaT3jQ9c5KNb4QwwMvfzTM5ZyjLcMoVRpPI0P9easODpC6mIuXsdINUPWvZfkumUhWw">
+</div>
+</div>
+</header>
+<!-- Main Content Container -->
+<main class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 shake-active" id="mainContainer">
+<!-- Interactive Top Bar: Live Interactive Scrubber & Mode Toggle Switch -->
+<section class="bubble-glass rounded-3xl p-6 lg:p-8 theme-transition shadow-2xl">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-white/10">
+<div>
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-2" style="background: var(--tag-bg); color: var(--accent-glow);">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+</svg>
+            Interactive Diurnal Switch Preview
+          </div>
+<h1 class="text-3xl lg:text-4xl font-extrabold tracking-tight font-display" id="pageHeading" style="color: var(--text-main);">
+            Celestial Starlight &amp; Daytime Horizon
+          </h1>
+<p class="text-sm mt-1 max-w-2xl leading-relaxed" style="color: var(--text-sub);">
+            Slide through the 24-hour horizon or toggle modes to observe real-time ambient lighting shifts, translucent glass bubble reflections, and adaptive activity recommendations.
+          </p>
+</div>
+<!-- 3D Big Switch Pill Widget -->
+<div class="flex items-center gap-4 self-start lg:self-center">
+<div class="text-right hidden sm:block">
+<div class="text-[11px] font-bold uppercase tracking-wider opacity-70" style="color: var(--text-sub);">Quick Switcher</div>
+<div class="text-sm font-extrabold" id="currentThemeLabel" style="color: var(--accent-glow);">Nocturnal Starlight</div>
+</div>
+<!-- Dynamic Yin-Yang / Dual-Tone Switch Pill -->
+<div class="relative w-24 h-12 rounded-full p-1 cursor-pointer transition-all duration-500 shadow-inner border border-white/30 flex items-center" id="themeTogglePill" onclick="cycleTheme()" style="background: linear-gradient(135deg, rgba(108, 92, 231, 0.6) 0%, rgba(56, 189, 248, 0.6) 100%);">
+<div class="w-10 h-10 rounded-full bg-white shadow-xl flex items-center justify-center transform transition-transform duration-500 ease-out translate-x-0" id="switchKnob">
+<span class="text-base text-brand-amethyst" id="switchIcon">🌙</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 24-Hour Interactive Diurnal Slider -->
+<div class="pt-6 space-y-4">
+<div class="flex items-center justify-between text-xs font-semibold" style="color: var(--text-sub);">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-brand-cyan"></span>
+<span>Diurnal Progression Time:</span>
+<span class="font-extrabold text-sm px-2.5 py-0.5 rounded-full bubble-glass-soft" id="sliderTimeDisplay" style="color: var(--text-main);">02:00 (Starlight Night)</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-indigo-400"></span> Night: 20:00 - 05:00</span>
+<span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-pink-400"></span> Twilight: 05:00 - 07:00 / 18:00 - 20:00</span>
+<span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-400"></span> Day: 07:00 - 18:00</span>
+</div>
+</div>
+<div class="relative w-full">
+<input class="w-full cursor-ew-resize" id="timeScrubber" max="24" min="0" oninput="onTimeSliderChange(this.value)" step="0.5" type="range" value="2">
+<!-- Time tick milestones -->
+<div class="flex justify-between text-[11px] font-medium pt-2 opacity-60" style="color: var(--text-sub);">
+<span>00:00 (Midnight)</span>
+<span>06:00 (Sunrise)</span>
+<span>12:00 (Solar Noon)</span>
+<span>18:00 (Sunset)</span>
+<span>24:00 (Midnight)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive Atmospheric Particle Simulator Control Dock (with Thunderstorm & Lightning Controls) -->
+<section class="bubble-glass rounded-3xl p-5 lg:p-6 theme-transition shadow-2xl border border-cyan-400/20 relative overflow-hidden lightning-specular-flash" id="particleSimulatorDock">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+<!-- Title & Live Status -->
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20 flex-shrink-0" id="particleEngineIcon">
+<svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" stroke-width="2" style="animation-duration: 8s;" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<path d="M12 3v3M12 18v3M3 12h3M18 12h3M6.3 6.3l2.1 2.1M15.6 15.6l2.1 2.1M6.3 17.7l2.1-2.1M15.6 8.4l2.1-2.1"></path>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="text-sm font-extrabold tracking-wide uppercase font-display" style="color: var(--text-main);">Atmospheric Particle Simulator</h2>
+<span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 flex items-center gap-1" id="engineStatusBadge">
+<span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span> 60 FPS Engine
+</span>
+</div>
+<p class="text-xs mt-0.5" style="color: var(--text-sub);">
+              Interactive physics simulation. Move cursor over screen for vortex deflection or click sky to summon lightning bolts.
+            </p>
+</div>
+</div>
+<!-- Particle Mode Selector Pills (Includes Thunderstorm) -->
+<div class="flex items-center flex-wrap gap-1.5 p-1 rounded-2xl bg-black/25 backdrop-blur-md border border-white/10">
+<button class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 bg-brand-amethyst text-white shadow-md shadow-brand-amethyst/30" id="pModeStars" onclick="setParticleMode('stars')">
+<span>✨</span>
+<span>Clear / Stars</span>
+</button>
+<button class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 text-slate-300 hover:text-white hover:bg-white/10" id="pModeWind" onclick="setParticleMode('wind')">
+<span>💨</span>
+<span>Alpine Wind Gusts</span>
+</button>
+<button class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 text-slate-300 hover:text-white hover:bg-white/10" id="pModeRain" onclick="setParticleMode('rain')">
+<span>🌧️</span>
+<span>Rain Shower</span>
+</button>
+<button class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 text-slate-300 hover:text-white hover:bg-white/10" id="pModeSnow" onclick="setParticleMode('snow')">
+<span>❄️</span>
+<span>Snow Flurry</span>
+</button>
+<!-- New Thunderstorm Mode Button -->
+<button class="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-200 text-amber-300 hover:text-white hover:bg-amber-500/20 border border-amber-400/30" id="pModeStorm" onclick="setParticleMode('storm')">
+<span class="animate-bounce">⚡</span>
+<span>Thunderstorm</span>
+</button>
+</div>
+</div>
+<!-- Action Row for Thunderstorm Testing: Trigger Lightning Button & Audio Rumble Toggle -->
+<div class="mt-4 pt-3.5 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/[0.02] -mx-5 px-5 lg:-mx-6 lg:px-6">
+<div class="flex items-center gap-2">
+<!-- Dedicated Instant Lightning Bolt Trigger -->
+<button class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-2 bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-600 hover:from-amber-400 hover:via-purple-500 hover:to-indigo-500 text-white shadow-lg shadow-purple-600/30 transition-all transform active:scale-95 border border-white/20" onclick="triggerLightningManually()">
+<svg class="w-4 h-4 text-amber-200" fill="currentColor" viewBox="0 0 24 24">
+<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+</svg>
+<span>⚡ Trigger Lightning Bolt</span>
+</button>
+<!-- Thunder Audio Synthesis Toggle -->
+<button class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 bubble-glass-soft text-slate-200 hover:text-white border border-white/15 transition-all" id="thunderAudioToggle" onclick="toggleThunderAudio()">
+<span id="audioIcon">🔊</span>
+<span id="audioStatusText">Thunder Rumble: On</span>
+</button>
+<span class="text-[11px] opacity-70 hidden sm:inline ml-2" style="color: var(--text-sub);">
+Tip: Click or tap anywhere in the sky backdrop to unleash strike at coordinate!
+</span>
+</div>
+<!-- Real-time Strike Proximity Badge -->
+<div class="flex items-center gap-2 text-xs font-medium" id="strikeLiveStats" style="color: var(--text-sub);">
+<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+<span class="font-bold text-amber-300" id="strikeStatusPill">Strike: 3.5 km North Ridge</span>
+<span class="opacity-40">|</span>
+<span id="strikeCounterPill">Strikes: 8 recorded</span>
+</div>
+</div>
+<!-- Controls Slider Row: Wind Vector, Speed, and Precipitation Intensity + Lightning Frequency -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 mt-1 border-t border-white/10 text-xs">
+<!-- Wind Speed & Direction Scrubber -->
+<div class="bubble-glass-soft rounded-2xl p-3 space-y-2">
+<div class="flex items-center justify-between font-semibold" style="color: var(--text-main);">
+<span class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"></path>
+<path d="M9.6 4.6A2 2 0 1 1 11 8H2"></path>
+<path d="M12.6 19.4A2 2 0 1 0 14 16H2"></path>
+</svg>
+              Wind Velocity:
+            </span>
+<span class="text-cyan-300 font-bold text-xs" id="windSpeedLabel">12 km/h Gentle</span>
+</div>
+<input class="w-full cursor-ew-resize" id="windSpeedSlider" max="75" min="2" oninput="onWindSpeedChange(this.value)" step="1" type="range" value="12">
+<div class="flex justify-between text-[10px] opacity-60" style="color: var(--text-sub);">
+<span>2 km/h (Calm)</span>
+<span>35 km/h (Gale)</span>
+<span>75 km/h (Storm)</span>
+</div>
+</div>
+<!-- Precipitation / Density Volume Scrubber -->
+<div class="bubble-glass-soft rounded-2xl p-3 space-y-2">
+<div class="flex items-center justify-between font-semibold" style="color: var(--text-main);">
+<span class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+<path d="M16 14v6M8 14v6M12 16v6"></path>
+</svg>
+              Particle Density &amp; Flux:
+            </span>
+<span class="text-brand-periwinkle font-bold text-xs" id="precipDensityLabel">Medium (180 particles)</span>
+</div>
+<input class="w-full cursor-ew-resize" id="precipDensitySlider" max="450" min="40" oninput="onParticleDensityChange(this.value)" step="10" type="range" value="180">
+<div class="flex justify-between text-[10px] opacity-60" style="color: var(--text-sub);">
+<span>Sparse / Drizzle</span>
+<span>Moderate</span>
+<span>Torrential Storm</span>
+</div>
+</div>
+<!-- Wind Angle / Shear Vector -->
+<div class="bubble-glass-soft rounded-2xl p-3 space-y-2">
+<div class="flex items-center justify-between font-semibold" style="color: var(--text-main);">
+<span class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+</svg>
+              Wind Trajectory Angle:
+            </span>
+<span class="text-amber-300 font-bold text-xs" id="windAngleLabel">Angle: +22° Eastward</span>
+</div>
+<input class="w-full cursor-ew-resize" id="windAngleSlider" max="60" min="-60" oninput="onWindAngleChange(this.value)" step="2" type="range" value="22">
+<div class="flex justify-between text-[10px] opacity-60" style="color: var(--text-sub);">
+<span>-60° (Westward)</span>
+<span>0° (Vertical)</span>
+<span>+60° (Eastward)</span>
+</div>
+</div>
+<!-- Lightning Flash Frequency Slider -->
+<div class="bubble-glass-soft rounded-2xl p-3 space-y-2 border border-purple-400/20 bg-purple-950/20">
+<div class="flex items-center justify-between font-semibold" style="color: var(--text-main);">
+<span class="flex items-center gap-1.5">
+<span class="text-amber-300">⚡</span>
+              Lightning Activity:
+            </span>
+<span class="text-purple-300 font-bold text-xs" id="lightningFreqLabel">Active (Every 5s)</span>
+</div>
+<input class="w-full cursor-ew-resize accent-purple-400" id="lightningFreqSlider" max="3" min="0" oninput="onLightningFreqChange(this.value)" step="1" type="range" value="2">
+<div class="flex justify-between text-[10px] opacity-60" style="color: var(--text-sub);">
+<span>Off</span>
+<span>Occasional</span>
+<span>Active</span>
+<span>Severe</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Core Interactive Weather & Microclimate Display (Two Hero Bubbles) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Hero: The Big Translucent Weather Bubble -->
+<div class="lg:col-span-7 bubble-glass rounded-3xl p-8 space-y-6 theme-transition relative overflow-hidden group lightning-specular-flash" id="basecampCard">
+<!-- Ambient specular shine -->
+<div class="absolute -top-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex items-start justify-between relative z-10">
+<div>
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-white/15" id="basecampPill" style="color: var(--text-main);">Live Basecamp</span>
+<span class="text-xs font-medium" style="color: var(--text-sub);">Bernese Oberland • Station 2,163m</span>
+</div>
+<h2 class="text-3xl lg:text-4xl font-extrabold mt-1 tracking-tight font-display" style="color: var(--text-main);">
+              Interlaken Crest
+            </h2>
+<p class="text-sm font-medium mt-0.5" id="weatherSubtext" style="color: var(--text-sub);">
+              Clear Starlight Sky • Bortle Class 2 Visibility • 0% Rain Risk
+            </p>
+</div>
+<!-- Dynamic 3D Celestial Weather Orb -->
+<div class="animate-float-orb w-24 h-24 lg:w-28 lg:h-28 rounded-3xl p-3 flex flex-col items-center justify-center shadow-2xl relative transition-all duration-500" id="weatherIllustration" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.45) 0%, rgba(56, 189, 248, 0.35) 100%); border: 1px solid rgba(255,255,255,0.4);">
+<div class="text-5xl drop-shadow-md" id="orbEmoji">🌙</div>
+<div class="text-[10px] font-bold uppercase tracking-wider mt-1 text-white/90 text-center" id="orbLabel">Starry</div>
+</div>
+</div>
+<!-- Big Temperature & Status Reading -->
+<div class="flex items-baseline gap-4 pt-2">
+<span class="text-7xl lg:text-8xl font-black tracking-tighter font-display" id="bigTemp" style="color: var(--text-main);">14°</span>
+<div>
+<div class="text-2xl font-bold opacity-80" id="tempUnit" style="color: var(--accent-glow);">Celsius</div>
+<div class="text-xs font-semibold" id="feelsLike" style="color: var(--text-sub);">Feels like 12° • Low 9° / High 21°</div>
+</div>
+</div>
+<!-- Metric Bubbles Row (Adaptive for Thunderstorm CAPE & Strike Proximity) -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+<div class="bubble-glass-soft rounded-2xl p-3.5 text-center transition-all duration-300" id="metricCard1">
+<div class="text-[10px] font-bold uppercase tracking-wider opacity-70" id="metricLabel1" style="color: var(--text-sub);">Precipitation</div>
+<div class="text-lg font-extrabold mt-1" id="metricRain" style="color: var(--text-main);">0.0 mm</div>
+<div class="text-[10px] text-emerald-400 font-semibold mt-0.5 truncate" id="metricRainDesc">Dry Ground</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3.5 text-center transition-all duration-300" id="metricCard2">
+<div class="text-[10px] font-bold uppercase tracking-wider opacity-70" id="metricLabel2" style="color: var(--text-sub);">Wind Vector</div>
+<div class="text-lg font-extrabold mt-1" id="metricWind" style="color: var(--text-main);">7 km/h</div>
+<div class="text-[10px] font-semibold mt-0.5 truncate" id="metricWindDesc" style="color: var(--text-sub);">Gentle SSE</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3.5 text-center transition-all duration-300" id="metricCard3">
+<div class="text-[10px] font-bold uppercase tracking-wider opacity-70" id="metricLabel3" style="color: var(--text-sub);">UV Index</div>
+<div class="text-lg font-extrabold mt-1" id="metricUV" style="color: var(--text-main);">0.0</div>
+<div class="text-[10px] font-semibold text-brand-periwinkle mt-0.5 truncate" id="metricUVDesc">No Exposure</div>
+</div>
+<div class="bubble-glass-soft rounded-2xl p-3.5 text-center transition-all duration-300" id="metricCard4">
+<div class="text-[10px] font-bold uppercase tracking-wider opacity-70" id="metricLabel4" style="color: var(--text-sub);">Air Quality</div>
+<div class="text-lg font-extrabold mt-1 text-emerald-400" id="metricAQI">12 AQI</div>
+<div class="text-[10px] font-semibold mt-0.5 truncate" id="metricAQIDesc" style="color: var(--text-sub);">Alpine Pure</div>
+</div>
+</div>
+<!-- Diurnal Progression Arc Curve (SVG) -->
+<div class="pt-4 border-t border-white/10">
+<div class="flex items-center justify-between text-xs font-semibold mb-2" style="color: var(--text-sub);">
+<span class="flex items-center gap-1.5">
+<svg class="w-4 h-4 text-brand-cyan" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<path d="M12 6v6l4 2"></path>
+</svg>
+              Celestial Arc &amp; Sun/Moon Elevation
+            </span>
+<span class="text-brand-cyan font-bold" id="arcStatusText">Zenith: Lunar Arc at 68°</span>
+</div>
+<div class="relative h-24 w-full bg-black/10 rounded-2xl p-2 overflow-hidden flex items-end">
+<!-- Curve SVG -->
+<svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 500 80">
+<defs>
+<linearGradient id="arcGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#38BDF8" stop-opacity="0.35"></stop>
+<stop offset="100%" stop-color="#7C3AED" stop-opacity="0.0"></stop>
+</linearGradient>
+</defs>
+<path d="M0,75 Q250,5 500,75 L500,80 L0,80 Z" fill="url(#arcGradient)"></path>
+<path d="M0,75 Q250,5 500,75" fill="none" stroke="#38BDF8" stroke-linecap="round" stroke-width="3"></path>
+<circle class="shadow-lg" cx="60" cy="62" fill="#FFFFFF" id="arcIndicatorCircle" r="7" stroke="#6C5CE7" stroke-width="2.5"></circle>
+</svg>
+</div>
+</div>
+</div>
+<!-- Right Column: Microclimate Comparison Split & Adaptive Activity Windows -->
+<div class="lg:col-span-5 space-y-6">
+<!-- Diurnal Split Differential Bubble -->
+<div class="bubble-glass rounded-3xl p-6 theme-transition shadow-xl space-y-4 lightning-specular-flash" id="splitCard">
+<div class="flex items-center justify-between">
+<h3 class="text-base font-bold flex items-center gap-2" style="color: var(--text-main);">
+<span class="text-brand-cyan">✦</span>
+              Dual-Tone Horizon Contrast
+            </h3>
+<span class="text-[11px] px-2.5 py-0.5 rounded-full bg-white/10 font-medium" id="splitDeltaPill" style="color: var(--text-sub);">Live Delta: -5°C</span>
+</div>
+<!-- Side-by-side Yin & Yang split cards -->
+<div class="grid grid-cols-2 gap-3">
+<!-- Daylight Valley Side -->
+<div class="rounded-2xl p-4 bg-gradient-to-br from-sky-400/20 to-indigo-500/10 border border-white/20 transition-all hover:scale-[1.02]">
+<div class="flex items-center justify-between">
+<span class="text-xs font-extrabold text-sky-300 uppercase tracking-wider" id="splitCard1Title">Daylight</span>
+<span class="text-lg" id="splitCard1Icon">☀️</span>
+</div>
+<div class="text-2xl font-black mt-2 text-white" id="splitCard1Temp">21°C</div>
+<div class="text-[11px] font-medium text-slate-300 mt-0.5">Interlaken Valley</div>
+<div class="text-[10px] text-sky-200 mt-2 bg-sky-500/20 px-2 py-1 rounded-md inline-block" id="splitCard1Badge">
+                Solar Flux: 640 W/m²
+              </div>
+</div>
+<!-- Starlight Ridge Side -->
+<div class="rounded-2xl p-4 bg-gradient-to-br from-purple-900/40 to-slate-900/40 border border-purple-400/30 transition-all hover:scale-[1.02]">
+<div class="flex items-center justify-between">
+<span class="text-xs font-extrabold text-purple-300 uppercase tracking-wider" id="splitCard2Title">Starlight</span>
+<span class="text-lg" id="splitCard2Icon">✨</span>
+</div>
+<div class="text-2xl font-black mt-2 text-white" id="splitCard2Temp">14°C</div>
+<div class="text-[11px] font-medium text-slate-300 mt-0.5">Zermatt Crest</div>
+<div class="text-[10px] text-purple-200 mt-2 bg-purple-500/20 px-2 py-1 rounded-md inline-block" id="splitCard2Badge">
+                Seeing: 0.68 ArcSec
+              </div>
+</div>
+</div>
+</div>
+<!-- Weather-Adaptive Activity Recommendations -->
+<div class="bubble-glass rounded-3xl p-6 theme-transition shadow-xl space-y-4 lightning-specular-flash" id="recommendationSection">
+<div class="flex items-center justify-between">
+<h3 class="text-base font-bold flex items-center gap-2" style="color: var(--text-main);">
+<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+<polyline points="22 4 12 14.01 9 11.01"></polyline>
+</svg>
+              Adaptive Recommendation Windows
+            </h3>
+<span class="text-[11px] font-semibold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full" id="activityMatchFilter">
+              Night Matched
+            </span>
+</div>
+<!-- Activity Cards Feed -->
+<div class="space-y-3" id="activityContainer">
+<!-- Dynamically populated or updated by JS -->
+</div>
+</div>
+</div>
+</div>
+<!-- Multi-Location Horizon Preview -->
+<section class="bubble-glass rounded-3xl p-6 lg:p-8 theme-transition shadow-2xl space-y-4">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-xl font-extrabold tracking-tight font-display" style="color: var(--text-main);">
+            Global Microclimate Bubble Deck
+          </h3>
+<p class="text-xs mt-0.5" style="color: var(--text-sub);">
+            Real-time multi-station telemetry adapting instantly to global light cycles
+          </p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-xs font-semibold px-3 py-1 rounded-full bubble-glass-soft" style="color: var(--text-main);">
+            6 Active Sensors Synchronized
+          </span>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 pt-2">
+<!-- Station 1: Interlaken -->
+<div class="bubble-glass-soft rounded-2xl p-4 text-center group hover:border-brand-cyan/60 transition-all cursor-pointer">
+<div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+<span>CH</span>
+<span class="station-icon text-sm" id="stIcon1">🌙</span>
+</div>
+<div class="text-xs font-bold truncate" style="color: var(--text-main);">Interlaken</div>
+<div class="text-2xl font-black mt-1 station-temp" id="stTemp1" style="color: var(--text-main);">14°</div>
+<div class="text-[10px] font-semibold text-brand-cyan mt-1" id="stDesc1">98% Ridge Viability</div>
+</div>
+<!-- Station 2: Zermatt -->
+<div class="bubble-glass-soft rounded-2xl p-4 text-center group hover:border-brand-violet/60 transition-all cursor-pointer">
+<div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+<span>CH</span>
+<span class="station-icon text-sm">✨</span>
+</div>
+<div class="text-xs font-bold truncate" style="color: var(--text-main);">Zermatt</div>
+<div class="text-2xl font-black mt-1 station-temp" style="color: var(--text-main);">9°</div>
+<div class="text-[10px] font-semibold text-brand-periwinkle mt-1">94% Star Clarity</div>
+</div>
+<!-- Station 3: Banff -->
+<div class="bubble-glass-soft rounded-2xl p-4 text-center group hover:border-brand-cyan/60 transition-all cursor-pointer">
+<div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+<span>CA</span>
+<span class="station-icon text-sm">☁️</span>
+</div>
+<div class="text-xs font-bold truncate" style="color: var(--text-main);">Banff Pass</div>
+<div class="text-2xl font-black mt-1 station-temp" style="color: var(--text-main);">11°</div>
+<div class="text-[10px] font-semibold text-emerald-400 mt-1">89% Glacial Trail</div>
+</div>
+<!-- Station 4: Boulder -->
+<div class="bubble-glass-soft rounded-2xl p-4 text-center group hover:border-amber-400/60 transition-all cursor-pointer">
+<div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+<span>US</span>
+<span class="station-icon text-sm">☀️</span>
+</div>
+<div class="text-xs font-bold truncate" style="color: var(--text-main);">Boulder</div>
+<div class="text-2xl font-black mt-1 station-temp" style="color: var(--text-main);">22°</div>
+<div class="text-[10px] font-semibold text-amber-300 mt-1">92% Bouldering</div>
+</div>
+<!-- Station 5: Kyoto -->
+<div class="bubble-glass-soft rounded-2xl p-4 text-center group hover:border-brand-periwinkle/60 transition-all cursor-pointer">
+<div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+<span>JP</span>
+<span class="station-icon text-sm">🌧️</span>
+</div>
+<div class="text-xs font-bold truncate" style="color: var(--text-main);">Kyoto</div>
+<div class="text-2xl font-black mt-1 station-temp" style="color: var(--text-main);">17°</div>
+<div class="text-[10px] font-semibold text-indigo-300 mt-1">88% Teahouse &amp; Spa</div>
+</div>
+<!-- Station 6: Queenstown -->
+<div class="bubble-glass-soft rounded-2xl p-4 text-center group hover:border-brand-cyan/60 transition-all cursor-pointer">
+<div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+<span>NZ</span>
+<span class="station-icon text-sm">💨</span>
+</div>
+<div class="text-xs font-bold truncate" style="color: var(--text-main);">Queenstown</div>
+<div class="text-2xl font-black mt-1 station-temp" style="color: var(--text-main);">13°</div>
+<div class="text-[10px] font-semibold text-cyan-300 mt-1">95% Alpine Sail</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Persistent Web Footer -->
+<footer class="relative z-20 border-t border-white/10 theme-transition bg-black/20 backdrop-blur-md px-6 py-6 mt-12 text-center text-xs" style="color: var(--text-sub);">
+<div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+<span>Atmospheric Core: Online</span>
+<span class="opacity-40">•</span>
+<span>ECMWF 0.1° / SwissMeteo High-Res Sync</span>
+</div>
+<div>
+        © 2025 SkyPlan Celestial Weather &amp; Activity Intelligence • Interactive Dual-Tone Architecture with Convective Lightning Engine
+      </div>
+<div class="flex items-center gap-4 text-xs font-medium" style="color: var(--text-main);">
+<a class="hover:underline" href="#">Privacy Protocol</a>
+<a class="hover:underline" href="#">Terms</a>
+<a class="hover:underline" href="#">API Quotas</a>
+</div>
+</div>
+</footer>
+<!-- Vanilla JavaScript for Particle Simulation, Diurnal Switching, Procedural Lightning, and Web Audio Thunder Synthesis -->
+<script>
+    // State management
+    let currentMode = 'night'; // 'night' | 'twilight' | 'day'
+    let particleMode = 'stars'; // 'stars' | 'wind' | 'rain' | 'snow' | 'storm'
+    let windSpeed = 12; // km/h
+    let windAngleDeg = 22; // degrees (-60 to +60)
+    let particleCount = 180; // active target count
+    let lightningFreq = 2; // 0: off, 1: occasional (12s), 2: active (5s), 3: severe (2.5s)
+    let lightningTimer = null;
+    let strikeCount = 0;
+    let thunderAudioEnabled = true;
+    let audioCtx = null;
+
+    // Active procedural lightning bolts currently rendering on canvas
+    let activeBolts = [];
+
+    // Cursor mouse tracking for hydrodynamic deflection
+    const mouse = {
+      x: -1000,
+      y: -1000,
+      radius: 130,
+      vx: 0,
+      vy: 0,
+      prevX: -1000,
+      prevY: -1000
+    };
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.vx = (e.clientX - mouse.x) * 0.35;
+      mouse.vy = (e.clientY - mouse.y) * 0.35;
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    window.addEventListener('mouseleave', () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+      mouse.vx = 0;
+      mouse.vy = 0;
+    });
+
+    // Click anywhere on sky / background / canvas to strike lightning
+    window.addEventListener('click', (e) => {
+      // Avoid firing if clicking inside controls or interactive inputs
+      if (e.target.closest('button, input, a, select')) return;
+      spawnLightningBolt(e.clientX, e.clientY);
+    });
+
+    // Web Audio API Procedural Thunder Rumble Synthesizer
+    function playThunderSound() {
+      if (!thunderAudioEnabled) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        if (!audioCtx) {
+          audioCtx = new AudioContext();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        const now = audioCtx.currentTime;
+        // Deep rumble oscillator
+        const osc = audioCtx.createOscillator();
+        const oscGain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(80, now);
+        osc.frequency.exponentialRampToValueAtTime(32, now + 1.2);
+
+        // Low-pass filter for distant mountain echo
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(280, now);
+        filter.frequency.exponentialRampToValueAtTime(70, now + 1.6);
+
+        // Noise buffer for crackle/impact
+        const bufferSize = audioCtx.sampleRate * 1.5;
+        const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioCtx.sampleRate * 0.35));
+        }
+        const whiteNoise = audioCtx.createBufferSource();
+        whiteNoise.buffer = noiseBuffer;
+        const noiseGain = audioCtx.createGain();
+
+        noiseGain.gain.setValueAtTime(0.4, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 1.4);
+
+        oscGain.gain.setValueAtTime(0.35, now);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, now + 1.8);
+
+        whiteNoise.connect(filter);
+        osc.connect(filter);
+        filter.connect(audioCtx.destination);
+
+        whiteNoise.start(now);
+        osc.start(now);
+        whiteNoise.stop(now + 1.8);
+        osc.stop(now + 1.8);
+      } catch (err) {
+        // Audio synthesis fallback silently ignored if blocked by autoplay policy
+      }
+    }
+
+    function toggleThunderAudio() {
+      thunderAudioEnabled = !thunderAudioEnabled;
+      const audioIcon = document.getElementById('audioIcon');
+      const audioText = document.getElementById('audioStatusText');
+      if (thunderAudioEnabled) {
+        audioIcon.textContent = '🔊';
+        audioText.textContent = 'Thunder Rumble: On';
+        // Prime audio context
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+      } else {
+        audioIcon.textContent = '🔇';
+        audioText.textContent = 'Thunder Rumble: Muted';
+      }
+    }
+
+    // Procedural Lightning Bolt Generator Class
+    class LightningBolt {
+      constructor(startX, startY, endX, endY) {
+        this.segments = [];
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
+        this.alpha = 1.0;
+        this.decay = 0.05 + Math.random() * 0.04;
+        this.branches = [];
+        this.generate();
+      }
+
+      generate() {
+        this.segments = this.createForkSegments(this.startX, this.startY, this.endX, this.endY, 6, 45);
+        // Generate 2-4 branching forks
+        const branchCount = Math.floor(Math.random() * 3) + 2;
+        for (let i = 0; i < branchCount; i++) {
+          const splitIdx = Math.floor(Math.random() * (this.segments.length - 2)) + 1;
+          const splitPoint = this.segments[splitIdx];
+          const angle = (Math.random() * 0.8 - 0.4) + Math.PI / 2;
+          const length = (Math.random() * 140) + 80;
+          const bEndX = splitPoint.x + Math.sin(angle) * length;
+          const bEndY = splitPoint.y + Math.cos(angle) * length;
+          this.branches.push(this.createForkSegments(splitPoint.x, splitPoint.y, bEndX, bEndY, 4, 30));
+        }
+      }
+
+      createForkSegments(x1, y1, x2, y2, iterations, maxDisplacement) {
+        let points = [{ x: x1, y: y1 }, { x: x2, y: y2 }];
+        let displacement = maxDisplacement;
+
+        for (let i = 0; i < iterations; i++) {
+          let newPoints = [];
+          for (let j = 0; j < points.length - 1; j++) {
+            const p1 = points[j];
+            const p2 = points[j + 1];
+            const midX = (p1.x + p2.x) / 2 + (Math.random() * 2 - 1) * displacement;
+            const midY = (p1.y + p2.y) / 2 + (Math.random() * 2 - 1) * (displacement * 0.4);
+            newPoints.push(p1);
+            newPoints.push({ x: midX, y: midY });
+          }
+          newPoints.push(points[points.length - 1]);
+          points = newPoints;
+          displacement *= 0.55;
+        }
+        return points;
+      }
+
+      update() {
+        this.alpha -= this.decay;
+        return this.alpha > 0;
+      }
+
+      draw(context) {
+        if (this.alpha <= 0) return;
+        context.save();
+
+        // 1. Draw Outer Halo Glow
+        context.strokeStyle = `rgba(129, 140, 248, ${this.alpha * 0.7})`;
+        context.lineWidth = 9;
+        context.lineCap = 'round';
+        context.lineJoin = 'round';
+        context.shadowColor = 'rgba(56, 189, 248, 0.9)';
+        context.shadowBlur = 24;
+
+        this.renderPath(context, this.segments);
+        for (const branch of this.branches) {
+          this.renderPath(context, branch);
+        }
+
+        // 2. Draw Secondary Cyan/Violet Ionization Core
+        context.strokeStyle = `rgba(196, 181, 253, ${this.alpha * 0.9})`;
+        context.lineWidth = 4;
+        context.shadowBlur = 12;
+        this.renderPath(context, this.segments);
+        for (const branch of this.branches) {
+          this.renderPath(context, branch);
+        }
+
+        // 3. Draw Hyper-Bright Pure White Core
+        context.strokeStyle = `rgba(255, 255, 255, ${this.alpha})`;
+        context.lineWidth = 2.2;
+        context.shadowBlur = 0;
+        this.renderPath(context, this.segments);
+        for (const branch of this.branches) {
+          context.lineWidth = 1.4;
+          this.renderPath(context, branch);
+        }
+
+        context.restore();
+      }
+
+      renderPath(context, pts) {
+        if (pts.length < 2) return;
+        context.beginPath();
+        context.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) {
+          context.lineTo(pts[i].x, pts[i].y);
+        }
+        context.stroke();
+      }
+    }
+
+    // Trigger Lightning Flash and Procedural Bolt
+    function spawnLightningBolt(targetX = null, targetY = null) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      // Calculate origin (cloud base near top) and target (mountain ridges or click target)
+      const startX = targetX !== null ? targetX + (Math.random() * 80 - 40) : Math.random() * (w * 0.8) + (w * 0.1);
+      const startY = Math.random() * 40;
+      const endX = targetX !== null ? targetX : startX + (Math.random() * 260 - 130);
+      const endY = targetY !== null ? targetY : Math.random() * (h * 0.35) + (h * 0.55);
+
+      // Create primary procedural bolt
+      activeBolts.push(new LightningBolt(startX, startY, endX, endY));
+
+      // 40% chance of a tandem secondary lightning strike fork
+      if (Math.random() < 0.45) {
+        setTimeout(() => {
+          activeBolts.push(new LightningBolt(startX + (Math.random() * 90 - 45), startY, endX + (Math.random() * 80 - 40), endY + 30));
+        }, 90);
+      }
+
+      // Execute Multi-Stage Atmospheric Flash Sequence
+      executeAtmosphericFlash();
+
+      // Screen micro-shake
+      triggerScreenShake();
+
+      // Trigger synthesized thunder sound
+      playThunderSound();
+
+      // Update strike count and status telemetry
+      strikeCount++;
+      const dist = (Math.random() * 2.8 + 0.8).toFixed(1);
+      const directions = ['East', 'NNE', 'SSE', 'North Ridge', 'Jungfrau Crest', 'Pass Horizon'];
+      const dir = directions[Math.floor(Math.random() * directions.length)];
+      document.getElementById('strikeCounterPill').textContent = `Strikes: ${strikeCount} recorded`;
+      document.getElementById('strikeStatusPill').textContent = `Strike: ${dist} km ${dir}`;
+
+      if (particleMode === 'storm') {
+        const uvDesc = document.getElementById('metricUVDesc');
+        if (uvDesc) uvDesc.textContent = `Strike: ${dist} km ${dir}`;
+      }
+    }
+
+    // Multi-stage lightning flash sequence (rapid double/triple luminous flash)
+    function executeAtmosphericFlash() {
+      const flashOverlay = document.getElementById('ambientFlashOverlay');
+      const cards = [
+        document.getElementById('basecampCard'),
+        document.getElementById('particleSimulatorDock'),
+        document.getElementById('splitCard'),
+        document.getElementById('recommendationSection')
+      ];
+
+      // Stage 1: Initial intense flash
+      flashOverlay.style.opacity = "0.9";
+      cards.forEach(c => c && c.classList.add('lightning-specular-flash'));
+
+      setTimeout(() => {
+        // Stage 2: Brief dip
+        flashOverlay.style.opacity = "0.2";
+      }, 55);
+
+      setTimeout(() => {
+        // Stage 3: Secondary reactionary flash
+        flashOverlay.style.opacity = "0.8";
+      }, 105);
+
+      setTimeout(() => {
+        // Stage 4: Lingering ion glow decay
+        flashOverlay.style.opacity = "0.25";
+      }, 180);
+
+      setTimeout(() => {
+        // Final fade out
+        flashOverlay.style.opacity = "0";
+        cards.forEach(c => c && c.classList.remove('lightning-specular-flash'));
+      }, 420);
+    }
+
+    function triggerScreenShake() {
+      const root = document.getElementById('mainContainer');
+      if (!root) return;
+      root.classList.remove('shake-active');
+      void root.offsetWidth; // trigger reflow
+      root.classList.add('shake-active');
+      setTimeout(() => {
+        root.classList.remove('shake-active');
+      }, 360);
+    }
+
+    function triggerLightningManually() {
+      spawnLightningBolt();
+    }
+
+    function scheduleNextLightning() {
+      if (lightningTimer) clearTimeout(lightningTimer);
+      if (lightningFreq === 0) return; // Off
+
+      let intervalMs = 6000;
+      if (lightningFreq === 1) intervalMs = 11000 + Math.random() * 5000; // Occasional
+      else if (lightningFreq === 2) intervalMs = 4500 + Math.random() * 3000; // Active
+      else if (lightningFreq === 3) intervalMs = 2000 + Math.random() * 1800; // Severe
+
+      lightningTimer = setTimeout(() => {
+        if (particleMode === 'storm' || lightningFreq >= 2) {
+          spawnLightningBolt();
+        }
+        scheduleNextLightning();
+      }, intervalMs);
+    }
+
+    function onLightningFreqChange(val) {
+      lightningFreq = parseInt(val, 10);
+      const labels = ['Off', 'Occasional (~12s)', 'Active (~5s)', 'Severe Convective (~2.5s)'];
+      document.getElementById('lightningFreqLabel').textContent = labels[lightningFreq];
+      scheduleNextLightning();
+    }
+
+    // Generate random ambient star background particles
+    function generateStars() {
+      const starField = document.getElementById('starField');
+      starField.innerHTML = '';
+      const starCount = 65;
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'floating-star';
+        const size = Math.random() * 2.5 + 1;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.top = Math.random() * 85 + '%';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.opacity = (Math.random() * 0.7 + 0.3).toString();
+        star.style.animation = `pulseSoft ${Math.random() * 3 + 2}s infinite ease-in-out`;
+        starField.appendChild(star);
+      }
+    }
+
+    // Recommendation card data sets
+    const activitiesByMode = {
+      night: [
+        {
+          title: "Matterhorn Peak Stargazing & Milky Way Photography",
+          window: "21:30 - 02:00",
+          match: "99% Optimal",
+          desc: "Pristine Bortle Class 2 sky, zero cloud veil, moon illumination at 12%. Exceptional seeing conditions.",
+          type: "Astrotourism",
+          badgeColor: "bg-purple-500/20 text-purple-300 border-purple-400/30",
+          icon: "🔭"
+        },
+        {
+          title: "Unterseen Fireside Alpine Dinner & Nocturnal Walk",
+          window: "19:00 - 22:30",
+          match: "96% Viable",
+          desc: "Sheltered outdoor terrace, crisp 14°C night air, gentle wind shear under 8 km/h.",
+          type: "Culinary & Walk",
+          badgeColor: "bg-indigo-500/20 text-indigo-300 border-indigo-400/30",
+          icon: "🍷"
+        },
+        {
+          title: "St. Beatus Subterranean Caves & Illuminated Grottos",
+          window: "Open 24/7 Night Access",
+          match: "100% Weatherproof",
+          desc: "Constant 10°C subterranean microclimate. Completely unaffected by exterior alpine frost.",
+          type: "Indoor Alternative",
+          badgeColor: "bg-cyan-500/20 text-cyan-300 border-cyan-400/30",
+          icon: "🛡️"
+        }
+      ],
+      twilight: [
+        {
+          title: "Harder Kulm Sunset Panorama & Golden Arc",
+          window: "17:45 - 19:30",
+          match: "97% Optimal",
+          desc: "Direct solar alignment over Eiger & Jungfrau. Vivid atmospheric refraction and purple haze tones.",
+          type: "Landscape Photography",
+          badgeColor: "bg-pink-500/20 text-pink-300 border-pink-400/30",
+          icon: "📸"
+        },
+        {
+          title: "Lake Brienz Twilight Kayak & Mirror Drift",
+          window: "18:00 - 20:00",
+          match: "92% Calm Water",
+          desc: "Glacial waters settle to zero chop. Water temperature 15°C with sunset gradient reflections.",
+          type: "Watersport",
+          badgeColor: "bg-purple-500/20 text-purple-300 border-purple-400/30",
+          icon: "🛶"
+        },
+        {
+          title: "Lauterbrunnen Valley E-Bike Sunset Loop",
+          window: "17:00 - 18:45",
+          match: "85% Fair Fit",
+          desc: "Light valley headwind (14 km/h). Warm layers advised as temperature dips from 18°C to 14°C.",
+          type: "Cycling & Tour",
+          badgeColor: "bg-amber-500/20 text-amber-300 border-amber-400/30",
+          icon: "🚴"
+        }
+      ],
+      day: [
+        {
+          title: "Hardergrat Ridge Alpine Crest Hike",
+          window: "09:30 - 14:00",
+          match: "98% Optimal",
+          desc: "Dry limestone trail surface, low UV index peak, crystalline visibility extending 45 km to Mont Blanc.",
+          type: "High Mountain Hike",
+          badgeColor: "bg-emerald-500/20 text-emerald-300 border-emerald-400/30",
+          icon: "🥾"
+        },
+        {
+          title: "Lake Brienz Morning Kayak & Shoreline Exploration",
+          window: "10:00 - 13:30",
+          match: "94% Optimal",
+          desc: "Glass water mirror condition, sub-6 km/h thermal drift, sparkling turquoise alpine reflections.",
+          type: "Watersport",
+          badgeColor: "bg-sky-500/20 text-sky-300 border-sky-400/30",
+          icon: "⛵"
+        },
+        {
+          title: "Victoria-Jungfrau Panoramic Thermal Spa & Indoor Gallery",
+          window: "11:00 - 17:00",
+          match: "100% Contingency",
+          desc: "Relaxing indoor thermal salt pools with floor-to-ceiling glass looking toward the sunny summit.",
+          type: "Wellness & Culture",
+          badgeColor: "bg-blue-500/20 text-blue-300 border-blue-400/30",
+          icon: "🧖"
+        }
+      ],
+      storm: [
+        {
+          title: "⚡ SEVERE LIGHTNING HAZARD: Hardergrat & Crest Trail EVACUATED",
+          window: "Immediate Closure",
+          match: "0% Critical Risk",
+          desc: "Ridge exposed to cloud-to-ground lightning arcs, 54+ km/h squall gusts, and flash flood hydroplaning.",
+          type: "Hazard Alert",
+          badgeColor: "bg-rose-500/30 text-rose-300 border-rose-400/50 animate-pulse",
+          icon: "⚠️"
+        },
+        {
+          title: "St. Beatus Caves & Subterranean Bunker Sanctuary",
+          window: "Immediate Safe Refuge",
+          match: "100% Lightning Proof",
+          desc: "Natural limestone cavern shelter entirely insulated from electrical atmospheric discharge. Illuminated indoor grottos.",
+          type: "Emergency Refuge",
+          badgeColor: "bg-emerald-500/20 text-emerald-300 border-emerald-400/30",
+          icon: "🛡️"
+        },
+        {
+          title: "Interlaken Observatory Meteorological Stream & Spa",
+          window: "Open During Squall",
+          match: "98% Indoor Match",
+          desc: "Watch convective cloud development and lightning forks from reinforced panoramic tempered glass observatory.",
+          type: "Storm Chasing",
+          badgeColor: "bg-purple-500/20 text-purple-300 border-purple-400/30",
+          icon: "⚡"
+        }
+      ]
+    };
+
+    function renderActivities(mode) {
+      const container = document.getElementById('activityContainer');
+      const items = activitiesByMode[mode] || activitiesByMode.night;
+      container.innerHTML = items.map(item => `
+        <div class="bubble-glass-soft rounded-2xl p-4 transition-all duration-300 hover:scale-[1.01] border border-white/10 hover:border-white/25">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3">
+              <span class="text-2xl p-2 rounded-xl bg-white/10 flex-shrink-0">${item.icon}</span>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-xs font-bold" style="color: var(--text-main);">${item.title}</span>
+                  <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${item.badgeColor}">${item.match}</span>
+                </div>
+                <p class="text-xs mt-1 leading-relaxed" style="color: var(--text-sub);">${item.desc}</p>
+                <div class="flex items-center gap-4 mt-2 text-[11px] font-semibold" style="color: var(--text-sub);">
+                  <span class="flex items-center gap-1">⏰ ${item.window}</span>
+                  <span class="flex items-center gap-1">🏷️ ${item.type}</span>
+                </div>
+              </div>
+            </div>
+            <button class="px-3 py-1.5 rounded-full text-xs font-bold bg-white/15 hover:bg-white/25 text-white transition-colors flex-shrink-0">
+              ${mode === 'storm' ? 'Alert ⚠️' : 'Add +'}
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Set interactive diurnal mode
+    function setMode(mode) {
+      currentMode = mode;
+      const body = document.getElementById('bodyRoot');
+      const starField = document.getElementById('starField');
+      const celestialOrb = document.getElementById('celestialOrb');
+      const switchKnob = document.getElementById('switchKnob');
+      const switchIcon = document.getElementById('switchIcon');
+      const currentThemeLabel = document.getElementById('currentThemeLabel');
+      const mountainPath1 = document.getElementById('mountainPath1');
+      const mountainPath2 = document.getElementById('mountainPath2');
+
+      const btnNight = document.getElementById('btnNight');
+      const btnTwilight = document.getElementById('btnTwilight');
+      const btnDay = document.getElementById('btnDay');
+
+      // Reset button classes
+      [btnNight, btnTwilight, btnDay].forEach(btn => {
+        btn.className = "px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all duration-300 text-slate-300 hover:text-white";
+      });
+
+      // Update UI parameters
+      if (mode === 'night') {
+        body.className = "theme-transition min-h-screen text-slate-100 font-sans relative overflow-x-hidden antialiased selection:bg-brand-violet selection:text-white" + (particleMode === 'storm' ? ' storm-active' : '');
+        btnNight.className = "px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all duration-300 bg-brand-amethyst text-white shadow-md shadow-brand-amethyst/40";
+        starField.style.opacity = particleMode === 'storm' ? "0" : "1";
+        celestialOrb.style.background = "radial-gradient(circle, rgba(162, 155, 254, 0.45) 0%, rgba(108, 92, 231, 0.15) 60%, transparent 80%)";
+        celestialOrb.style.top = "8%";
+        celestialOrb.style.right = "12%";
+        switchKnob.style.transform = "translateX(0px)";
+        switchIcon.textContent = "🌙";
+        currentThemeLabel.textContent = "Nocturnal Starlight";
+        mountainPath1.style.color = "#070919";
+        mountainPath2.style.color = "#030511";
+
+        if (particleMode !== 'storm') {
+          document.getElementById('weatherIllustration').style.background = "linear-gradient(135deg, rgba(124, 58, 237, 0.45) 0%, rgba(56, 189, 248, 0.35) 100%)";
+          document.getElementById('orbEmoji').textContent = "🌙";
+          document.getElementById('orbLabel').textContent = "Starlight";
+          document.getElementById('bigTemp').textContent = "14°";
+          document.getElementById('headerTemp').textContent = "14° Starlight";
+          document.getElementById('weatherSubtext').textContent = "Clear Starlight Sky • Bortle Class 2 Visibility • 0% Rain Risk";
+          document.getElementById('metricUV').textContent = "0.0";
+          document.getElementById('metricUVDesc').textContent = "No Exposure";
+          document.getElementById('arcStatusText').textContent = "Zenith: Lunar Arc at 68°";
+          document.getElementById('activityMatchFilter').textContent = "Night Matched";
+          document.getElementById('activityMatchFilter').className = "text-[11px] font-semibold text-purple-300 bg-purple-500/20 px-2 py-0.5 rounded-full";
+        }
+
+      } else if (mode === 'twilight') {
+        body.className = "twilight-mode theme-transition min-h-screen font-sans relative overflow-x-hidden antialiased selection:bg-brand-violet selection:text-white" + (particleMode === 'storm' ? ' storm-active' : '');
+        btnTwilight.className = "px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all duration-300 bg-purple-600 text-white shadow-md shadow-purple-600/40";
+        starField.style.opacity = particleMode === 'storm' ? "0" : "0.35";
+        celestialOrb.style.background = "radial-gradient(circle, rgba(244, 114, 182, 0.6) 0%, rgba(147, 51, 234, 0.25) 50%, transparent 80%)";
+        celestialOrb.style.top = "18%";
+        celestialOrb.style.right = "24%";
+        switchKnob.style.transform = "translateX(24px)";
+        switchIcon.textContent = "🌅";
+        currentThemeLabel.textContent = "Sunset Twilight";
+        mountainPath1.style.color = "#180d2b";
+        mountainPath2.style.color = "#0f061e";
+
+        if (particleMode !== 'storm') {
+          document.getElementById('weatherIllustration').style.background = "linear-gradient(135deg, rgba(236, 72, 153, 0.45) 0%, rgba(147, 51, 234, 0.45) 100%)";
+          document.getElementById('orbEmoji').textContent = "🌅";
+          document.getElementById('orbLabel').textContent = "Twilight";
+          document.getElementById('bigTemp').textContent = "18°";
+          document.getElementById('headerTemp').textContent = "18° Twilight";
+          document.getElementById('weatherSubtext').textContent = "Golden Dusk Refraction • Low Alpine Inversion • 5% Rain Risk";
+          document.getElementById('metricUV').textContent = "1.5";
+          document.getElementById('metricUVDesc').textContent = "Low Sun Angle";
+          document.getElementById('arcStatusText').textContent = "Sunset Golden Arc: 18:45";
+          document.getElementById('activityMatchFilter').textContent = "Sunset Matched";
+          document.getElementById('activityMatchFilter').className = "text-[11px] font-semibold text-pink-300 bg-pink-500/20 px-2 py-0.5 rounded-full";
+        }
+
+      } else if (mode === 'day') {
+        body.className = "day-mode theme-transition min-h-screen font-sans relative overflow-x-hidden antialiased selection:bg-brand-cyan selection:text-white" + (particleMode === 'storm' ? ' storm-active' : '');
+        btnDay.className = "px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all duration-300 bg-sky-500 text-white shadow-md shadow-sky-500/40";
+        starField.style.opacity = "0";
+        celestialOrb.style.background = "radial-gradient(circle, rgba(254, 240, 138, 0.75) 0%, rgba(56, 189, 248, 0.35) 60%, transparent 80%)";
+        celestialOrb.style.top = "5%";
+        celestialOrb.style.right = "10%";
+        switchKnob.style.transform = "translateX(48px)";
+        switchIcon.textContent = "☀️";
+        currentThemeLabel.textContent = "Daylight Alpine";
+        mountainPath1.style.color = "#1e293b";
+        mountainPath2.style.color = "#0f172a";
+
+        if (particleMode !== 'storm') {
+          document.getElementById('weatherIllustration').style.background = "linear-gradient(135deg, rgba(56, 189, 248, 0.5) 0%, rgba(251, 191, 36, 0.45) 100%)";
+          document.getElementById('orbEmoji').textContent = "☀️";
+          document.getElementById('orbLabel').textContent = "Daylight";
+          document.getElementById('bigTemp').textContent = "22°";
+          document.getElementById('headerTemp').textContent = "22° Crisp Day";
+          document.getElementById('weatherSubtext').textContent = "Crystal Blue Sky • Optimal Trekking Index • 0% Rain Risk";
+          document.getElementById('metricUV').textContent = "4.2";
+          document.getElementById('metricUVDesc').textContent = "Moderate Sun";
+          document.getElementById('arcStatusText').textContent = "Solar Zenith: Peak Daylight";
+          document.getElementById('activityMatchFilter').textContent = "Day Matched";
+          document.getElementById('activityMatchFilter').className = "text-[11px] font-semibold text-sky-600 bg-sky-500/20 px-2 py-0.5 rounded-full";
+        }
+      }
+
+      if (particleMode !== 'storm') {
+        renderActivities(mode);
+      }
+    }
+
+    // Cycle themes on clicking switch pill
+    function cycleTheme() {
+      if (currentMode === 'night') {
+        setMode('twilight');
+      } else if (currentMode === 'twilight') {
+        setMode('day');
+      } else {
+        setMode('night');
+      }
+    }
+
+    // Handle 24-hour time slider
+    function onTimeSliderChange(val) {
+      const timeVal = parseFloat(val);
+      const hours = Math.floor(timeVal);
+      const minutes = (timeVal % 1) === 0.5 ? '30' : '00';
+      const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes}`;
+
+      const normalizedPercent = timeVal / 24;
+      const arcCircle = document.getElementById('arcIndicatorCircle');
+      const newX = 25 + normalizedPercent * 450;
+      const normalizedNorm = (timeVal - 12) / 12;
+      const newY = 15 + (normalizedNorm * normalizedNorm) * 55;
+      arcCircle.setAttribute('cx', newX);
+      arcCircle.setAttribute('cy', newY);
+
+      let phaseLabel = "";
+      if (timeVal >= 7 && timeVal <= 17) {
+        phaseLabel = " (Daylight Glow)";
+        if (currentMode !== 'day') setMode('day');
+      } else if ((timeVal >= 5 && timeVal < 7) || (timeVal > 17 && timeVal <= 19.5)) {
+        phaseLabel = " (Twilight Transition)";
+        if (currentMode !== 'twilight') setMode('twilight');
+      } else {
+        phaseLabel = " (Starlight Night)";
+        if (currentMode !== 'night') setMode('night');
+      }
+
+      document.getElementById('sliderTimeDisplay').textContent = `${formattedTime} ${phaseLabel}`;
+    }
+
+    // ==========================================
+    // ATMOSPHERIC PARTICLE SIMULATION ENGINE
+    // ==========================================
+    const canvas = document.getElementById('atmospheric-particles');
+    const ctx = canvas.getContext('2d');
+    let width = 0;
+    let height = 0;
+    let particles = [];
+    let ripples = [];
+
+    function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      rebuildParticles();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    // Particle Object Blueprint (Stars, Wind, Rain, Snow, Thunderstorm)
+    class AtmosphericParticle {
+      constructor() {
+        this.reset(true);
+      }
+
+      reset(init = false) {
+        this.x = init ? Math.random() * width : (Math.random() < 0.5 ? Math.random() * width : (windAngleDeg >= 0 ? -20 : width + 20));
+        this.y = init ? Math.random() * height : -30;
+        this.size = Math.random() * 2 + 1;
+        this.alpha = Math.random() * 0.7 + 0.3;
+        this.speedMultiplier = Math.random() * 0.5 + 0.75;
+        this.phase = Math.random() * Math.PI * 2;
+        this.history = [];
+        this.twinkleSpeed = Math.random() * 0.05 + 0.02;
+        this.life = 1;
+      }
+
+      update() {
+        const rad = (windAngleDeg * Math.PI) / 180;
+        const baseSpeed = windSpeed * 0.28 * this.speedMultiplier;
+        let vx = Math.sin(rad) * baseSpeed;
+        let vy = Math.cos(rad) * baseSpeed;
+
+        if (particleMode === 'stars') {
+          // Subtle celestial drift
+          vx = (Math.sin(this.phase) * 0.3) + 0.15;
+          vy = (Math.cos(this.phase) * 0.2) + 0.1;
+          this.phase += this.twinkleSpeed;
+          this.alpha = 0.3 + 0.6 * Math.sin(this.phase);
+        } else if (particleMode === 'wind') {
+          // Luminous aerodynamic stream
+          vx = Math.sin(rad) * baseSpeed * 1.6 + 1.2;
+          vy = Math.cos(rad) * baseSpeed * 0.5 + Math.sin(this.phase) * 0.8;
+          this.phase += 0.04;
+        } else if (particleMode === 'rain') {
+          // Fast vertical slant with gravity
+          vx = Math.sin(rad) * baseSpeed * 0.9;
+          vy = 12 + baseSpeed * 1.2;
+        } else if (particleMode === 'snow') {
+          // Soft fluttering crystalline flake
+          this.phase += 0.03;
+          vx = Math.sin(rad) * baseSpeed * 0.6 + Math.sin(this.phase) * 1.6;
+          vy = 1.6 + baseSpeed * 0.25;
+        } else if (particleMode === 'storm') {
+          // Torrential convective storm precipitation with turbulence
+          vx = Math.sin(rad) * baseSpeed * 1.35 + (Math.sin(this.phase) * 1.8);
+          vy = 19 + baseSpeed * 1.6;
+          this.phase += 0.06;
+        }
+
+        // Mouse interactive hydrodynamic vortex deflection
+        if (mouse.x > 0 && mouse.y > 0) {
+          const dx = this.x - mouse.x;
+          const dy = this.y - mouse.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < mouse.radius) {
+            const force = (1 - dist / mouse.radius) * 7;
+            const angle = Math.atan2(dy, dx);
+            vx += Math.cos(angle) * force + mouse.vx * 0.4;
+            vy += Math.sin(angle) * force + mouse.vy * 0.4;
+          }
+        }
+
+        // Save position trail for wind lines, rain streaks, and thunderstorm torrent
+        if (particleMode === 'wind' || particleMode === 'rain' || particleMode === 'storm') {
+          this.history.push({ x: this.x, y: this.y });
+          const maxTrail = particleMode === 'wind' ? 12 : (particleMode === 'storm' ? 9 : 6);
+          if (this.history.length > maxTrail) {
+            this.history.shift();
+          }
+        } else {
+          this.history = [];
+        }
+
+        this.x += vx;
+        this.y += vy;
+
+        // Ground splash ripple trigger for rain and storm
+        if ((particleMode === 'rain' || particleMode === 'storm') && this.y >= height - 25) {
+          const rippleChance = particleMode === 'storm' ? 0.75 : 0.4;
+          if (Math.random() < rippleChance && ripples.length < 50) {
+            ripples.push({
+              x: this.x,
+              y: height - 12 + (Math.random() * 8 - 4),
+              radius: 1,
+              maxRadius: particleMode === 'storm' ? Math.random() * 18 + 8 : Math.random() * 12 + 6,
+              alpha: 0.8
+            });
+          }
+        }
+
+        // Screen boundary wrapping
+        if (this.y > height + 40 || this.x < -60 || this.x > width + 60) {
+          this.reset(false);
+        }
+      }
+
+      draw() {
+        ctx.save();
+        if (particleMode === 'stars') {
+          // Golden/Cyan twinkling celestial dust
+          ctx.beginPath();
+          const starGrad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 2);
+          const starColor = currentMode === 'twilight' ? '255, 180, 240' : (currentMode === 'day' ? '56, 189, 248' : '198, 191, 255');
+          starGrad.addColorStop(0, `rgba(${starColor}, ${this.alpha})`);
+          starGrad.addColorStop(1, `rgba(${starColor}, 0)`);
+          ctx.fillStyle = starGrad;
+          ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
+          ctx.fill();
+
+        } else if (particleMode === 'wind') {
+          // Aerodynamic luminous streamlines with fade tail
+          if (this.history.length > 1) {
+            ctx.beginPath();
+            ctx.moveTo(this.history[0].x, this.history[0].y);
+            for (let i = 1; i < this.history.length; i++) {
+              ctx.lineTo(this.history[i].x, this.history[i].y);
+            }
+            ctx.strokeStyle = `rgba(67, 215, 247, ${this.alpha * 0.7})`;
+            ctx.lineWidth = this.size * 0.9;
+            ctx.lineCap = 'round';
+            ctx.shadowColor = 'rgba(67, 215, 247, 0.6)';
+            ctx.shadowBlur = 6;
+            ctx.stroke();
+          }
+
+        } else if (particleMode === 'rain') {
+          // Slanted translucent precipitation streaks
+          const length = 14 + windSpeed * 0.3;
+          const rad = (windAngleDeg * Math.PI) / 180;
+          const endX = this.x - Math.sin(rad) * length;
+          const endY = this.y - Math.cos(rad) * length;
+
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(endX, endY);
+          ctx.strokeStyle = `rgba(162, 218, 255, ${this.alpha * 0.8})`;
+          ctx.lineWidth = 1.3;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+
+        } else if (particleMode === 'snow') {
+          // Crystalline soft snowflake
+          ctx.beginPath();
+          const snowGrad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 2.5);
+          snowGrad.addColorStop(0, `rgba(255, 255, 255, ${this.alpha * 0.9})`);
+          snowGrad.addColorStop(0.6, `rgba(215, 235, 255, ${this.alpha * 0.5})`);
+          snowGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          ctx.fillStyle = snowGrad;
+          ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
+          ctx.fill();
+
+        } else if (particleMode === 'storm') {
+          // Dense angled convective rain streaks with violet-electric reflection
+          const length = 22 + windSpeed * 0.45;
+          const rad = (windAngleDeg * Math.PI) / 180;
+          const endX = this.x - Math.sin(rad) * length;
+          const endY = this.y - Math.cos(rad) * length;
+
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(endX, endY);
+          // Electric luminous precipitation hue
+          ctx.strokeStyle = `rgba(196, 181, 253, ${this.alpha * 0.85})`;
+          ctx.lineWidth = 1.6;
+          ctx.lineCap = 'round';
+          ctx.shadowColor = 'rgba(129, 140, 248, 0.45)';
+          ctx.shadowBlur = 4;
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+    }
+
+    function rebuildParticles() {
+      particles = [];
+      const effectiveCount = particleMode === 'storm' ? Math.max(particleCount, 260) : particleCount;
+      for (let i = 0; i < effectiveCount; i++) {
+        particles.push(new AtmosphericParticle());
+      }
+    }
+
+    // Ripple render loop
+    function updateRipples() {
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const r = ripples[i];
+        r.radius += 0.55;
+        r.alpha -= 0.022;
+        if (r.alpha <= 0 || r.radius >= r.maxRadius) {
+          ripples.splice(i, 1);
+          continue;
+        }
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(r.x, r.y, r.radius * 1.8, r.radius * 0.6, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = particleMode === 'storm' ? `rgba(196, 181, 253, ${r.alpha * 0.6})` : `rgba(147, 210, 255, ${r.alpha * 0.45})`;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    // Main 60FPS animation loop
+    function animateParticles() {
+      ctx.clearRect(0, 0, width, height);
+
+      // 1. Draw procedural lightning bolts behind particles
+      for (let i = activeBolts.length - 1; i >= 0; i--) {
+        const bolt = activeBolts[i];
+        bolt.draw(ctx);
+        if (!bolt.update()) {
+          activeBolts.splice(i, 1);
+        }
+      }
+
+      // 2. Render all active particles
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+      }
+
+      // 3. Render ripples if rain or storm
+      if (particleMode === 'rain' || particleMode === 'storm') {
+        updateRipples();
+      }
+
+      requestAnimationFrame(animateParticles);
+    }
+
+    // ==========================================
+    // INTERACTIVE PARTICLE SIMULATOR CONTROLS
+    // ==========================================
+    function setParticleMode(mode) {
+      particleMode = mode;
+      const modes = ['stars', 'wind', 'rain', 'snow', 'storm'];
+      const btnMap = {
+        stars: document.getElementById('pModeStars'),
+        wind: document.getElementById('pModeWind'),
+        rain: document.getElementById('pModeRain'),
+        snow: document.getElementById('pModeSnow'),
+        storm: document.getElementById('pModeStorm')
+      };
+
+      modes.forEach(m => {
+        if (!btnMap[m]) return;
+        if (m === mode) {
+          if (m === 'storm') {
+            btnMap[m].className = "px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-200 bg-gradient-to-r from-amber-500 to-purple-600 text-white shadow-lg shadow-purple-600/40 border border-amber-300";
+          } else {
+            btnMap[m].className = "px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 bg-brand-amethyst text-white shadow-md shadow-brand-amethyst/30";
+          }
+        } else {
+          if (m === 'storm') {
+            btnMap[m].className = "px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-200 text-amber-300 hover:text-white hover:bg-amber-500/20 border border-amber-400/30";
+          } else {
+            btnMap[m].className = "px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 text-slate-300 hover:text-white hover:bg-white/10";
+          }
+        }
+      });
+
+      // Synchronize weather card metrics according to particle preset
+      const rainMetric = document.getElementById('metricRain');
+      const rainDesc = document.getElementById('metricRainDesc');
+      const windMetric = document.getElementById('metricWind');
+      const windDesc = document.getElementById('metricWindDesc');
+      const orbEmoji = document.getElementById('orbEmoji');
+      const orbLabel = document.getElementById('orbLabel');
+      const weatherSubtext = document.getElementById('weatherSubtext');
+      const metricLabel3 = document.getElementById('metricLabel3');
+      const metricUV = document.getElementById('metricUV');
+      const metricUVDesc = document.getElementById('metricUVDesc');
+      const metricLabel4 = document.getElementById('metricLabel4');
+      const metricAQI = document.getElementById('metricAQI');
+      const metricAQIDesc = document.getElementById('metricAQIDesc');
+      const starField = document.getElementById('starField');
+
+      if (mode === 'stars') {
+        document.body.classList.remove('storm-active');
+        starField.style.opacity = currentMode === 'day' ? "0" : (currentMode === 'twilight' ? "0.35" : "1");
+        rainMetric.textContent = "0.0 mm";
+        rainDesc.textContent = "Dry Ground";
+        rainDesc.className = "text-[10px] text-emerald-400 font-semibold mt-0.5 truncate";
+        windMetric.textContent = `${windSpeed} km/h`;
+        windDesc.textContent = "Gentle SSE";
+        orbEmoji.textContent = currentMode === 'day' ? "☀️" : (currentMode === 'twilight' ? "🌅" : "🌙");
+        orbLabel.textContent = currentMode === 'day' ? "Daylight" : (currentMode === 'twilight' ? "Twilight" : "Starry");
+        weatherSubtext.textContent = "Clear Starlight Sky • Bortle Class 2 Visibility • 0% Rain Risk";
+        metricLabel3.textContent = "UV Index";
+        metricUV.textContent = currentMode === 'day' ? "4.2" : (currentMode === 'twilight' ? "1.5" : "0.0");
+        metricUVDesc.textContent = currentMode === 'day' ? "Moderate Sun" : (currentMode === 'twilight' ? "Low Sun Angle" : "No Exposure");
+        metricLabel4.textContent = "Air Quality";
+        metricAQI.textContent = "12 AQI";
+        metricAQIDesc.textContent = "Alpine Pure";
+        renderActivities(currentMode);
+
+      } else if (mode === 'wind') {
+        document.body.classList.remove('storm-active');
+        windSpeed = Math.max(windSpeed, 38);
+        document.getElementById('windSpeedSlider').value = windSpeed;
+        document.getElementById('windSpeedLabel').textContent = `${windSpeed} km/h Alpine Gust`;
+        windMetric.textContent = `${windSpeed} km/h`;
+        windDesc.textContent = "Alpine Crest Shear";
+        rainMetric.textContent = "0.0 mm";
+        rainDesc.textContent = "Dry High Winds";
+        orbEmoji.textContent = "💨";
+        orbLabel.textContent = "Wind Gusts";
+        weatherSubtext.textContent = `High-altitude alpine wind gusts (${windSpeed} km/h) • Wind shear advisory active`;
+        metricLabel3.textContent = "UV Index";
+        metricLabel4.textContent = "Air Quality";
+        renderActivities(currentMode);
+
+      } else if (mode === 'rain') {
+        document.body.classList.remove('storm-active');
+        rainMetric.textContent = "4.6 mm";
+        rainDesc.textContent = "Active Downpour";
+        rainDesc.className = "text-[10px] text-cyan-300 font-semibold mt-0.5 truncate";
+        windMetric.textContent = `${windSpeed} km/h`;
+        windDesc.textContent = "Precipitation Drift";
+        orbEmoji.textContent = "🌧️";
+        orbLabel.textContent = "Rain Shower";
+        weatherSubtext.textContent = "Sub-alpine precipitation cell • 92% Humidity • Hydro-trail Caution";
+        metricLabel3.textContent = "UV Index";
+        metricLabel4.textContent = "Air Quality";
+        renderActivities(currentMode);
+
+      } else if (mode === 'snow') {
+        document.body.classList.remove('storm-active');
+        rainMetric.textContent = "3.2 cm";
+        rainDesc.textContent = "Fresh Powder";
+        rainDesc.className = "text-[10px] text-indigo-300 font-semibold mt-0.5 truncate";
+        windMetric.textContent = `${windSpeed} km/h`;
+        windDesc.textContent = "Flurry Drift";
+        orbEmoji.textContent = "❄️";
+        orbLabel.textContent = "Snow Flurry";
+        weatherSubtext.textContent = "Freezing altitude 1,840m • Crisp crystalline snow pack • Alpine winter gear recommended";
+        metricLabel3.textContent = "UV Index";
+        metricLabel4.textContent = "Air Quality";
+        renderActivities(currentMode);
+
+      } else if (mode === 'storm') {
+        // High convective thunderstorm state
+        document.body.classList.add('storm-active');
+        starField.style.opacity = "0";
+
+        // Boost wind speed & shear
+        windSpeed = Math.max(windSpeed, 54);
+        windAngleDeg = -28; // slanted convective squall
+        document.getElementById('windSpeedSlider').value = windSpeed;
+        document.getElementById('windSpeedLabel').textContent = `${windSpeed} km/h Storm Squall`;
+        document.getElementById('windAngleSlider').value = windAngleDeg;
+        document.getElementById('windAngleLabel').textContent = `Angle: -28° Westward`;
+
+        // Update hero metrics
+        rainMetric.textContent = "18.4 mm";
+        rainDesc.textContent = "Torrential Convective";
+        rainDesc.className = "text-[10px] text-purple-300 font-bold mt-0.5 truncate";
+        windMetric.textContent = "54 km/h";
+        windDesc.textContent = "Storm Shear WNW";
+
+        // Dynamic convective CAPE & Strike proximity
+        metricLabel3.textContent = "Strike Proximity";
+        metricUV.textContent = "2.4 km";
+        metricUVDesc.textContent = "42 strikes / hr East";
+
+        metricLabel4.textContent = "Convective CAPE";
+        metricAQI.textContent = "1,850";
+        metricAQIDesc.textContent = "High Instability (J/kg)";
+
+        // Orb illustration styling
+        document.getElementById('weatherIllustration').style.background = "linear-gradient(135deg, rgba(76, 29, 149, 0.7) 0%, rgba(245, 158, 11, 0.4) 100%)";
+        orbEmoji.textContent = "⛈️";
+        orbLabel.textContent = "Lightning";
+        weatherSubtext.textContent = "Severe Alpine Thunderstorm & Lightning • High Convective Energy • Shelter Advised";
+
+        // Trigger immediate strike
+        spawnLightningBolt();
+
+        // Render emergency contingency recommendations
+        renderActivities('storm');
+        document.getElementById('activityMatchFilter').textContent = "⚡ Severe Storm Active";
+        document.getElementById('activityMatchFilter').className = "text-[11px] font-bold text-amber-300 bg-amber-500/20 px-2.5 py-0.5 rounded-full border border-amber-400/40 animate-pulse";
+      }
+
+      rebuildParticles();
+      scheduleNextLightning();
+    }
+
+    function onWindSpeedChange(val) {
+      windSpeed = parseInt(val, 10);
+      let desc = "Gentle";
+      if (windSpeed > 50) desc = "Storm Squall";
+      else if (windSpeed > 35) desc = "Storm Gale";
+      else if (windSpeed > 24) desc = "Brisk Alpine";
+      else if (windSpeed > 14) desc = "Moderate";
+      
+      document.getElementById('windSpeedLabel').textContent = `${windSpeed} km/h ${desc}`;
+      document.getElementById('metricWind').textContent = `${windSpeed} km/h`;
+    }
+
+    function onParticleDensityChange(val) {
+      particleCount = parseInt(val, 10);
+      let label = "Moderate";
+      if (particleCount > 320) label = "Torrent / Blizzard";
+      else if (particleCount < 90) label = "Sparse / Light";
+      document.getElementById('precipDensityLabel').textContent = `${label} (${particleCount} particles)`;
+      rebuildParticles();
+    }
+
+    function onWindAngleChange(val) {
+      windAngleDeg = parseInt(val, 10);
+      const dirText = windAngleDeg > 0 ? `+${windAngleDeg}° Eastward` : (windAngleDeg < 0 ? `${windAngleDeg}° Westward` : "0° Vertical");
+      document.getElementById('windAngleLabel').textContent = `Angle: ${dirText}`;
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      generateStars();
+      resizeCanvas();
+      setMode('night');
+      setParticleMode('stars');
+      onTimeSliderChange(2);
+      animateParticles();
+      scheduleNextLightning();
+    });
+  </script>
+</body></html>

@@ -2,6 +2,26 @@
 
 All meaningful project changes should be recorded here.
 
+## [0.3.5] — 2026-10-02 — Phase 0.5 Stitch UI/UX Design Audit & Design System Lock-in
+
+### Added
+- Comprehensive Stitch Reference Inventory (`docs/STITCH_REFERENCE_INVENTORY.md`) documenting all discovered screen prototypes, telemetry components, and UI layout patterns.
+- Local SkyPlan Stitch Design System specification (`docs/STITCH_DESIGN_SYSTEM.md`) detailing the exact Deep Atmospheric dark palette, Plus Jakarta Sans & Inter typography system, stadium capsule geometry, glassmorphic elevation tokens, and condition badges.
+- Stitch Implementation Audit (`docs/STITCH_IMPLEMENTATION_AUDIT.md`) cataloging differences between previous baseline and authentic Stitch visual source of truth.
+- Google Fonts integration (`Plus Jakarta Sans` 400-800, `Inter` 400-700) and radial atmospheric background gradients in `client/index.html` and `client/src/styles/index.css`.
+- Authentic Stitch 2-Tier Header in `client/src/layouts/MainLayout.jsx` with search capsule (`⌘K`), temperature unit toggle (`°C`/`°F`), live API beacon, navigation pill tabs, and quick saved location chips.
+- Upgraded Stitch UI primitives:
+  - `Button.jsx`: Stadium capsule pill shape (`rounded-full`) with vibrant Sky Azure / Solar Amber gradients and glassmorphism.
+  - `Card.jsx`: Atmospheric frosted glass slab (`bg-surface-container-low/60 backdrop-blur-md border-outline-variant/30`) with optional ambient glow.
+  - `Badge.jsx`: Stitch condition indicators (`optimal`, `caution`, `indoor`, `outdoor`) with live status pulsing beacon.
+  - `Input.jsx`: Dark atmospheric pill input with focus cyan ring.
+  - `HomePage.jsx`: Stitch hero weather panel archetype (7 cols), telemetry grid (5 cols), and recommendation card layout.
+
+### Resolved Discrepancies
+- Replaced light slate styling with authentic Stitch Deep Atmospheric midnight navy (`#0a122a` canvas, `#131a33` cards).
+- Replaced standard rectangular cards with stadium capsule (`rounded-full`) and smooth 2xl rounded glass containers (`rounded-2xl`).
+- Replaced 1-tier minimal navigation with Stitch 2-tier command header.
+
 ## [0.3.0] — 2026-10-02 — Phase 1 Authentication & User Foundation
 
 ### Added

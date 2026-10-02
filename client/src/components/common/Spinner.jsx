@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
 
-export default function Spinner({ size = 'md', color = 'sky', className }) {
+export default function Spinner({ size = 'md', color = 'primary', className }) {
   const sizes = {
     sm: 'w-3.5 h-3.5 border-2',
     md: 'w-5 h-5 border-2',
@@ -10,10 +10,11 @@ export default function Spinner({ size = 'md', color = 'sky', className }) {
   };
 
   const colors = {
-    sky: 'border-sky-500 border-t-transparent',
+    primary: 'border-primary border-t-transparent',
     white: 'border-white border-t-transparent',
     current: 'border-current border-t-transparent',
-    slate: 'border-slate-600 border-t-transparent',
+    secondary: 'border-secondary border-t-transparent',
+    tertiary: 'border-tertiary border-t-transparent',
   };
 
   return (
@@ -23,7 +24,7 @@ export default function Spinner({ size = 'md', color = 'sky', className }) {
       className={cn(
         'rounded-full animate-spin',
         sizes[size] || sizes.md,
-        colors[color] || colors.sky,
+        colors[color] || colors.primary,
         className
       )}
     >

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" width="200" height="48" fill="none">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00B4D8"/>
+      <stop offset="50%" stop-color="#3A86FF"/>
+      <stop offset="100%" stop-color="#7209B7"/>
+    </linearGradient>
+    <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB703"/>
+      <stop offset="100%" stop-color="#FB8500"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  <!-- Logo Icon -->
+  <g transform="translate(6, 4)">
+    <!-- Ambient circle background -->
+    <rect width="40" height="40" rx="12" fill="url(#skyGrad)" fill-opacity="0.18" stroke="#3A86FF" stroke-width="1.5"/>
+    <!-- Glowing sun element -->
+    <circle cx="28" cy="16" r="6" fill="url(#sunGrad)" filter="url(#glow)"/>
+    <!-- Cloud & compass/arrow path -->
+    <path d="M12 28 C10 28 8 26 8 24 C8 22 9.5 20.3 11.5 20.1 C12.2 16.5 15.3 14 19 14 C23.2 14 26.7 17 27 21 C27.3 21 27.7 21 28 21 C30.2 21 32 22.8 32 25 C32 27.2 30.2 29 28 29 L12 29 Z" fill="white" fill-opacity="0.95"/>
+    <path d="M20 23 L25 18 M25 18 L21 18 M25 18 L25 22" stroke="#00B4D8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="56" y="27" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="800" font-size="22" letter-spacing="-0.5px" fill="#FFFFFF">Sky<tspan fill="#38BDF8">Plan</tspan></text>
+  <text x="56" y="38" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="600" font-size="9" letter-spacing="1.2px" fill="#94A3B8">WEATHER &amp; ACTIVITY</text>
+</svg>
