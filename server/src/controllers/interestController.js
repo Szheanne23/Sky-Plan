@@ -62,17 +62,19 @@ async function getUserInterests(req, res, next) {
 async function updateUserInterests(req, res, next) {
   try {
     const userId = req.user.id;
-    const { interestIds } = req.body;
+    const rawIds = req.body.interestIds || req.body.interestTagIds;
 
-    if (!Array.isArray(interestIds)) {
+    if (!Array.isArray(rawIds)) {
       return res.status(400).json({
         success: false,
         error: {
           code: 'VALIDATION_ERROR',
-          message: 'interestIds must be an array of tag IDs.',
+          message: 'interestIds or interestTagIds must be an array of tag IDs.',
         },
       });
     }
+
+    const interestIds = rawIds;
 
     // Filter out duplicates and invalid items
     const uniqueInterestIds = [...new Set(interestIds.filter((id) => typeof id === 'string'))];

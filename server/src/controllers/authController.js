@@ -73,6 +73,20 @@ async function register(req, res, next) {
       );
       newProfile = profileInsertResult.rows[0];
 
+      // Insert interest tags if supplied
+      const rawInterestIds = req.body.interestTagIds || req.body.interestIds;
+      if (Array.isArray(rawInterestIds) && rawInterestIds.length > 0) {
+        const uniqueIds = [...new Set(rawInterestIds.filter((id) => typeof id === 'string'))];
+        for (const tagId of uniqueIds) {
+          await client.query(
+            `INSERT INTO user_interests (user_id, interest_tag_id)
+             VALUES ($1, $2)
+             ON CONFLICT (user_id, interest_tag_id) DO NOTHING`,
+            [newUser.id, tagId]
+          );
+        }
+      }
+
       await client.query('COMMIT');
     } catch (txErr) {
       await client.query('ROLLBACK');

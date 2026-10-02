@@ -2,6 +2,18 @@
 
 All meaningful project changes should be recorded here.
 
+## [0.4.0] — 2026-10-02 — Phase 1 Supabase PostgreSQL Setup & End-to-End Verification
+
+### Added
+- Configured secure SSL connection pool for Supabase-hosted PostgreSQL in `server/src/config/db.js`.
+- Successfully executed migration `001_create_auth_and_user_schema.sql` creating `users`, `profiles`, `interest_tags`, and `user_interests` tables directly in Supabase PostgreSQL.
+- Verified end-to-end registration with atomic profile and interest associations (`POST /api/auth/register`).
+- Verified bcrypt password hashing (10 salt rounds) and secret sanitization on real Supabase user records.
+- Verified duplicate email protection (`409 Conflict`), login authentication (`200 OK` vs `401 Unauthorized`), profile modifications (`PUT /api/profile`), and atomic interest tag synchronization (`PUT /api/profile/interests`).
+- Verified server-side role authorization guards (`requireRole('ADMIN')` returns `403 Forbidden` for standard users).
+- Verified cookie-based session clearance and route protection (`401 Unauthorized` for unauthenticated requests).
+- Configured GitHub remote `https://github.com/Szheanne23/Sky-Plan.git` on `main` branch.
+
 ## [0.3.5] — 2026-10-02 — Phase 0.5 Stitch UI/UX Design Audit & Design System Lock-in
 
 ### Added

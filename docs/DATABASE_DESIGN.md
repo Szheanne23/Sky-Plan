@@ -2,9 +2,9 @@
 
 ## 1. Purpose
 
-This document defines the proposed PostgreSQL data model required to support the SkyPlan proposal.
+This document defines the PostgreSQL data model supporting the SkyPlan application. 
 
-The proposal identifies PostgreSQL as the database technology but does not provide a complete relational schema. Therefore, the entities below are **proposed implementation structures**, not quoted schema requirements from the paper.
+The application utilizes **Supabase-hosted PostgreSQL** connected securely via Node.js `pg` pool over encrypted SSL connections. Database migrations are managed via the transaction-safe runner in `server/src/db/migrate.js`. Application authentication is handled independently via bcrypt hashing and JWT tokens.
 
 ## 2. Proposed Core Entities
 

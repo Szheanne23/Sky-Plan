@@ -9,9 +9,9 @@ SkyPlan will use a web application architecture separating the user interface, b
 The proposal identifies:
 - React.js + Tailwind CSS for frontend;
 - Node.js + Express for backend/API;
-- PostgreSQL for database;
+- PostgreSQL for database (hosted via Supabase PostgreSQL, connected via `pg` connection pool with SSL);
 - OpenWeatherMap API for external weather data;
-- JWT for authentication and role-based authorization;
+- Application-managed JWT & bcrypt for authentication and role-based authorization (independent of Supabase Auth);
 - Chart.js for charts.
 
 ## 3. Logical Architecture
@@ -30,8 +30,8 @@ The proposal identifies:
                v
 +-----------------------------+
 | Node.js + Express API       |
-| - Authentication            |
-| - Authorization             |
+| - Authentication (JWT)      |
+| - Authorization (RBAC)      |
 | - Weather Proxy             |
 | - Search                    |
 | - Favorites                 |
@@ -41,10 +41,10 @@ The proposal identifies:
 +------+----------------+-----+
        |                |
        v                v
-+-------------+   +--------------------+
-| PostgreSQL  |   | OpenWeatherMap API |
-| Database    |   | External Weather   |
-+-------------+   +--------------------+
++-----------------------+   +--------------------+
+| Supabase PostgreSQL   |   | OpenWeatherMap API |
+| Database (via pg/SSL) |   | External Weather   |
++-----------------------+   +--------------------+
 ```
 
 ## 4. Frontend Layer

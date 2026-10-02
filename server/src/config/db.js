@@ -5,8 +5,20 @@ let pool = null;
 
 // Initialize PostgreSQL Pool if database configuration is present
 try {
+  const isSupabaseOrRemote = Boolean(
+    config.databaseUrl && (
+      config.databaseUrl.includes('supabase.co') ||
+      config.databaseUrl.includes('pooler.supabase.com') ||
+      config.databaseUrl.includes('sslmode=') ||
+      config.nodeEnv === 'production'
+    )
+  );
+
   const poolConfig = config.databaseUrl
-    ? { connectionString: config.databaseUrl }
+    ? {
+        connectionString: config.databaseUrl,
+        ssl: isSupabaseOrRemote ? { rejectUnauthorized: false } : undefined,
+      }
     : {
         host: config.db.host,
         port: config.db.port,
@@ -19,7 +31,7 @@ try {
     ...poolConfig,
     max: 10,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
+    connectionTimeoutMillis: 10000,
   });
 
   pool.on('error', (err) => {
