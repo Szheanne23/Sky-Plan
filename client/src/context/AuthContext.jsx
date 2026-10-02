@@ -1,0 +1,121 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import authService from '../services/authService';
+
+const AuthContext = createContext(null);
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [authError, setAuthError] = useState(null);
+
+  // Initialize and verify authenticated session on mount
+  useEffect(() => {
+    let isMounted = true;
+
+    async function checkAuth() {
+      try {
+        const response = await authService.getMe();
+        if (isMounted && response?.data?.user) {
+          setUser(response.data.user);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setUser(null);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    checkAuth();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  /**
+   * Logs in with email and password.
+   */
+  const login = async (email, password) => {
+    setAuthError(null);
+    try {
+      const response = await authService.login({ email, password });
+      if (response?.data?.user) {
+        setUser(response.data.user);
+        return { success: true, user: response.data.user };
+      }
+      throw new Error('Invalid login response from server.');
+    } catch (err) {
+      const message = err.message || 'Failed to sign in. Please check your credentials.';
+      setAuthError(message);
+      return { success: false, error: message };
+    }
+  };
+
+  /**
+   * Registers a new account.
+   */
+  const register = async (email, password, displayName) => {
+    setAuthError(null);
+    try {
+      const response = await authService.register({ email, password, displayName });
+      if (response?.data?.user) {
+        setUser(response.data.user);
+        return { success: true, user: response.data.user };
+      }
+      throw new Error('Invalid registration response from server.');
+    } catch (err) {
+      const message = err.message || 'Failed to create account.';
+      setAuthError(message);
+      return { success: false, error: message };
+    }
+  };
+
+  /**
+   * Logs out current session.
+   */
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (err) {
+      console.warn('Logout request completed with warning:', err.message);
+    } finally {
+      setUser(null);
+      setAuthError(null);
+    }
+  };
+
+  /**
+   * Updates local user state (e.g. after editing profile).
+   */
+  const updateUser = (updatedFields) => {
+    setUser((prev) => (prev ? { ...prev, ...updatedFields } : prev));
+  };
+
+  const value = {
+    user,
+    isAuthenticated: !!user,
+    isLoading,
+    authError,
+    setAuthError,
+    login,
+    register,
+    logout,
+    updateUser,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
+
+export default AuthContext;
