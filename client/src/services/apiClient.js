@@ -24,11 +24,20 @@ async function request(endpoint, options = {}) {
     ...(options.headers || {}),
   };
 
+  // Attach Bearer token from localStorage as fallback for cross-domain deployments
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('skyplan_token');
+    if (token && !headers.Authorization) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+  }
+
   const config = {
     credentials: 'include',
     ...options,
     headers,
   };
+
 
 
   try {

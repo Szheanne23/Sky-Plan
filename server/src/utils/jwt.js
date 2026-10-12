@@ -37,14 +37,16 @@ function verifyToken(token) {
  */
 function getCookieOptions() {
   const isProduction = config.nodeEnv === 'production';
+  const sameSite = process.env.COOKIE_SAMESITE || (isProduction ? 'none' : 'lax');
   return {
     httpOnly: true,
-    secure: isProduction, // HTTPS only in production
-    sameSite: isProduction ? 'strict' : 'lax',
+    secure: isProduction || sameSite === 'none', // HTTPS required if sameSite is none or in production
+    sameSite,
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     path: '/',
   };
 }
+
 
 module.exports = {
   COOKIE_NAME,

@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
       } catch (err) {
         if (isMounted) {
           setUser(null);
+          localStorage.removeItem('skyplan_token');
         }
       } finally {
         if (isMounted) {
@@ -44,6 +45,9 @@ export function AuthProvider({ children }) {
     try {
       const response = await authService.login({ email, password });
       if (response?.data?.user) {
+        if (response.data.token) {
+          localStorage.setItem('skyplan_token', response.data.token);
+        }
         setUser(response.data.user);
         return { success: true, user: response.data.user };
       }
@@ -63,6 +67,9 @@ export function AuthProvider({ children }) {
     try {
       const response = await authService.register({ email, password, displayName });
       if (response?.data?.user) {
+        if (response.data.token) {
+          localStorage.setItem('skyplan_token', response.data.token);
+        }
         setUser(response.data.user);
         return { success: true, user: response.data.user };
       }
@@ -83,10 +90,12 @@ export function AuthProvider({ children }) {
     } catch (err) {
       console.warn('Logout request completed with warning:', err.message);
     } finally {
+      localStorage.removeItem('skyplan_token');
       setUser(null);
       setAuthError(null);
     }
   };
+
 
   /**
    * Updates local user state (e.g. after editing profile).
