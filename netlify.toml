@@ -1,14 +1,23 @@
-# Netlify Configuration for SkyPlan Frontend (React 18 + Vite SPA)
+# Netlify Configuration for SkyPlan (Full-Stack Monorepo: React Client + Netlify Serverless Functions)
 
 [build]
-  base = "client"
-  publish = "dist"
-  command = "npm run build"
+  command = "npm run build:all"
+  publish = "client/dist"
 
 [build.environment]
   NODE_VERSION = "20"
 
-# Single Page Application (SPA) routing fallback
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# 1. API Route: Proxy /api/* directly to Netlify Functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+# 2. SPA Route: Fallback all other client navigation to index.html
 [[redirects]]
   from = "/*"
   to = "/index.html"

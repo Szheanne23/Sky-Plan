@@ -7,8 +7,10 @@
     "dev:server": "npm --prefix server run dev",
     "dev:client": "npm --prefix client run dev",
     "build:client": "npm --prefix client run build",
+    "build:all": "npm --prefix client install && npm --prefix client run build",
     "start:server": "npm --prefix server start",
     "install:all": "npm install && npm --prefix server install && npm --prefix client install"
+
   },
   "keywords": [
     "skyplan",
@@ -20,5 +22,15 @@
     "openweathermap"
   ],
   "author": "Rosh Shahanah Mae P. Cabinta",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.7",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.23.1",
+    "serverless-http": "^4.0.0"
+  }
 }

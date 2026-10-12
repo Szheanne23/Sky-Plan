@@ -21,8 +21,11 @@ app.get('/', (req, res) => {
   });
 });
 
-// Mount API routes
+// Mount API routes (handles standard Express, Netlify redirects, and direct serverless invocation)
 app.use('/api', routes);
+app.use('/.netlify/functions/api', routes);
+app.use('/', routes);
+
 
 // 404 handler for unmatched routes
 app.use(notFoundHandler);
