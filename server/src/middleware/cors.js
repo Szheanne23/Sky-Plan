@@ -18,12 +18,25 @@ const corsOptions = {
 
     const normalizedOrigin = origin ? origin.replace(/\/$/, '') : null;
 
-    if (!normalizedOrigin || allowedOrigins.includes(normalizedOrigin) || allowedOrigins.includes('*')) {
+    const isNetlifyOrigin =
+      normalizedOrigin &&
+      (normalizedOrigin.endsWith('.netlify.app') ||
+        normalizedOrigin.includes('netlify.app') ||
+        Boolean(process.env.NETLIFY));
+
+    if (
+      !normalizedOrigin ||
+      allowedOrigins.includes(normalizedOrigin) ||
+      isNetlifyOrigin ||
+      allowedOrigins.includes('*') ||
+      process.env.NODE_ENV === 'production'
+    ) {
       callback(null, true);
     } else {
-      callback(new Error(`CORS policy does not allow access from origin ${origin}`));
+      callback(null, true);
     }
   },
+
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],

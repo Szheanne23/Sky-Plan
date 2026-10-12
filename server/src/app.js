@@ -12,6 +12,13 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Request logging for Netlify Functions observability
+app.use((req, res, next) => {
+  console.log(`📡 [${req.method}] ${req.originalUrl || req.url} (origin: ${req.headers.origin || 'same-origin'})`);
+  next();
+});
+
+
 // Root welcome check
 app.get('/', (req, res) => {
   res.json({
