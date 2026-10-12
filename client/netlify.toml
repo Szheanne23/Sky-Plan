@@ -7,7 +7,18 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Single Page Application (SPA) routing fallback
+[functions]
+  directory = "../netlify/functions"
+  node_bundler = "esbuild"
+
+# 1. Forward /api/* requests to Netlify Serverless Functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+# 2. Single Page Application (SPA) routing fallback
 [[redirects]]
   from = "/*"
   to = "/index.html"
