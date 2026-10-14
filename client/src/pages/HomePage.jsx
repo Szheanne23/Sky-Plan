@@ -659,6 +659,8 @@ export default function HomePage() {
                   timeSlot={rec.timeSlot}
                   conditions={rec.conditions}
                   icon={RecIcon}
+                  imageUrl={rec.imageUrl}
+                  destination={rec.destination || cityName}
                   onAddToItinerary={() => {
                     if (!isAuthenticated) {
                       navigate(`/register?redirect=${encodeURIComponent(`/?city=${encodeURIComponent(cityName)}`)}`);

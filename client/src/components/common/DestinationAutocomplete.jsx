@@ -282,6 +282,8 @@ export default function DestinationAutocomplete({
   required = false,
   id = 'destination-autocomplete-input',
   className = '',
+  inputClassName = 'py-2.5 text-xs',
+  roundedClassName = 'rounded-2xl',
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState(value);
@@ -420,7 +422,7 @@ export default function DestinationAutocomplete({
       )}
 
       {/* Input container with Google Maps pin & clear button */}
-      <div className="relative flex items-center rounded-2xl bg-surface-container-high border border-white/10 transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 shadow-specular-inset">
+      <div className={`relative flex items-center bg-surface-container-high border border-white/10 transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 shadow-specular-inset ${roundedClassName}`}>
         <div className="pl-3.5 pr-1 flex items-center pointer-events-none text-primary">
           <MapPin className="w-4 h-4" />
         </div>
@@ -436,7 +438,7 @@ export default function DestinationAutocomplete({
           placeholder={placeholder}
           required={required}
           autoComplete="off"
-          className="w-full bg-transparent px-2 py-2.5 text-xs text-on-surface placeholder:text-outline focus:outline-none"
+          className={`w-full bg-transparent px-2 text-on-surface placeholder:text-outline focus:outline-none ${inputClassName}`}
         />
 
         {query && (

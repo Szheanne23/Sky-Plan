@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import Badge from '../common/Badge';
 import { cn } from '../../lib/utils';
+import { getDestinationMedia } from '../../services/destinationMediaService';
 
 /**
  * Stitch Smart Activity Recommendation Card
@@ -26,6 +27,8 @@ export default function RecommendationCard({
   timeSlot = '09:00 - 13:00',
   conditions = [],
   icon: Icon = Compass,
+  imageUrl,
+  destination,
   onAddToItinerary,
   className = '',
 }) {
@@ -75,19 +78,47 @@ export default function RecommendationCard({
   const currentConfig = suitabilityConfig[suitability] || suitabilityConfig.SUITABLE;
   const IndicatorIcon = currentConfig.indicatorIcon;
 
+  // Resolve matching authentic destination photo
+  const destinationMedia = getDestinationMedia(destination);
+  const displayImage = imageUrl || destinationMedia?.imageUrl;
+
   return (
     <div
       className={cn(
-        'rounded-2xl bg-surface-container-low/70 backdrop-blur-md p-5 flex flex-col justify-between border border-white/10 hover:border-white/25 hover:bg-surface-container/80 transition-all duration-300 group shadow-specular-inset',
+        'rounded-2xl bg-surface-container-low/70 backdrop-blur-md p-4 sm:p-5 flex flex-col justify-between border border-white/10 hover:border-white/25 hover:bg-surface-container/80 transition-all duration-300 group shadow-specular-inset overflow-hidden',
         currentConfig.accentBorder,
         className
       )}
     >
       <div>
+        {/* Activity Photo Header */}
+        {displayImage && (
+          <div className="relative w-full h-40 -mt-1 -mx-0 mb-3.5 rounded-xl overflow-hidden border border-white/10 group-hover:border-primary/30 transition-all shadow-md bg-surface-container">
+            <img
+              src={displayImage}
+              alt={title}
+              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              onError={(e) => {
+                if (destinationMedia?.imageUrl && e.target.src !== destinationMedia.imageUrl) {
+                  e.target.src = destinationMedia.imageUrl;
+                }
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-surface-container-lowest/20 to-transparent pointer-events-none" />
+            {destination && (
+              <div className="absolute bottom-2 left-2 pointer-events-none">
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-sm">
+                  <MapPin className="w-2.5 h-2.5 text-primary" /> {destination}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Header: Activity Icon + Category Badge + Suitability Score */}
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-surface-container-high/90 border border-white/10 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-full bg-surface-container-high/90 border border-white/10 flex items-center justify-center text-primary group-hover:scale-105 transition-transform shrink-0">
               <Icon className="w-5 h-5 text-primary" aria-hidden="true" />
             </div>
             <div>

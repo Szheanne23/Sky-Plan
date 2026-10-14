@@ -29,6 +29,7 @@ async function getRecommendations(req, res, next) {
     const result = await recommendationService.generateRecommendations({
       weatherData,
       userInterestTagIds,
+      destinationCity: weatherData.location?.city || city,
     });
 
     res.status(200).json({
