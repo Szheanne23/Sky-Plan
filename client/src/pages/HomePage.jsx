@@ -28,7 +28,8 @@ import {
   ArrowUp,
   ArrowDown,
   AlertCircle,
-  CalendarPlus
+  CalendarPlus,
+  Camera
 } from 'lucide-react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '../components/common/Card';
@@ -50,6 +51,7 @@ import weatherService from '../services/weatherService';
 import recommendationService from '../services/recommendationService';
 import favoritesService from '../services/favoritesService';
 import healthService from '../services/healthService';
+import { getDestinationMedia } from '../services/destinationMediaService';
 import { useAuth } from '../context/AuthContext';
 
 export default function HomePage() {
@@ -285,60 +287,109 @@ export default function HomePage() {
       )}
 
       {/* 3. Hero Atmospheric Snapshot + Telemetry Grid */}
-      {weatherData && (
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* Hero Weather Panel (7 cols) */}
-          <div className="lg:col-span-7 rounded-3xl bg-surface-container-low/80 backdrop-blur-2xl p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between border border-white/10 shadow-glass">
-            {/* Specular Radial Gradients */}
-            <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-tertiary/15 blur-3xl pointer-events-none" />
-            <div className="absolute right-24 -bottom-16 w-64 h-64 rounded-full bg-primary/15 blur-3xl pointer-events-none" />
+      {/* 3. Hero Atmospheric Snapshot + Telemetry Grid */}
+      {weatherData && (() => {
+        const destMedia = getDestinationMedia(weatherData.location?.city || cityName);
 
-            <div className="relative z-10 flex items-start justify-between gap-4">
-              <div>
-                <span className="text-xs font-semibold text-primary uppercase tracking-widest font-display">
-                  Atmospheric Snapshot
-                </span>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="font-display text-5xl sm:text-6xl font-extrabold text-on-surface tracking-tight font-tabular">
-                    {weatherData.temperature?.current}°
-                  </span>
-                  <span className="font-display text-2xl font-bold text-on-surface-variant">C</span>
-                  <span className="text-sm font-medium text-outline ml-3">
-                    Feels like {weatherData.temperature?.feelsLike}°C
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
-                  <p className="font-display font-semibold text-lg text-on-surface">
-                    {weatherData.weather?.description
-                      ? weatherData.weather.description.charAt(0).toUpperCase() + weatherData.weather.description.slice(1)
-                      : weatherData.weather?.main || 'Clear Sky'}
-                  </p>
-                </div>
+        return (
+          <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            {/* Hero Weather Panel (7 cols) with Destination Landmark Photo */}
+            <div className="lg:col-span-7 rounded-3xl bg-surface-container-low/80 backdrop-blur-2xl p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between border border-white/10 shadow-glass group">
+              {/* Cinematic Destination Photo Background */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <img
+                  src={destMedia.imageUrl}
+                  alt={destMedia.title}
+                  className="w-full h-full object-cover object-center brightness-[0.30] contrast-[1.15] saturate-[1.2] transition-transform duration-1000 ease-out group-hover:scale-105"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+                {/* Multilayer gradient ensuring WCAG AAA contrast for weather metrics */}
+                <div className="absolute inset-0 bg-gradient-to-r from-surface-container-lowest/95 via-surface-container-low/85 to-surface-container-lowest/65" />
+                <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent" />
               </div>
 
-              {/* Weather Graphic */}
-              <div className="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 flex items-center justify-center">
-                <svg className="w-full h-full drop-shadow-[0_8px_24px_rgba(252,134,2,0.3)]" fill="none" viewBox="0 0 120 120">
-                  <circle cx="68" cy="46" fill="url(#sun-grad)" r="26" />
-                  <path
-                    d="M30 78C30 68 38 60 48 60C51 60 53.8 60.8 56.2 62.2C59.6 53.6 68 47.5 78 47.5C90.7 47.5 101 57.8 101 70.5C101 71.3 100.9 72.1 100.8 72.9C104.4 75 107 79 107 83.5C107 90.4 101.4 96 94.5 96H38C33.6 96 30 92.4 30 88V78Z"
-                    fill="url(#cloud-grad)"
-                    fillOpacity="0.95"
-                  />
-                  <defs>
-                    <linearGradient id="sun-grad" x1="42" y1="20" x2="94" y2="72" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#fc8602" />
-                      <stop offset="1" stopColor="#ffb781" />
-                    </linearGradient>
-                    <linearGradient id="cloud-grad" x1="30" y1="47.5" x2="107" y2="96" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#313852" />
-                      <stop offset="1" stopColor="#171e37" />
-                    </linearGradient>
-                  </defs>
-                </svg>
+              {/* Specular Radial Gradients */}
+              <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-tertiary/15 blur-3xl pointer-events-none" />
+              <div className="absolute right-24 -bottom-16 w-64 h-64 rounded-full bg-primary/15 blur-3xl pointer-events-none" />
+
+              <div className="relative z-10 flex items-start justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs font-semibold text-primary uppercase tracking-widest font-display">
+                      Atmospheric Snapshot
+                    </span>
+                    <span className="text-outline text-xs hidden sm:inline">•</span>
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-tertiary bg-tertiary/10 px-2 py-0.5 rounded-full border border-tertiary/20">
+                      <Camera className="w-3 h-3 text-tertiary" /> {destMedia.title}
+                    </span>
+                  </div>
+
+                  <div className="flex items-baseline gap-2 mt-2">
+                    <span className="font-display text-5xl sm:text-6xl font-extrabold text-on-surface tracking-tight font-tabular">
+                      {weatherData.temperature?.current}°
+                    </span>
+                    <span className="font-display text-2xl font-bold text-on-surface-variant">C</span>
+                    <span className="text-sm font-medium text-outline ml-3">
+                      Feels like {weatherData.temperature?.feelsLike}°C
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
+                    <p className="font-display font-semibold text-lg text-on-surface">
+                      {weatherData.weather?.description
+                        ? weatherData.weather.description.charAt(0).toUpperCase() + weatherData.weather.description.slice(1)
+                        : weatherData.weather?.main || 'Clear Sky'}
+                    </p>
+                  </div>
+
+                  {/* Destination Landmark Photo Preview Capsule */}
+                  <div className="mt-4 flex items-center gap-3 p-2.5 rounded-2xl bg-black/50 backdrop-blur-md border border-white/15 max-w-md shadow-specular-inset">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-white/20 shadow-md">
+                      <img
+                        src={destMedia.imageUrl}
+                        alt={destMedia.landmark}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    </div>
+                    <div className="min-w-0 pr-1">
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
+                        <span className="font-bold text-xs text-on-surface truncate">
+                          {destMedia.landmark}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-outline truncate mt-0.5">
+                        {destMedia.tag}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Weather Graphic */}
+                <div className="relative w-20 h-20 sm:w-28 sm:h-28 shrink-0 flex items-center justify-center">
+                  <svg className="w-full h-full drop-shadow-[0_8px_24px_rgba(252,134,2,0.3)]" fill="none" viewBox="0 0 120 120">
+                    <circle cx="68" cy="46" fill="url(#sun-grad)" r="26" />
+                    <path
+                      d="M30 78C30 68 38 60 48 60C51 60 53.8 60.8 56.2 62.2C59.6 53.6 68 47.5 78 47.5C90.7 47.5 101 57.8 101 70.5C101 71.3 100.9 72.1 100.8 72.9C104.4 75 107 79 107 83.5C107 90.4 101.4 96 94.5 96H38C33.6 96 30 92.4 30 88V78Z"
+                      fill="url(#cloud-grad)"
+                      fillOpacity="0.95"
+                    />
+                    <defs>
+                      <linearGradient id="sun-grad" x1="42" y1="20" x2="94" y2="72" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#fc8602" />
+                        <stop offset="1" stopColor="#ffb781" />
+                      </linearGradient>
+                      <linearGradient id="cloud-grad" x1="30" y1="47.5" x2="107" y2="96" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#313852" />
+                        <stop offset="1" stopColor="#171e37" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
               </div>
-            </div>
 
             <div className="relative z-10 pt-6 mt-6 flex items-center justify-between border-t border-white/10 flex-wrap gap-3">
               <div className="flex items-center gap-4 text-xs font-tabular">
@@ -413,7 +464,8 @@ export default function HomePage() {
             />
           </div>
         </section>
-      )}
+      );
+    })()}
 
       {/* 4. Multi-Day Forecast Ribbon */}
       {forecastData.length > 0 && (
