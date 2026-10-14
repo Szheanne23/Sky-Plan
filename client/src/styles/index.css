@@ -407,9 +407,10 @@ html.light input::placeholder,
   color: #94a3b8 !important;
 }
 
-html.light .bg-gradient-to-r,
-[data-theme="day"] .bg-gradient-to-r {
-  --tw-gradient-from: rgba(255, 255, 255, 0.95) var(--tw-gradient-from-position) !important;
-  --tw-gradient-stops: var(--tw-gradient-from), rgba(255, 255, 255, 0.55) var(--tw-gradient-via-position), transparent var(--tw-gradient-to-position) !important;
+html.light button.bg-gradient-to-r,
+[data-theme="day"] button.bg-gradient-to-r,
+html.light button.bg-gradient-to-r *,
+[data-theme="day"] button.bg-gradient-to-r * {
+  color: #ffffff !important;
 }
 

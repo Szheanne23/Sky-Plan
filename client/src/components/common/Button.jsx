@@ -20,7 +20,7 @@ export default function Button({
   const baseStyles = 'inline-flex items-center justify-center font-medium rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98] shadow-specular-inset';
 
   const variants = {
-    primary: 'bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white shadow-glow hover:shadow-glow focus:ring-primary border border-white/20 font-semibold dark:from-sky-500 dark:to-blue-600',
+    primary: 'bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 !text-white shadow-glow hover:shadow-glow focus:ring-primary border border-white/20 font-semibold dark:from-sky-500 dark:to-blue-600',
     secondary: 'bg-surface-container-high/90 hover:bg-surface-container-highest text-on-surface border border-outline-variant/30 hover:border-outline-variant/50 focus:ring-primary',
     outline: 'bg-surface-container/60 hover:bg-surface-container-high text-on-surface border border-outline-variant/50 hover:border-primary/50 backdrop-blur-md focus:ring-primary',
     ghost: 'hover:bg-surface-container text-on-surface-variant hover:text-on-surface focus:ring-outline shadow-none',
@@ -45,9 +45,9 @@ export default function Button({
       {isLoading ? (
         <Spinner size={size === 'sm' ? 'sm' : 'md'} color={variant === 'outline' || variant === 'ghost' ? 'current' : 'white'} />
       ) : Icon ? (
-        <Icon className={cn(size === 'sm' ? 'w-3.5 h-3.5' : size === 'lg' ? 'w-5 h-5' : 'w-4 h-4')} />
+        <Icon className={cn(size === 'sm' ? 'w-3.5 h-3.5' : size === 'lg' ? 'w-5 h-5' : 'w-4 h-4', variant === 'primary' && '!text-white')} />
       ) : null}
-      <span>{children}</span>
+      <span className={cn(variant === 'primary' && '!text-white')}>{children}</span>
     </button>
   );
 }
