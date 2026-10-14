@@ -31,6 +31,7 @@ import EmptyState from '../components/common/EmptyState';
 import Alert from '../components/common/Alert';
 import LoadingSkeleton from '../components/common/LoadingSkeleton';
 import DestinationAutocomplete from '../components/common/DestinationAutocomplete';
+import BookingDateRangePicker, { ActivityTimePicker } from '../components/common/BookingDateRangePicker';
 
 export default function ItinerariesPage() {
   const [searchParams] = useSearchParams();
@@ -616,26 +617,14 @@ export default function ItinerariesPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="font-semibold block mb-1">Start Date</label>
-                  <input
-                    type="date"
-                    value={formStartDate}
-                    onChange={(e) => setFormStartDate(e.target.value)}
-                    className="w-full rounded-2xl bg-surface-container-high border border-white/10 px-3.5 py-2 text-xs text-on-surface focus:outline-none focus:border-primary"
-                  />
-                </div>
-                <div>
-                  <label className="font-semibold block mb-1">End Date</label>
-                  <input
-                    type="date"
-                    value={formEndDate}
-                    onChange={(e) => setFormEndDate(e.target.value)}
-                    className="w-full rounded-2xl bg-surface-container-high border border-white/10 px-3.5 py-2 text-xs text-on-surface focus:outline-none focus:border-primary"
-                  />
-                </div>
-              </div>
+              {/* Booking System-style Automated Date Range Picker */}
+              <BookingDateRangePicker
+                startDate={formStartDate}
+                endDate={formEndDate}
+                onStartDateChange={(startStr) => setFormStartDate(startStr)}
+                onEndDateChange={(endStr) => setFormEndDate(endStr)}
+                defaultDurationDays={2}
+              />
 
               <div>
                 <label className="font-semibold block mb-1">Description / Notes</label>
@@ -806,27 +795,18 @@ export default function ItinerariesPage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="text-[11px] text-outline block mb-1">Time Slot</label>
-                      <select
-                        value={newActivityTimeSlot}
-                        onChange={(e) => setNewActivityTimeSlot(e.target.value)}
-                        className="w-full rounded-xl bg-surface-container border border-white/10 px-2.5 py-1.5 text-xs text-on-surface focus:outline-none focus:border-primary"
-                      >
-                        <option value="Morning">Morning (09:00 - 12:00)</option>
-                        <option value="Afternoon">Afternoon (13:00 - 17:00)</option>
-                        <option value="Evening">Evening (18:00 - 21:00)</option>
-                        <option value="Full Day">Full Day</option>
-                      </select>
-                    </div>
+                  <div className="space-y-2">
+                    <ActivityTimePicker
+                      value={newActivityTimeSlot}
+                      onChange={(val) => setNewActivityTimeSlot(val)}
+                    />
 
                     <div>
                       <label className="text-[11px] text-outline block mb-1">Category</label>
                       <select
                         value={newActivityCategory}
                         onChange={(e) => setNewActivityCategory(e.target.value)}
-                        className="w-full rounded-xl bg-surface-container border border-white/10 px-2.5 py-1.5 text-xs text-on-surface focus:outline-none focus:border-primary"
+                        className="w-full rounded-xl bg-surface-container border border-white/10 px-2.5 py-2 text-xs text-on-surface focus:outline-none focus:border-primary"
                       >
                         <option value="OUTDOOR">OUTDOOR</option>
                         <option value="INDOOR">INDOOR</option>

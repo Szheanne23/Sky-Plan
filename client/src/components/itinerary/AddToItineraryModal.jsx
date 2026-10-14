@@ -3,8 +3,8 @@ import { CalendarPlus, MapPin, Clock, Plus, Check, AlertCircle, X, Sparkles } fr
 import itineraryService from '../../services/itineraryService';
 import Button from '../common/Button';
 import Input from '../common/Input';
-import Badge from '../common/Badge';
 import DestinationAutocomplete from '../common/DestinationAutocomplete';
+import BookingDateRangePicker, { ActivityTimePicker } from '../common/BookingDateRangePicker';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,6 +27,7 @@ export default function AddToItineraryModal({
   const [newCity, setNewCity] = useState(destinationCity);
   const [newOccasion, setNewOccasion] = useState('Vacation');
   const [newStartDate, setNewStartDate] = useState('');
+  const [newEndDate, setNewEndDate] = useState('');
 
   // Activity fields
   const [timeSlot, setTimeSlot] = useState('Morning (09:00 - 12:00)');
@@ -101,6 +102,7 @@ export default function AddToItineraryModal({
           destinationCity: (newCity || destinationCity).trim(),
           occasion: newOccasion,
           startDate: newStartDate || null,
+          endDate: newEndDate || null,
         });
         targetItineraryId = created.id;
       }
@@ -254,53 +256,38 @@ export default function AddToItineraryModal({
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="text-[11px] font-medium text-outline block mb-1">Occasion</label>
-                      <select
-                        value={newOccasion}
-                        onChange={(e) => setNewOccasion(e.target.value)}
-                        className="w-full rounded-xl bg-surface-container border border-white/10 px-2.5 py-2 text-xs text-on-surface focus:outline-none focus:border-primary"
-                      >
-                        {occasions.map((occ) => (
-                          <option key={occ} value={occ}>
-                            {occ}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="text-[11px] font-medium text-outline block mb-1">Start Date</label>
-                      <input
-                        type="date"
-                        value={newStartDate}
-                        onChange={(e) => setNewStartDate(e.target.value)}
-                        className="w-full rounded-xl bg-surface-container border border-white/10 px-2.5 py-1.5 text-xs text-on-surface focus:outline-none focus:border-primary"
-                      />
-                    </div>
+                  <div>
+                    <label className="text-[11px] font-medium text-outline block mb-1">Occasion</label>
+                    <select
+                      value={newOccasion}
+                      onChange={(e) => setNewOccasion(e.target.value)}
+                      className="w-full rounded-xl bg-surface-container border border-white/10 px-2.5 py-2 text-xs text-on-surface focus:outline-none focus:border-primary"
+                    >
+                      {occasions.map((occ) => (
+                        <option key={occ} value={occ}>
+                          {occ}
+                        </option>
+                      ))}
+                    </select>
                   </div>
+
+                  {/* Booking Date Range Picker */}
+                  <BookingDateRangePicker
+                    startDate={newStartDate}
+                    endDate={newEndDate}
+                    onStartDateChange={(startStr) => setNewStartDate(startStr)}
+                    onEndDateChange={(endStr) => setNewEndDate(endStr)}
+                    defaultDurationDays={2}
+                  />
                 </div>
               )}
             </div>
 
-            {/* Time Slot Selection */}
-            <div className="space-y-1.5">
-              <label className="font-semibold text-on-surface flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-tertiary" /> Time Window / Schedule
-              </label>
-              <select
-                value={timeSlot}
-                onChange={(e) => setTimeSlot(e.target.value)}
-                className="w-full rounded-2xl bg-surface-container-high border border-white/10 px-3.5 py-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"
-              >
-                {timeSlotOptions.map((ts) => (
-                  <option key={ts} value={ts}>
-                    {ts}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* Time Slot Selection with ActivityTimePicker */}
+            <ActivityTimePicker
+              value={timeSlot}
+              onChange={(val) => setTimeSlot(val)}
+            />
 
             {/* Notes Field */}
             <div className="space-y-1.5">
