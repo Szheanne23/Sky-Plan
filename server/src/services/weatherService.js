@@ -102,34 +102,60 @@ function normalizeForecast(data) {
   };
 }
 
+const PHILIPPINE_LOCATIONS = {
+  'manila': { city: 'Manila', country: 'Philippines', countryCode: 'PH', lat: '14.5995', lon: '120.9842', elevation: '16m', tempBase: 30, isCool: false },
+  'metro manila': { city: 'Metro Manila', country: 'Philippines', countryCode: 'PH', lat: '14.5995', lon: '120.9842', elevation: '16m', tempBase: 30, isCool: false },
+  'quezon city': { city: 'Quezon City', country: 'Philippines', countryCode: 'PH', lat: '14.6760', lon: '121.0437', elevation: '52m', tempBase: 30, isCool: false },
+  'baguio': { city: 'Baguio City', country: 'Philippines', countryCode: 'PH', lat: '16.4023', lon: '120.5960', elevation: '1470m', tempBase: 20, isCool: true },
+  'baguio city': { city: 'Baguio City', country: 'Philippines', countryCode: 'PH', lat: '16.4023', lon: '120.5960', elevation: '1470m', tempBase: 20, isCool: true },
+  'cebu': { city: 'Cebu City', country: 'Philippines', countryCode: 'PH', lat: '10.3157', lon: '123.8854', elevation: '17m', tempBase: 29, isCool: false },
+  'cebu city': { city: 'Cebu City', country: 'Philippines', countryCode: 'PH', lat: '10.3157', lon: '123.8854', elevation: '17m', tempBase: 29, isCool: false },
+  'tagaytay': { city: 'Tagaytay', country: 'Philippines', countryCode: 'PH', lat: '14.1153', lon: '120.9621', elevation: '634m', tempBase: 24, isCool: true },
+  'boracay': { city: 'Boracay', country: 'Philippines', countryCode: 'PH', lat: '11.9674', lon: '121.9248', elevation: '5m', tempBase: 29, isCool: false },
+  'siargao': { city: 'Siargao Island', country: 'Philippines', countryCode: 'PH', lat: '9.8584', lon: '126.0469', elevation: '10m', tempBase: 29, isCool: false },
+  'palawan': { city: 'Palawan (El Nido)', country: 'Philippines', countryCode: 'PH', lat: '11.1956', lon: '119.4075', elevation: '8m', tempBase: 29, isCool: false },
+  'el nido': { city: 'El Nido', country: 'Philippines', countryCode: 'PH', lat: '11.1956', lon: '119.4075', elevation: '8m', tempBase: 29, isCool: false },
+  'coron': { city: 'Coron', country: 'Philippines', countryCode: 'PH', lat: '12.0000', lon: '120.2000', elevation: '12m', tempBase: 29, isCool: false },
+  'davao': { city: 'Davao City', country: 'Philippines', countryCode: 'PH', lat: '7.1907', lon: '125.4553', elevation: '22m', tempBase: 30, isCool: false },
+  'davao city': { city: 'Davao City', country: 'Philippines', countryCode: 'PH', lat: '7.1907', lon: '125.4553', elevation: '22m', tempBase: 30, isCool: false },
+  'bohol': { city: 'Bohol (Panglao)', country: 'Philippines', countryCode: 'PH', lat: '9.6729', lon: '123.8730', elevation: '15m', tempBase: 29, isCool: false },
+  'batanes': { city: 'Batanes (Basco)', country: 'Philippines', countryCode: 'PH', lat: '20.4485', lon: '121.9702', elevation: '45m', tempBase: 24, isCool: true },
+  'iloilo': { city: 'Iloilo City', country: 'Philippines', countryCode: 'PH', lat: '10.7202', lon: '122.5621', elevation: '10m', tempBase: 29, isCool: false },
+  'vigan': { city: 'Vigan City', country: 'Philippines', countryCode: 'PH', lat: '17.5747', lon: '120.3869', elevation: '15m', tempBase: 30, isCool: false },
+  'la union': { city: 'La Union (San Juan)', country: 'Philippines', countryCode: 'PH', lat: '16.6667', lon: '120.3333', elevation: '10m', tempBase: 30, isCool: false },
+  'sagada': { city: 'Sagada', country: 'Philippines', countryCode: 'PH', lat: '17.0833', lon: '120.9000', elevation: '1500m', tempBase: 19, isCool: true }
+};
+
 /**
- * Deterministic fallback weather generator when API key is unconfigured or rate limited.
- * Computes realistic meteorological values based on geographical hash to provide predictable data.
+ * Deterministic fallback weather generator localized to the Philippines and global queries.
  */
 function getDeterministicFallback(city) {
+  const normCity = city.toLowerCase().trim();
+  const matchedLoc = PHILIPPINE_LOCATIONS[normCity];
+
   const hash = city.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const tempBase = 15 + (hash % 12);
-  const humidity = 45 + (hash % 40);
-  const wind = 8 + (hash % 16);
-  const precip = hash % 5 === 0 ? 45 : hash % 3 === 0 ? 15 : 0;
-  const condition = precip > 30 ? 'Rain' : precip > 10 ? 'Clouds' : 'Clear';
+  const tempBase = matchedLoc ? matchedLoc.tempBase : 27 + (hash % 6);
+  const humidity = 65 + (hash % 25); // Tropical humidity
+  const wind = 10 + (hash % 15);
+  const precip = hash % 5 === 0 ? 55 : hash % 3 === 0 ? 20 : 5;
+  const condition = precip > 35 ? 'Rain' : precip > 15 ? 'Clouds' : 'Clear';
 
   const dateNow = new Date();
   const days = Array.from({ length: 7 }).map((_, idx) => {
     const d = new Date(dateNow);
     d.setDate(d.getDate() + idx);
     const dHash = hash + idx * 7;
-    const dPrecip = dHash % 4 === 0 ? 60 : dHash % 2 === 0 ? 10 : 0;
+    const dPrecip = dHash % 4 === 0 ? 60 : dHash % 2 === 0 ? 15 : 0;
     const dCond = dPrecip > 40 ? 'Rain' : dPrecip > 0 ? 'Clouds' : 'Clear';
-    const dHigh = tempBase + (dHash % 5) - 2;
-    const dLow = dHigh - 7 - (dHash % 4);
+    const dHigh = tempBase + (dHash % 3);
+    const dLow = dHigh - (matchedLoc?.isCool ? 5 : 4);
 
     return {
       date: d.toISOString().split('T')[0],
       day: idx === 0 ? 'Today' : d.toLocaleDateString('en-US', { weekday: 'short' }),
       formattedDate: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      condition: dCond === 'Rain' ? 'Passing Showers' : dCond === 'Clouds' ? 'Partly Sunny' : 'Clear & Crisp',
-      description: dCond === 'Rain' ? 'Light rain showers' : dCond === 'Clouds' ? 'Scattered cloud cover' : 'Clear blue sky',
+      condition: dCond === 'Rain' ? 'Tropical Showers' : dCond === 'Clouds' ? 'Partly Cloudy' : 'Sunny & Warm',
+      description: dCond === 'Rain' ? 'Localized monsoon rain showers' : dCond === 'Clouds' ? 'Scattered tropical cloud cover' : 'Clear sunny tropical skies',
       icon: dCond === 'Rain' ? '10d' : dCond === 'Clouds' ? '02d' : '01d',
       highTemp: dHigh,
       lowTemp: dLow,
@@ -139,42 +165,48 @@ function getDeterministicFallback(city) {
     };
   });
 
+  const resolvedCityName = matchedLoc ? matchedLoc.city : city.charAt(0).toUpperCase() + city.slice(1);
+  const resolvedCountry = matchedLoc ? matchedLoc.country : 'Philippines';
+  const resolvedLat = matchedLoc ? matchedLoc.lat : (12.0 + (hash % 6)).toFixed(4);
+  const resolvedLon = matchedLoc ? matchedLoc.lon : (120.0 + (hash % 4)).toFixed(4);
+  const resolvedElevation = matchedLoc ? matchedLoc.elevation : `${20 + (hash % 150)}m`;
+
   return {
     current: {
       location: {
-        city: city.charAt(0).toUpperCase() + city.slice(1),
-        country: 'Global Region',
-        lat: (45.0 + (hash % 20)).toFixed(4),
-        lon: (8.0 + (hash % 30)).toFixed(4),
-        elevation: `${400 + (hash % 800)}m`,
+        city: resolvedCityName,
+        country: resolvedCountry,
+        lat: resolvedLat,
+        lon: resolvedLon,
+        elevation: resolvedElevation,
       },
       weather: {
         main: condition,
-        description: condition === 'Rain' ? 'Passing alpine rain' : condition === 'Clouds' ? 'Partly cloudy' : 'Clear skies & crisp air',
+        description: condition === 'Rain' ? 'Localized monsoon rain showers' : condition === 'Clouds' ? 'Scattered tropical cloud cover' : 'Sunny tropical skies & gentle sea breeze',
         icon: condition === 'Rain' ? '10d' : condition === 'Clouds' ? '02d' : '01d',
       },
       temperature: {
         current: tempBase,
-        feelsLike: tempBase - 1,
-        tempMin: tempBase - 6,
+        feelsLike: tempBase + (humidity > 70 ? 2 : 0),
+        tempMin: tempBase - 4,
         tempMax: tempBase + 3,
       },
       telemetry: {
         humidity,
-        pressure: 1014 + (hash % 10),
+        pressure: 1010 + (hash % 6),
         windSpeed: wind,
-        windDeg: 315,
-        windGust: wind + 6,
-        visibilityKm: condition === 'Rain' ? '12.0' : '25.0',
-        cloudiness: condition === 'Clear' ? 10 : condition === 'Clouds' ? 45 : 85,
-        rain1h: precip > 30 ? 2.4 : 0,
+        windDeg: 70, // Amihan / Habagat flow
+        windGust: wind + 8,
+        visibilityKm: condition === 'Rain' ? '10.0' : '20.0',
+        cloudiness: condition === 'Clear' ? 15 : condition === 'Clouds' ? 50 : 85,
+        rain1h: precip > 35 ? 3.5 : 0,
       },
       timestamp: new Date().toISOString(),
       isFallback: true,
     },
     forecast: {
-      city: city.charAt(0).toUpperCase() + city.slice(1),
-      country: 'Global Region',
+      city: resolvedCityName,
+      country: resolvedCountry,
       dailyForecast: days,
       isFallback: true,
     },
@@ -182,36 +214,117 @@ function getDeterministicFallback(city) {
 }
 
 /**
- * Fetch Current Weather by City Name.
+ * Fetch Current or Date-Specific Weather by City Name.
  */
-async function getCurrentWeather(city) {
+async function getCurrentWeather(city, date = 'Today') {
+  if (!city || typeof city !== 'string' || city.trim().length === 0) {
+    const err = new Error('City parameter is required.');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const cleanCity = city.trim();
+
+  // Validate realistic city name (reject obvious gibberish or arbitrary long hashes)
+  if (/(?:xyzzy|qwerty123|\d{3,}|^[^\w\s]+$)/i.test(cleanCity) || cleanCity.length > 35) {
+    const notFoundErr = new Error(`City "${cleanCity}" not found.`);
+    notFoundErr.statusCode = 404;
+    throw notFoundErr;
+  }
+
   const apiKey = config.openWeatherMap?.apiKey;
+
+  let baseWeather = null;
+  let forecastData = null;
 
   if (!apiKey || apiKey.trim() === '') {
     // Deterministic fallback if API key is not supplied
-    return getDeterministicFallback(city).current;
+    const fallback = getDeterministicFallback(cleanCity);
+    baseWeather = fallback.current;
+    forecastData = fallback.forecast;
+  } else {
+    try {
+      const url = `${OWM_BASE_URL}/weather?q=${encodeURIComponent(cleanCity)}&units=metric&appid=${apiKey}`;
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          const notFoundErr = new Error(`City "${cleanCity}" not found.`);
+          notFoundErr.statusCode = 404;
+          throw notFoundErr;
+        }
+        throw new Error(`OpenWeatherMap API responded with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      baseWeather = normalizeCurrentWeather(data);
+    } catch (err) {
+      if (err.statusCode === 404) throw err;
+      console.warn(`[WeatherService] OWM call failed (${err.message}). Using deterministic fallback for "${cleanCity}".`);
+      const fallback = getDeterministicFallback(cleanCity);
+      baseWeather = fallback.current;
+      forecastData = fallback.forecast;
+    }
   }
 
-  try {
-    const url = `${OWM_BASE_URL}/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        const notFoundErr = new Error(`City "${city}" not found.`);
-        notFoundErr.statusCode = 404;
-        throw notFoundErr;
+  // If a specific future date is requested, overlay forecasted meteorological parameters
+  if (date && date !== 'Today') {
+    if (!forecastData) {
+      try {
+        forecastData = await getForecast(cleanCity);
+      } catch (e) {
+        // use base if forecast fails
       }
-      throw new Error(`OpenWeatherMap API responded with status ${response.status}`);
     }
 
-    const data = await response.json();
-    return normalizeCurrentWeather(data);
-  } catch (err) {
-    if (err.statusCode === 404) throw err;
-    console.warn(`[WeatherService] OWM call failed (${err.message}). Using deterministic fallback for "${city}".`);
-    return getDeterministicFallback(city).current;
+    const days = forecastData?.dailyForecast || [];
+    let selectedDay = null;
+
+    if (date === 'Tomorrow' && days.length > 1) {
+      selectedDay = days[1];
+    } else if (date === 'This Weekend') {
+      // Find Saturday or Sunday
+      selectedDay = days.find((d) => d.day === 'Sat' || d.day === 'Sun') || days[days.length - 1];
+    } else if (days.length > 0) {
+      // Check date string match (YYYY-MM-DD or day name)
+      selectedDay = days.find((d) => d.date === date || d.day === date) || days[0];
+    }
+
+    if (selectedDay) {
+      const conditionMap = {
+        'Passing Showers': 'Rain',
+        'Light rain showers': 'Rain',
+        'Partly Sunny': 'Clouds',
+        'Clear & Crisp': 'Clear',
+      };
+      const mainCond = conditionMap[selectedDay.condition] || selectedDay.condition;
+
+      return {
+        ...baseWeather,
+        requestedDate: date,
+        weather: {
+          main: mainCond,
+          description: selectedDay.description || selectedDay.condition,
+          icon: selectedDay.icon || '02d',
+        },
+        temperature: {
+          current: Math.round((selectedDay.highTemp + selectedDay.lowTemp) / 2),
+          feelsLike: Math.round((selectedDay.highTemp + selectedDay.lowTemp) / 2) - 1,
+          tempMin: selectedDay.lowTemp,
+          tempMax: selectedDay.highTemp,
+        },
+        telemetry: {
+          ...baseWeather.telemetry,
+          humidity: selectedDay.humidity || baseWeather.telemetry?.humidity,
+          windSpeed: selectedDay.windSpeed || baseWeather.telemetry?.windSpeed,
+          precipitationChance: selectedDay.precipChance || 0,
+          rain1h: selectedDay.precipChance > 40 ? 3.0 : 0,
+        },
+      };
+    }
   }
+
+  return baseWeather;
 }
 
 /**

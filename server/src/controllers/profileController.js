@@ -10,7 +10,7 @@ async function getProfile(req, res, next) {
 
     // 1. Fetch user & profile info
     const userResult = await query(
-      `SELECT u.id, u.email, u.role, u.created_at, p.display_name, p.updated_at as profile_updated_at
+      `SELECT u.id, u.email, u.role, u.created_at, p.display_name, p.avatar_url, p.bio, p.home_city, p.updated_at as profile_updated_at
        FROM users u
        LEFT JOIN profiles p ON p.user_id = u.id
        WHERE u.id = $1`,
@@ -47,6 +47,9 @@ async function getProfile(req, res, next) {
           email: user.email,
           role: user.role,
           displayName: user.display_name || user.email.split('@')[0],
+          avatarUrl: user.avatar_url || null,
+          bio: user.bio || '',
+          homeCity: user.home_city || '',
           createdAt: user.created_at,
           updatedAt: user.profile_updated_at,
           interests: interestsResult.rows,
@@ -61,14 +64,14 @@ async function getProfile(req, res, next) {
 
 /**
  * PUT /api/profile
- * Updates the current user's display name.
+ * Updates the current user's display name, avatar, bio, and home city.
  */
 async function updateProfile(req, res, next) {
   try {
     const userId = req.user.id;
-    const { displayName } = req.body;
+    const { displayName, avatarUrl, bio, homeCity } = req.body;
 
-    if (!displayName || typeof displayName !== 'string' || displayName.trim().length === 0) {
+    if (displayName !== undefined && (typeof displayName !== 'string' || displayName.trim().length === 0)) {
       return res.status(400).json({
         success: false,
         error: {
@@ -78,38 +81,56 @@ async function updateProfile(req, res, next) {
       });
     }
 
-    const trimmedDisplayName = displayName.trim();
+    // Fetch existing profile
+    const existing = await query('SELECT * FROM profiles WHERE user_id = $1', [userId]);
 
-    // Update profile record (ensuring user only edits their own profile)
-    const updateResult = await query(
-      `UPDATE profiles
-       SET display_name = $1, updated_at = CURRENT_TIMESTAMP
-       WHERE user_id = $2
-       RETURNING id, display_name, updated_at`,
-      [trimmedDisplayName, userId]
-    );
+    const resolvedDisplayName = displayName !== undefined
+      ? displayName.trim()
+      : (existing.rows[0]?.display_name || req.user.email.split('@')[0]);
 
-    if (updateResult.rows.length === 0) {
-      // If profile record was missing, insert it
+    const resolvedAvatarUrl = avatarUrl !== undefined
+      ? (avatarUrl ? avatarUrl.trim() : null)
+      : (existing.rows[0]?.avatar_url || null);
+
+    const resolvedBio = bio !== undefined
+      ? bio.trim()
+      : (existing.rows[0]?.bio || '');
+
+    const resolvedHomeCity = homeCity !== undefined
+      ? homeCity.trim()
+      : (existing.rows[0]?.home_city || '');
+
+    let profileRow;
+    if (existing.rows.length === 0) {
       const insertResult = await query(
-        `INSERT INTO profiles (user_id, display_name)
-         VALUES ($1, $2)
-         RETURNING id, display_name, updated_at`,
-        [userId, trimmedDisplayName]
+        `INSERT INTO profiles (user_id, display_name, avatar_url, bio, home_city)
+         VALUES ($1, $2, $3, $4, $5)
+         RETURNING id, display_name, avatar_url, bio, home_city, updated_at`,
+        [userId, resolvedDisplayName, resolvedAvatarUrl, resolvedBio, resolvedHomeCity]
       );
-      return res.status(200).json({
-        success: true,
-        data: {
-          profile: insertResult.rows[0],
-        },
-        message: 'Profile updated successfully.',
-      });
+      profileRow = insertResult.rows[0];
+    } else {
+      const updateResult = await query(
+        `UPDATE profiles
+         SET display_name = $1, avatar_url = $2, bio = $3, home_city = $4, updated_at = CURRENT_TIMESTAMP
+         WHERE user_id = $5
+         RETURNING id, display_name, avatar_url, bio, home_city, updated_at`,
+        [resolvedDisplayName, resolvedAvatarUrl, resolvedBio, resolvedHomeCity, userId]
+      );
+      profileRow = updateResult.rows[0];
     }
 
     res.status(200).json({
       success: true,
       data: {
-        profile: updateResult.rows[0],
+        profile: {
+          id: profileRow.id,
+          displayName: profileRow.display_name,
+          avatarUrl: profileRow.avatar_url,
+          bio: profileRow.bio,
+          homeCity: profileRow.home_city,
+          updatedAt: profileRow.updated_at,
+        },
       },
       message: 'Profile updated successfully.',
     });

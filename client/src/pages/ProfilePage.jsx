@@ -16,7 +16,11 @@ import {
   Home,
   LogOut,
   Sliders,
-  CheckCheck
+  CheckCheck,
+  Camera,
+  Image,
+  MapPin,
+  FileText
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import profileService from '../services/profileService';
@@ -30,11 +34,17 @@ import LoadingSkeleton from '../components/common/LoadingSkeleton';
 export default function ProfilePage() {
   const { user, updateUser, logout } = useAuth();
 
+  // Basic Profile Info
   const [displayName, setDisplayName] = useState(user?.displayName || '');
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || '');
+  const [bio, setBio] = useState(user?.bio || '');
+  const [homeCity, setHomeCity] = useState(user?.homeCity || '');
+
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [profileSuccess, setProfileSuccess] = useState(null);
   const [profileError, setProfileError] = useState(null);
 
+  // Interests State
   const [allInterests, setAllInterests] = useState([]);
   const [selectedInterestIds, setSelectedInterestIds] = useState([]);
   const [isLoadingInterests, setIsLoadingInterests] = useState(true);
@@ -42,10 +52,25 @@ export default function ProfilePage() {
   const [interestsSuccess, setInterestsSuccess] = useState(null);
   const [interestsError, setInterestsError] = useState(null);
 
-  // Sync display name if user context updates
+  // Avatar Presets
+  const avatarPresets = [
+    { label: 'Alpine Explorer', value: '🏔️' },
+    { label: 'Cloud Chaser', value: '⛅' },
+    { label: 'Coastal Wave', value: '🌊' },
+    { label: 'Urban Voyager', value: '🏙️' },
+    { label: 'Globetrotter', value: '✈️' },
+    { label: 'Forest Wanderer', value: '🌲' },
+    { label: 'Backpacker', value: '🎒' },
+    { label: 'Compass Pilot', value: '🧭' },
+  ];
+
+  // Sync state if user context updates
   useEffect(() => {
-    if (user?.displayName) {
-      setDisplayName(user.displayName);
+    if (user) {
+      if (user.displayName) setDisplayName(user.displayName);
+      if (user.avatarUrl) setAvatarUrl(user.avatarUrl);
+      if (user.bio) setBio(user.bio);
+      if (user.homeCity) setHomeCity(user.homeCity);
     }
   }, [user]);
 
@@ -56,18 +81,26 @@ export default function ProfilePage() {
     async function loadInterests() {
       setIsLoadingInterests(true);
       try {
-        const [allRes, userRes] = await Promise.all([
+        const [allRes, userRes, profileRes] = await Promise.all([
           profileService.getAllInterests(),
           profileService.getUserInterests(),
+          profileService.getProfile(),
         ]);
 
         if (isMounted) {
           setAllInterests(allRes?.data?.interests || []);
           setSelectedInterestIds(userRes?.data?.selectedIds || []);
+          if (profileRes?.data?.profile) {
+            const p = profileRes.data.profile;
+            if (p.displayName) setDisplayName(p.displayName);
+            if (p.avatarUrl) setAvatarUrl(p.avatarUrl);
+            if (p.bio) setBio(p.bio);
+            if (p.homeCity) setHomeCity(p.homeCity);
+          }
         }
       } catch (err) {
         if (isMounted) {
-          setInterestsError('Unable to load interest tags. Please check database connection.');
+          setInterestsError('Unable to load profile telemetry. Please check database connection.');
         }
       } finally {
         if (isMounted) {
@@ -95,10 +128,22 @@ export default function ProfilePage() {
 
     setIsUpdatingProfile(true);
     try {
-      const response = await profileService.updateProfile({ displayName: displayName.trim() });
+      const response = await profileService.updateProfile({
+        displayName: displayName.trim(),
+        avatarUrl: avatarUrl ? avatarUrl.trim() : null,
+        bio: bio.trim(),
+        homeCity: homeCity.trim(),
+      });
+
       if (response?.success) {
-        updateUser({ displayName: response.data.profile.display_name });
-        setProfileSuccess('Profile display name updated successfully in Supabase.');
+        const updated = response.data.profile;
+        updateUser({
+          displayName: updated.displayName || updated.display_name,
+          avatarUrl: updated.avatarUrl || updated.avatar_url,
+          bio: updated.bio,
+          homeCity: updated.homeCity || updated.home_city,
+        });
+        setProfileSuccess('Profile, avatar & bio successfully updated in Supabase.');
       }
     } catch (err) {
       setProfileError(err.message || 'Failed to update profile.');
@@ -134,29 +179,65 @@ export default function ProfilePage() {
   const outdoorInterests = allInterests.filter((t) => t.category === 'OUTDOOR');
   const indoorInterests = allInterests.filter((t) => t.category === 'INDOOR');
 
+  const renderAvatarPreview = (val, size = 'w-16 h-16 text-2xl') => {
+    if (!val) {
+      return (
+        <div className={`${size} rounded-full bg-gradient-to-tr from-primary to-secondary-container text-white flex items-center justify-center font-bold shadow-glow`}>
+          {displayName ? displayName.charAt(0).toUpperCase() : 'U'}
+        </div>
+      );
+    }
+    if (val.startsWith('http://') || val.startsWith('https://')) {
+      return (
+        <img
+          src={val}
+          alt={displayName}
+          className={`${size} rounded-full object-cover border-2 border-primary/40 shadow-glow`}
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
+      );
+    }
+    // Emoji or avatar preset
+    return (
+      <div className={`${size} rounded-full bg-surface-container-high border-2 border-primary/40 flex items-center justify-center shadow-glow`}>
+        <span>{val}</span>
+      </div>
+    );
+  };
+
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-300">
       {/* Header Profile Identity Banner */}
       <div className="p-6 sm:p-8 rounded-3xl bg-surface-container-low/80 backdrop-blur-2xl border border-white/10 shadow-glass flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative overflow-hidden">
         <div className="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
 
-        <div className="flex items-center gap-4 relative z-10">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary to-secondary-container text-white flex items-center justify-center font-bold text-2xl shadow-glow">
-            {user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
-          </div>
-          <div>
+        <div className="flex items-center gap-5 relative z-10">
+          {renderAvatarPreview(avatarUrl, 'w-20 h-20 text-3xl')}
+
+          <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-2xl font-bold font-display text-on-surface tracking-tight">
-                {user?.displayName || 'User Profile'}
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-display text-on-surface tracking-tight">
+                {displayName || user?.displayName || 'User Profile'}
               </h1>
               <Badge variant={user?.role === 'ADMIN' ? 'caution' : 'primary'} size="sm">
                 {user?.role || 'USER'}
               </Badge>
             </div>
             <p className="text-sm text-outline font-medium">{user?.email}</p>
-            <p className="text-xs text-on-surface-variant flex items-center gap-1.5 mt-1">
+            {bio && <p className="text-xs text-on-surface-variant max-w-md">{bio}</p>}
+            <p className="text-[11px] text-outline flex items-center gap-2 pt-0.5">
               <Calendar className="w-3.5 h-3.5 text-tertiary" />
               <span>Member Account • Supabase PostgreSQL Verified</span>
+              {homeCity && (
+                <>
+                  <span>•</span>
+                  <span className="flex items-center gap-1 text-primary">
+                    <MapPin className="w-3 h-3" /> {homeCity}
+                  </span>
+                </>
+              )}
             </p>
           </div>
         </div>
@@ -166,26 +247,26 @@ export default function ProfilePage() {
           size="sm"
           icon={LogOut}
           onClick={logout}
-          className="text-error border-error/30 hover:bg-error-container/20"
+          className="text-error border-error/30 hover:bg-error-container/20 shrink-0"
         >
           Sign Out
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-        {/* Left Column (5 cols): Profile Settings Form */}
+        {/* Left Column (5 cols): Profile & Picture Form */}
         <div className="md:col-span-5 space-y-6">
           <Card className="border-white/10 shadow-glass">
             <CardHeader className="border-b border-white/5 bg-surface-container-low/40">
               <CardTitle className="text-base flex items-center gap-2">
                 <User className="w-4 h-4 text-primary" />
-                Display Settings
+                Profile &amp; Avatar Customization
               </CardTitle>
-              <CardDescription>Modify your public profile identification name.</CardDescription>
+              <CardDescription>Update your public identity, avatar icon, and travel bio.</CardDescription>
             </CardHeader>
 
             <CardContent className="pt-6">
-              <form onSubmit={handleProfileSubmit} className="space-y-4">
+              <form onSubmit={handleProfileSubmit} className="space-y-4 text-xs">
                 {profileSuccess && (
                   <Alert variant="success" onClose={() => setProfileSuccess(null)}>
                     {profileSuccess}
@@ -197,8 +278,48 @@ export default function ProfilePage() {
                   </Alert>
                 )}
 
+                {/* Avatar Presets Selector */}
+                <div className="space-y-2">
+                  <label className="font-semibold text-on-surface block">
+                    Choose Profile Picture / Avatar Icon
+                  </label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {avatarPresets.map((preset) => (
+                      <button
+                        key={preset.value}
+                        type="button"
+                        onClick={() => setAvatarUrl(preset.value)}
+                        className={`p-2.5 rounded-2xl border text-xl flex flex-col items-center justify-center transition-all ${
+                          avatarUrl === preset.value
+                            ? 'bg-primary-container border-primary shadow-glow scale-105'
+                            : 'bg-surface-container-high/60 border-white/10 hover:bg-surface-container-high'
+                        }`}
+                        title={preset.label}
+                      >
+                        <span>{preset.value}</span>
+                        <span className="text-[9px] text-outline mt-0.5 truncate max-w-full">
+                          {preset.label.split(' ')[0]}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="pt-1">
+                    <label className="text-[11px] text-outline block mb-1">
+                      Or Custom Image URL
+                    </label>
+                    <input
+                      type="url"
+                      value={avatarUrl.startsWith('http') ? avatarUrl : ''}
+                      onChange={(e) => setAvatarUrl(e.target.value)}
+                      placeholder="https://example.com/avatar.jpg"
+                      className="w-full rounded-xl bg-surface-container border border-white/10 px-3 py-2 text-xs text-on-surface focus:outline-none focus:border-primary placeholder:text-outline"
+                    />
+                  </div>
+                </div>
+
                 <Input
-                  label="Display Name"
+                  label="Display Name *"
                   id="profile-display-name"
                   type="text"
                   icon={User}
@@ -207,6 +328,27 @@ export default function ProfilePage() {
                   placeholder="Your display name"
                   required
                 />
+
+                <Input
+                  label="Home City (Base Location)"
+                  id="profile-home-city"
+                  type="text"
+                  icon={MapPin}
+                  value={homeCity}
+                  onChange={(e) => setHomeCity(e.target.value)}
+                  placeholder="e.g. Manila, Cebu, or Davao City"
+                />
+
+                <div>
+                  <label className="font-semibold block mb-1">Travel Bio / Philosophy</label>
+                  <textarea
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    placeholder="e.g. Mountain lover, weekend hiker, seeking clear skies and crisp autumn trails..."
+                    rows={3}
+                    className="w-full rounded-2xl bg-surface-container-high border border-white/10 p-3 text-xs text-on-surface focus:outline-none focus:border-primary placeholder:text-outline resize-none"
+                  />
+                </div>
 
                 <Input
                   label="Account Email (Fixed)"
@@ -229,30 +371,6 @@ export default function ProfilePage() {
                   Save Profile Changes
                 </Button>
               </form>
-            </CardContent>
-          </Card>
-
-          {/* Account Security Card */}
-          <Card className="border-white/10 shadow-glass">
-            <CardHeader className="border-b border-white/5 bg-surface-container-low/40">
-              <CardTitle className="text-base flex items-center gap-2">
-                <Shield className="w-4 h-4 text-optimal" />
-                Security & Session
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-xs pt-4">
-              <div className="flex items-center justify-between py-1 border-b border-white/5">
-                <span className="text-outline">Authentication Method</span>
-                <span className="font-semibold text-on-surface">Application JWT + Bcrypt</span>
-              </div>
-              <div className="flex items-center justify-between py-1 border-b border-white/5">
-                <span className="text-outline">Database Storage</span>
-                <span className="font-semibold text-optimal">Supabase PostgreSQL (SSL)</span>
-              </div>
-              <div className="flex items-center justify-between py-1">
-                <span className="text-outline">Access Guard</span>
-                <span className="font-semibold text-primary">Role Based ({user?.role})</span>
-              </div>
             </CardContent>
           </Card>
         </div>

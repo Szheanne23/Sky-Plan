@@ -7,7 +7,8 @@ import {
   AlertTriangle, 
   XCircle, 
   Home, 
-  Compass 
+  Compass,
+  CalendarPlus 
 } from 'lucide-react';
 import Badge from '../common/Badge';
 import { cn } from '../../lib/utils';
@@ -25,6 +26,7 @@ export default function RecommendationCard({
   timeSlot = '09:00 - 13:00',
   conditions = [],
   icon: Icon = Compass,
+  onAddToItinerary,
   className = '',
 }) {
   const suitabilityConfig = {
@@ -135,19 +137,33 @@ export default function RecommendationCard({
         </p>
       </div>
 
-      {/* Conditions Criteria Chips */}
-      {conditions.length > 0 && (
-        <div className="pt-3 border-t border-white/5 flex flex-wrap gap-1.5">
-          {conditions.map((cond, idx) => (
+      {/* Footer / Conditions & Add to Itinerary Action */}
+      <div className="pt-3 border-t border-white/5 flex items-center justify-between gap-2 mt-2">
+        <div className="flex flex-wrap gap-1 overflow-hidden">
+          {conditions.slice(0, 2).map((cond, idx) => (
             <span
               key={idx}
-              className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-surface-container-high/60 text-outline border border-white/5 font-tabular"
+              className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-surface-container-high/60 text-outline border border-white/5 font-tabular truncate max-w-[140px]"
             >
               {cond}
             </span>
           ))}
         </div>
-      )}
+        {onAddToItinerary && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddToItinerary();
+            }}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/25 text-[11px] font-semibold transition-all active:scale-95 shadow-specular-inset shrink-0"
+            title="Save to Itinerary"
+          >
+            <CalendarPlus className="w-3.5 h-3.5" />
+            <span>Add to Plan</span>
+          </button>
+        )}
+      </div>
     </div>
   );
 }

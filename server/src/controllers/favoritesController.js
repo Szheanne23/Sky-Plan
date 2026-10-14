@@ -36,7 +36,7 @@ async function getFavorites(req, res, next) {
 async function addFavorite(req, res, next) {
   try {
     const userId = req.user.id;
-    const { cityName, countryCode, lat, lon } = req.body;
+    const { cityName, countryCode, country, lat, lon } = req.body;
 
     if (!cityName || typeof cityName !== 'string' || cityName.trim().length === 0) {
       return res.status(400).json({
@@ -49,6 +49,7 @@ async function addFavorite(req, res, next) {
     }
 
     const trimmedCity = cityName.trim();
+    const resolvedCountry = countryCode || country || null;
 
     // Check duplicate
     const existing = await query(
@@ -70,7 +71,7 @@ async function addFavorite(req, res, next) {
       `INSERT INTO favorite_cities (user_id, city_name, country_code, lat, lon)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING id, city_name, country_code, lat, lon, created_at`,
-      [userId, trimmedCity, countryCode || null, lat || null, lon || null]
+      [userId, trimmedCity, resolvedCountry, lat || null, lon || null]
     );
 
     res.status(201).json({
@@ -93,6 +94,17 @@ async function removeFavorite(req, res, next) {
   try {
     const userId = req.user.id;
     const { id } = req.params;
+
+    const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!id || !UUID_REGEX.test(id)) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'INVALID_ID',
+          message: 'A valid favorite location ID is required.',
+        },
+      });
+    }
 
     const deleteResult = await query(
       `DELETE FROM favorite_cities

@@ -1,0 +1,155 @@
+IPT2 Proposal — SkyPlan: Weather-Based Activity Planner 
+Page 1 of 7 
+ 
+SYSTEM PROPOSAL 
+SkyPlan: Weather-Based Activity Planner 
+Platform: Web Application 
+Prepared by:  
+Rosh Shahanah Mae P. Cabinta 
+Section: LFCA411E070 
+Submitted to 
+Noel Montecillo 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+September 19, 2026 
+--- PAGE ---
+IPT2 Proposal — SkyPlan: Weather-Based Activity Planner 
+Page 2 of 7 
+ 
+--- PAGE ---
+IPT2 Proposal — SkyPlan: Weather-Based Activity Planner 
+Page 3 of 7 
+Table of Contents 
+1. Introduction........................................................................................................................................... 3 
+2. Purpose of the Project ........................................................................................................................... 3 
+3. Objectives ............................................................................................................................................. 3 
+4. Project Scope ........................................................................................................................................ 3 
+5. System Features / Functions ................................................................................................................. 4 
+6. Technology Stack ................................................................................................................................. 4 
+7. Target Users .......................................................................................................................................... 5 
+8. Project Timeline / Work Plan ............................................................................................................... 5 
+ 
+--- PAGE ---
+IPT2 Proposal — SkyPlan: Weather-Based Activity Planner 
+Page 4 of 7 
+1. Introduction 
+Weather conditions heavily influence people's daily decisions, especially when planning outdoor activities such as 
+jogging, hiking, picnics, or sports. However, most people rely on separate weather apps and personal guesswork to 
+decide whether an activity is feasible, often resulting in cancelled plans or discomfort. 
+Currently, users check weather forecasts on one platform and manually decide what activities are appropriate. This 
+process is fragmented, time -consuming, and does not provide personalized recommendations based on the user's 
+interests or location. 
+The proposed system, SkyPlan, is a web -based application that combines real -time weather data with an activity 
+recommendation engine. It will allow users to input a city and date, retrieve accurate weather forecasts via a third -
+party API, and automatically  suggest suitable indoor or outdoor activities based on both weather conditions and the 
+user's chosen interests. The system will also allow users to save favorite locations and view their search history. 
+The system will integrate the OpenWeatherMap API to provide real-time and multi-day forecast data, demonstrating 
+meaningful API integration alongside a rule-based recommendation engine. 
+2. Purpose of the Project 
+This proposal aims to present a web application that will address the fragmented process of checking weather and 
+deciding on activities, streamline activity planning based on real -time forecasts, and improve user convenience and 
+decision-making for general users, travelers, and outdoor enthusiasts. 
+3. Objectives 
+3.1 General Objective 
+To design and develop a web-based weather and activity planning system that provides users with accurate forecasts 
+and personalized activity recommendations. 
+3.2 Specific Objectives 
+• To develop a secure, role-based user registration and authentication system. 
+• To design a system that retrieves real-time weather data from the OpenWeatherMap API. 
+• To provide multi-day forecast viewing for better activity planning ahead of time. 
+• To automate activity recommendations based on weather conditions and user-selected interest tags. 
+• To provide registered users with the ability to save favorite cities and view search history. 
+• To allow admins to configure activity-recommendation rules. 
+• To generate a dashboard of usage statistics and popular searches for admin review. 
+• To develop a responsive and user-friendly web interface. 
+4. Project Scope 
+4.1 In Scope 
+• User registration and login with role-based access (user, admin, guest) 
+• Profile and interest-tag preferences 
+• City and date search with weather forecast display 
+• Multi-day forecast view for trip/activity planning 
+• Activity recommendation engine (rule-based on weather conditions and interest tags) 
+• Save favorite cities and view search history 
+--- PAGE ---
+IPT2 Proposal — SkyPlan: Weather-Based Activity Planner 
+Page 5 of 7 
+• Guest mode with limited (non-saving) search 
+• Admin dashboard for usage statistics and search logs 
+• Admin configuration of activity-recommendation rules 
+• Responsive web interface 
+4.2 Out of Scope 
+• Native mobile application (iOS/Android) 
+• Hardware procurement or IoT weather sensors 
+• Paid third-party API subscriptions (free tiers only) 
+• Content migration from other weather platforms 
+• SMS or push notification services 
+• Real-time GPS tracking 
+• Activity booking or reservation integration 
+5. System Features / Functions 
+Module Feature Description 
+User Management Registration & Login Allows users to create accounts and securely log in (with role-based access). 
+User Management Profile & Interests Users can view and update personal information and interest tags. 
+Core Module Weather Search Users enter a city and date to retrieve forecast data from the weather API. 
+Core Module Multi-Day Forecast Displays an extended forecast for planning activities ahead of time. 
+Core Module Activity Recommendation System suggests indoor/outdoor activities based on weather conditions and interest tags. 
+Core Module Favorites & History Users can save favorite cities and view past searches. 
+Guest Access Limited Search Allows unregistered visitors to check weather without saving favorites or history. 
+Reporting Dashboard & Reports Admin views user activity, popular cities, and search statistics. 
+Administration Activity Rule Configuration Admin configures the rules used by the recommendation engine. 
+Administration System Settings Admin manages user accounts and system parameters. 
+ 
+6. Technology Stack 
+Layer Technology / Tool Purpose 
+Frontend (Web) React.js + Tailwind CSS User interface for the web application 
+--- PAGE ---
+IPT2 Proposal — SkyPlan: Weather-Based Activity Planner 
+Page 6 of 7 
+Layer Technology / Tool Purpose 
+Backend / API Node.js + Express Business logic and server-side processing 
+Database PostgreSQL Data storage and management 
+External API OpenWeatherMap API Real-time and multi-day weather data 
+Authentication JWT Secure authentication and role -based authorization 
+Charts Chart.js Visualizes weather trends and admin usage statistics 
+Cloud / Hosting Vercel (frontend) + Render (backend) Deployment and hosting environment 
+Version Control Git / GitHub Source code management 
+Project Management 
+Tool Trello Task tracking and team collaboration 
+Other Tools Figma, Postman UI/UX design and API testing 
+ 
+7. Target Users 
+User Role Description Key Needs / Usage 
+Registered User General users, travelers, outdoor enthusiasts Search weather, receive activity suggestions, save favorites 
+Guest Unregistered visitor Limited search (no saving or history) 
+Admin System administrator managing overall operations Full access to manage users, activity rules, and reports 
+ 
+8. Project Timeline / Work Plan 
+Phase Activities Estimated Duration 
+Planning & Requirements 
+Gathering 
+Finalize proposal, gather requirements, research 
+OpenWeatherMap API. 1–2 weeks 
+System Design Database schema, UI/UX wireframes, system architecture. 1–2 weeks 
+Development – Phase 1 Authentication, weather search, profile management. 2 weeks 
+Development – Phase 2 Multi-day forecast, favorites, and search history. 2 weeks 
+API Integration OpenWeatherMap API integration and activity -recommendation engine. 1 week 
+Midterm Progress Check Demonstration of approximately 60 –70% functional system. Milestone 
+--- PAGE ---
+IPT2 Proposal — SkyPlan: Weather-Based Activity Planner 
+Page 7 of 7 
+Phase Activities Estimated Duration 
+Advanced Development Admin rule configuration, dashboard, interface refinement. 1–2 weeks 
+Testing & QA Unit, integration, and user acceptance testing; bug fixing. 1–2 weeks 
+Deployment Cloud deployment and production testing. 1 week 
+Documentation System documentation, screenshots, presentation materials. 1 week 
+Final Presentation System demonstration and project defense. Final Phase 
+ 

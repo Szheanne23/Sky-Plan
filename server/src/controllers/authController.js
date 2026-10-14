@@ -132,12 +132,12 @@ async function login(req, res, next) {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    if (!email || typeof email !== 'string' || !password || typeof password !== 'string') {
       return res.status(400).json({
         success: false,
         error: {
           code: 'VALIDATION_ERROR',
-          message: 'Email and password are required.',
+          message: 'Valid email and password are required.',
         },
       });
     }
@@ -146,7 +146,7 @@ async function login(req, res, next) {
 
     // Query user and profile
     const userResult = await query(
-      `SELECT u.id, u.email, u.password_hash, u.role, u.created_at, p.display_name
+      `SELECT u.id, u.email, u.password_hash, u.role, u.created_at, p.display_name, p.avatar_url, p.bio, p.home_city
        FROM users u
        LEFT JOIN profiles p ON p.user_id = u.id
        WHERE u.email = $1`,
@@ -195,6 +195,9 @@ async function login(req, res, next) {
           email: user.email,
           role: user.role,
           displayName: user.display_name || user.email.split('@')[0],
+          avatarUrl: user.avatar_url || null,
+          bio: user.bio || '',
+          homeCity: user.home_city || '',
           createdAt: user.created_at,
         },
         token,
@@ -230,7 +233,7 @@ function logout(req, res) {
 async function getMe(req, res, next) {
   try {
     const profileResult = await query(
-      `SELECT u.id, u.email, u.role, u.created_at, p.display_name
+      `SELECT u.id, u.email, u.role, u.created_at, p.display_name, p.avatar_url, p.bio, p.home_city
        FROM users u
        LEFT JOIN profiles p ON p.user_id = u.id
        WHERE u.id = $1`,
@@ -257,6 +260,9 @@ async function getMe(req, res, next) {
           email: user.email,
           role: user.role,
           displayName: user.display_name || user.email.split('@')[0],
+          avatarUrl: user.avatar_url || null,
+          bio: user.bio || '',
+          homeCity: user.home_city || '',
           createdAt: user.created_at,
         },
       },

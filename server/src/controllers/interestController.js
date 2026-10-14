@@ -78,6 +78,17 @@ async function updateUserInterests(req, res, next) {
 
     // Filter out duplicates and invalid items
     const uniqueInterestIds = [...new Set(interestIds.filter((id) => typeof id === 'string'))];
+    const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const malformedIds = uniqueInterestIds.filter((id) => !UUID_REGEX.test(id));
+    if (malformedIds.length > 0) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'INVALID_TAG_ID',
+          message: `One or more selected interest tag IDs are malformed: ${malformedIds.join(', ')}`,
+        },
+      });
+    }
 
     // If there are IDs to validate, verify they exist in interest_tags
     if (uniqueInterestIds.length > 0) {

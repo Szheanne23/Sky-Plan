@@ -28,6 +28,10 @@ process.on('unhandledRejection', (err) => {
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
+  if (err && (err.code === 'ECONNRESET' || err.code === 'EPIPE')) {
+    console.warn(`⚠️ [Network] Handled idle socket disconnect (${err.code}):`, err.message);
+    return;
+  }
   console.error('Uncaught Exception:', err);
   process.exit(1);
 });

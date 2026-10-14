@@ -16,7 +16,8 @@ export default function HistoryDrawer({ isOpen, onClose, onSelectCity }) {
     setError(null);
     try {
       const data = await historyService.getSearchHistory(30);
-      setHistoryItems(data || []);
+      const list = Array.isArray(data) ? data : (data?.history || []);
+      setHistoryItems(list);
     } catch (err) {
       setError(err.message || 'Failed to load search history.');
     } finally {

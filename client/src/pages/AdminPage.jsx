@@ -17,6 +17,7 @@ import {
   Layers,
   ArrowUpRight
 } from 'lucide-react';
+import { Bar } from 'react-chartjs-2';
 import adminService from '../services/adminService';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '../components/common/Card';
 import Button from '../components/common/Button';
@@ -43,8 +44,8 @@ export default function AdminPage() {
         adminService.getUsers(),
       ]);
       setAnalytics(analyticsData);
-      setRules(rulesData || []);
-      setUsers(usersData || []);
+      setRules(Array.isArray(rulesData) ? rulesData : (rulesData?.rules || []));
+      setUsers(Array.isArray(usersData) ? usersData : (usersData?.users || []));
     } catch (err) {
       setError(err.message || 'Failed to load administrative telemetry.');
     } finally {
@@ -62,8 +63,9 @@ export default function AdminPage() {
       const updated = await adminService.updateRule(rule.id, {
         is_active: !rule.is_active,
       });
+      const nextActive = updated?.is_active !== undefined ? updated.is_active : !rule.is_active;
       setRules((prev) =>
-        prev.map((r) => (r.id === rule.id ? { ...r, is_active: updated.is_active } : r))
+        prev.map((r) => (r.id === rule.id ? { ...r, is_active: nextActive } : r))
       );
     } catch (err) {
       alert(err.message || 'Failed to update recommendation rule.');
@@ -213,13 +215,56 @@ export default function AdminPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-primary" />
-                Popular Query Destinations
+                Popular Query Destinations (Chart.js Visualization)
               </CardTitle>
               <CardDescription>
                 Aggregated search query frequency stored across live weather telemetry.
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
+              {/* Chart.js Bar Chart */}
+              {analytics.popularSearches && analytics.popularSearches.length > 0 && (
+                <div className="h-56 w-full p-2 bg-surface-container-high/30 rounded-2xl border border-white/5">
+                  <Bar
+                    data={{
+                      labels: analytics.popularSearches.map((d) => d.city_name),
+                      datasets: [
+                        {
+                          label: 'Search Volume',
+                          data: analytics.popularSearches.map((d) => d.search_count),
+                          backgroundColor: 'rgba(76, 214, 251, 0.45)',
+                          borderColor: '#4cd6fb',
+                          borderWidth: 1.5,
+                          borderRadius: 8,
+                        },
+                      ],
+                    }}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                          backgroundColor: 'rgba(19, 26, 51, 0.95)',
+                          titleColor: '#dbe1ff',
+                          bodyColor: '#bcc9ce',
+                        },
+                      },
+                      scales: {
+                        x: {
+                          grid: { display: false },
+                          ticks: { color: '#869398' },
+                        },
+                        y: {
+                          grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                          ticks: { color: '#869398', stepSize: 1 },
+                        },
+                      },
+                    }}
+                  />
+                </div>
+              )}
+
               {analytics.popularSearches?.length === 0 ? (
                 <EmptyState
                   title="No search telemetry yet"
@@ -273,9 +318,8 @@ export default function AdminPage() {
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="border-b border-white/10 text-outline uppercase tracking-wider font-semibold">
-                    <th className="py-3 px-4">Activity Name</th>
+                    <th className="py-3 px-4">Activity / Rule Name</th>
                     <th className="py-3 px-4">Category</th>
-                    <th className="py-3 px-4">Suitability</th>
                     <th className="py-3 px-4">Temp Range</th>
                     <th className="py-3 px-4">Weather Filter</th>
                     <th className="py-3 px-4">Max Wind</th>
@@ -284,68 +328,62 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {rules.map((rule) => (
-                    <tr key={rule.id} className="hover:bg-surface-container-high/40 transition-colors">
-                      <td className="py-3.5 px-4 font-display font-bold text-on-surface">
-                        {rule.activity_name}
-                      </td>
-                      <td className="py-3.5 px-4">
-                        <Badge variant={rule.category === 'OUTDOOR' ? 'primary' : 'indoor'} size="sm">
-                          {rule.category}
-                        </Badge>
-                      </td>
-                      <td className="py-3.5 px-4">
-                        <Badge
-                          variant={
-                            rule.suitability === 'OPTIMAL'
-                              ? 'optimal'
-                              : rule.suitability === 'SUITABLE'
-                              ? 'primary'
-                              : rule.suitability === 'CAUTION'
-                              ? 'caution'
-                              : 'danger'
-                          }
-                          size="sm"
-                        >
-                          {rule.suitability}
-                        </Badge>
-                      </td>
-                      <td className="py-3.5 px-4 font-tabular text-on-surface-variant">
-                        {rule.min_temp_c !== null ? `${rule.min_temp_c}°C` : 'Any'} –{' '}
-                        {rule.max_temp_c !== null ? `${rule.max_temp_c}°C` : 'Any'}
-                      </td>
-                      <td className="py-3.5 px-4 text-outline font-mono">
-                        {rule.weather_condition || 'All Conditions'}
-                      </td>
-                      <td className="py-3.5 px-4 font-tabular text-outline">
-                        {rule.max_wind_speed_kmh ? `≤ ${rule.max_wind_speed_kmh} km/h` : 'N/A'}
-                      </td>
-                      <td className="py-3.5 px-4">
-                        <span
-                          className={`inline-flex items-center gap-1 font-semibold ${
-                            rule.is_active ? 'text-optimal' : 'text-outline'
-                          }`}
-                        >
+                  {rules.map((rule) => {
+                    const category = rule.activity_category || rule.category || 'OUTDOOR';
+                    const minT = rule.min_temp ?? rule.min_temp_c;
+                    const maxT = rule.max_temp ?? rule.max_temp_c;
+                    const maxW = rule.max_wind_speed ?? rule.max_wind_speed_kmh;
+                    const conditions = Array.isArray(rule.allowed_weather_conditions)
+                      ? rule.allowed_weather_conditions.join(', ')
+                      : (rule.weather_condition || 'All Conditions');
+
+                    return (
+                      <tr key={rule.id} className="hover:bg-surface-container-high/40 transition-colors">
+                        <td className="py-3.5 px-4 font-display font-bold text-on-surface">
+                          {rule.activity_name || rule.name}
+                        </td>
+                        <td className="py-3.5 px-4">
+                          <Badge variant={category === 'OUTDOOR' ? 'primary' : 'indoor'} size="sm">
+                            {category}
+                          </Badge>
+                        </td>
+                        <td className="py-3.5 px-4 font-tabular text-on-surface-variant">
+                          {minT !== null && minT !== undefined ? `${minT}°C` : 'Any'} –{' '}
+                          {maxT !== null && maxT !== undefined ? `${maxT}°C` : 'Any'}
+                        </td>
+                        <td className="py-3.5 px-4 text-outline font-mono max-w-[200px] truncate" title={conditions}>
+                          {conditions}
+                        </td>
+                        <td className="py-3.5 px-4 font-tabular text-outline">
+                          {maxW ? `≤ ${maxW} km/h` : 'N/A'}
+                        </td>
+                        <td className="py-3.5 px-4">
                           <span
-                            className={`w-2 h-2 rounded-full ${
-                              rule.is_active ? 'bg-optimal' : 'bg-outline'
+                            className={`inline-flex items-center gap-1 font-semibold ${
+                              rule.is_active ? 'text-optimal' : 'text-outline'
                             }`}
-                          />
-                          {rule.is_active ? 'Active' : 'Disabled'}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 text-right">
-                        <Button
-                          variant={rule.is_active ? 'outline' : 'primary'}
-                          size="sm"
-                          isLoading={updatingRuleId === rule.id}
-                          onClick={() => handleToggleRule(rule)}
-                        >
-                          {rule.is_active ? 'Disable' : 'Enable'}
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
+                          >
+                            <span
+                              className={`w-2 h-2 rounded-full ${
+                                rule.is_active ? 'bg-optimal' : 'bg-outline'
+                              }`}
+                            />
+                            {rule.is_active ? 'Active' : 'Disabled'}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-4 text-right">
+                          <Button
+                            variant={rule.is_active ? 'outline' : 'primary'}
+                            size="sm"
+                            isLoading={updatingRuleId === rule.id}
+                            onClick={() => handleToggleRule(rule)}
+                          >
+                            {rule.is_active ? 'Disable' : 'Enable'}
+                          </Button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -383,9 +421,9 @@ export default function AdminPage() {
                       <td className="py-3.5 px-4 font-display font-bold text-on-surface">
                         <div className="flex items-center gap-2">
                           <div className="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-primary font-bold text-xs">
-                            {u.display_name?.charAt(0).toUpperCase() || 'U'}
+                            {(u.display_name || u.email || 'U').charAt(0).toUpperCase()}
                           </div>
-                          <span>{u.display_name}</span>
+                          <span>{u.display_name || u.email?.split('@')[0]}</span>
                         </div>
                       </td>
                       <td className="py-3.5 px-4 text-on-surface-variant font-mono text-[11px]">
@@ -400,7 +438,7 @@ export default function AdminPage() {
                         {new Date(u.created_at).toLocaleDateString()}
                       </td>
                       <td className="py-3.5 px-4 font-tabular text-right font-bold text-on-surface">
-                        {u.search_count || 0}
+                        {u.saved_cities_count ?? u.search_count ?? 0}
                       </td>
                     </tr>
                   ))}

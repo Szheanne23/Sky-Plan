@@ -8,11 +8,12 @@ const { query } = require('../config/db');
  */
 async function getRecommendations(req, res, next) {
   try {
-    const city = req.query.city || req.query.q || 'Interlaken';
+    const city = req.query.city || req.query.q || 'Manila';
+    const date = req.query.date || 'Today';
     const userId = req.user?.id;
 
     // 1. Fetch real weather data
-    const weatherData = await weatherService.getCurrentWeather(city.trim());
+    const weatherData = await weatherService.getCurrentWeather(city.trim(), date);
 
     // 2. Fetch authenticated user's selected interest tag IDs (if logged in)
     let userInterestTagIds = [];

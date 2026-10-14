@@ -16,7 +16,8 @@ export default function FavoritesModal({ isOpen, onClose, onSelectCity }) {
     setError(null);
     try {
       const data = await favoritesService.getFavorites();
-      setFavorites(data || []);
+      const list = Array.isArray(data) ? data : (data?.favorites || []);
+      setFavorites(list);
     } catch (err) {
       setError(err.message || 'Failed to load saved places.');
     } finally {

@@ -27,8 +27,10 @@ import {
   Filter,
   ArrowUp,
   ArrowDown,
-  AlertCircle
+  AlertCircle,
+  CalendarPlus
 } from 'lucide-react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '../components/common/Card';
 import Button from '../components/common/Button';
 import Badge from '../components/common/Badge';
@@ -40,6 +42,9 @@ import RecommendationCard from '../components/weather/RecommendationCard';
 import SearchPanel from '../components/weather/SearchPanel';
 import HistoryDrawer from '../components/history/HistoryDrawer';
 import FavoritesModal from '../components/favorites/FavoritesModal';
+import AddToItineraryModal from '../components/itinerary/AddToItineraryModal';
+
+import WeatherTrendChart from '../components/weather/WeatherTrendChart';
 
 import weatherService from '../services/weatherService';
 import recommendationService from '../services/recommendationService';
@@ -48,10 +53,13 @@ import healthService from '../services/healthService';
 import { useAuth } from '../context/AuthContext';
 
 export default function HomePage() {
+  const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
+  const [searchParams] = useSearchParams();
+  const urlCity = searchParams.get('city');
 
-  // Search & Active Location State
-  const [cityName, setCityName] = useState('Interlaken');
+  // Search & Active Location State (Default: Manila, Philippines)
+  const [cityName, setCityName] = useState(urlCity || 'Manila');
   const [requestedDate, setRequestedDate] = useState('Today');
   const [weatherData, setWeatherData] = useState(null);
   const [forecastData, setForecastData] = useState([]);
@@ -67,6 +75,8 @@ export default function HomePage() {
   const [recommendationFilter, setRecommendationFilter] = useState('ALL');
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
+  const [itineraryModalOpen, setItineraryModalOpen] = useState(false);
+  const [activityToSchedule, setActivityToSchedule] = useState(null);
 
   // Health probe
   const [healthData, setHealthData] = useState(null);
@@ -87,16 +97,15 @@ export default function HomePage() {
       setRecommendations(recs?.recommendations || []);
       setCityName(current.location?.city || city);
       setRequestedDate(date);
-      setActiveDayIndex(0);
 
       // Check if this city is currently favorited
       if (isAuthenticated) {
         try {
           const favs = await favoritesService.getFavorites();
-          setFavoritesList(favs || []);
-          const matched = favs?.some(
-            (f) => f.city_name.toLowerCase() === (current.location?.city || city).toLowerCase()
-          );
+          const validList = Array.isArray(favs) ? favs.filter((f) => f && f.city_name) : [];
+          setFavoritesList(validList);
+          const currentCity = (current.location?.city || city).toLowerCase();
+          const matched = validList.some((f) => f.city_name && f.city_name.toLowerCase() === currentCity);
           setIsFavorited(matched);
         } catch (err) {
           // non-blocking
@@ -110,18 +119,29 @@ export default function HomePage() {
     }
   };
 
-  // Load initial city on mount
+  // Load initial city on mount (prioritizing URL query param if present)
   useEffect(() => {
-    fetchCityData(cityName, requestedDate);
+    const target = urlCity || cityName;
+    fetchCityData(target, requestedDate);
 
     healthService.checkHealth().then((res) => {
       setHealthData(res.data);
     }).catch(() => {});
-  }, [isAuthenticated]);
+  }, [isAuthenticated, urlCity]);
 
-  const handleSearch = ({ location, date }) => {
+  const handleSearch = async ({ location, date, scrollToActivities = true }) => {
     setIsSearching(true);
-    fetchCityData(location, date);
+    await fetchCityData(location, date);
+    if (scrollToActivities) {
+      setTimeout(() => {
+        const el = document.getElementById('recommendations-section');
+        if (el) {
+          const yOffset = -90; // account for fixed navbar
+          const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 150);
+    }
   };
 
   const handleToggleFavorite = async () => {
@@ -133,7 +153,7 @@ export default function HomePage() {
     try {
       if (isFavorited) {
         const found = favoritesList.find(
-          (f) => f.city_name.toLowerCase() === cityName.toLowerCase()
+          (f) => f && f.city_name && f.city_name.toLowerCase() === cityName.toLowerCase()
         );
         if (found) {
           await favoritesService.removeFavorite(found.id);
@@ -145,7 +165,9 @@ export default function HomePage() {
           weatherData?.location?.city || cityName,
           weatherData?.location?.country || 'Global Region'
         );
-        setFavoritesList((prev) => [saved, ...prev]);
+        if (saved && saved.city_name) {
+          setFavoritesList((prev) => [saved, ...prev.filter((p) => p && p.city_name)]);
+        }
         setIsFavorited(true);
       }
     } catch (err) {
@@ -424,23 +446,29 @@ export default function HomePage() {
                 <ForecastCard
                   key={f.date || idx}
                   day={f.day}
-                  date={f.date}
+                  date={f.formattedDate || f.date}
                   condition={f.description || f.condition}
                   icon={WeatherIcon}
-                  highTemp={f.high}
-                  lowTemp={f.low}
-                  precipChance={f.precip}
+                  highTemp={f.highTemp ?? f.high ?? 20}
+                  lowTemp={f.lowTemp ?? f.low ?? 10}
+                  precipChance={f.precipChance ?? f.precip ?? 0}
                   isSelected={activeDayIndex === idx}
-                  onClick={() => setActiveDayIndex(idx)}
+                  onClick={() => {
+                    setActiveDayIndex(idx);
+                    fetchCityData(cityName, f.date || f.day);
+                  }}
                 />
               );
             })}
           </div>
+
+          {/* Interactive Chart.js Weather Trend */}
+          <WeatherTrendChart forecastData={forecastData} />
         </section>
       )}
 
       {/* 5. Rule-Based Recommendations */}
-      <section className="space-y-4">
+      <section id="recommendations-section" className="space-y-4 scroll-mt-28">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold font-display text-on-surface tracking-tight flex items-center gap-2">
@@ -448,12 +476,23 @@ export default function HomePage() {
               Tailored Activity Recommendations
             </h2>
             <p className="text-xs sm:text-sm text-outline">
-              Rule engine evaluation against live temperature, wind speed, precipitation, and user profile tags.
+              Rule engine evaluation for <span className="text-primary font-bold">{cityName}</span> ({requestedDate}) based on live weather and profile tags.
             </p>
           </div>
 
-          {/* Filter Pills */}
-          <div className="flex items-center gap-1.5 bg-surface-container-low/80 p-1 rounded-full border border-white/10 self-start sm:self-auto">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              variant="primary"
+              size="sm"
+              icon={CalendarPlus}
+              onClick={() => navigate(`/itineraries?city=${encodeURIComponent(cityName)}&create=true`)}
+              className="shadow-glow whitespace-nowrap"
+            >
+              Plan Itinerary for {cityName}
+            </Button>
+
+            {/* Filter Pills */}
+            <div className="flex items-center gap-1.5 bg-surface-container-low/80 p-1 rounded-full border border-white/10">
             <button
               type="button"
               onClick={() => setRecommendationFilter('ALL')}
@@ -500,6 +539,7 @@ export default function HomePage() {
             </button>
           </div>
         </div>
+      </div>
 
         {/* Recommendation Cards Grid */}
         {filteredRecommendations.length === 0 ? (
@@ -531,6 +571,10 @@ export default function HomePage() {
                   timeSlot={rec.timeSlot}
                   conditions={rec.conditions}
                   icon={RecIcon}
+                  onAddToItinerary={() => {
+                    setActivityToSchedule(rec);
+                    setItineraryModalOpen(true);
+                  }}
                 />
               );
             })}
@@ -596,6 +640,14 @@ export default function HomePage() {
         isOpen={isFavoritesOpen}
         onClose={() => setIsFavoritesOpen(false)}
         onSelectCity={(city) => fetchCityData(city, 'Today')}
+      />
+
+      <AddToItineraryModal
+        isOpen={itineraryModalOpen}
+        onClose={() => setItineraryModalOpen(false)}
+        activity={activityToSchedule}
+        destinationCity={weatherData?.location?.city || cityName}
+        onSuccess={() => {}}
       />
     </div>
   );

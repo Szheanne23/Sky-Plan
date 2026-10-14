@@ -33,22 +33,24 @@ async function recordSearchEvent(req, cityName, weatherData) {
  */
 async function getCurrentWeather(req, res, next) {
   try {
-    const city = req.query.city || req.query.q || 'Interlaken';
+    const rawCity = req.query.city !== undefined ? req.query.city : (req.query.q !== undefined ? req.query.q : 'Manila');
 
-    if (!city || typeof city !== 'string' || city.trim().length === 0) {
+    if (!rawCity || typeof rawCity !== 'string' || rawCity.trim().length === 0) {
       return res.status(400).json({
         success: false,
         error: {
           code: 'VALIDATION_ERROR',
-          message: 'City parameter is required.',
+          message: 'City parameter is required and cannot be empty.',
         },
       });
     }
 
-    const weatherData = await weatherService.getCurrentWeather(city.trim());
+    const city = rawCity.trim();
+    const date = req.query.date || 'Today';
+    const weatherData = await weatherService.getCurrentWeather(city, date);
 
     // Asynchronously log search event for analytics & history
-    recordSearchEvent(req, city.trim(), weatherData);
+    recordSearchEvent(req, city, weatherData);
 
     res.status(200).json({
       success: true,
@@ -66,19 +68,20 @@ async function getCurrentWeather(req, res, next) {
  */
 async function getForecast(req, res, next) {
   try {
-    const city = req.query.city || req.query.q || 'Interlaken';
+    const rawCity = req.query.city !== undefined ? req.query.city : (req.query.q !== undefined ? req.query.q : 'Manila');
 
-    if (!city || typeof city !== 'string' || city.trim().length === 0) {
+    if (!rawCity || typeof rawCity !== 'string' || rawCity.trim().length === 0) {
       return res.status(400).json({
         success: false,
         error: {
           code: 'VALIDATION_ERROR',
-          message: 'City parameter is required.',
+          message: 'City parameter is required and cannot be empty.',
         },
       });
     }
 
-    const forecastData = await weatherService.getForecast(city.trim());
+    const city = rawCity.trim();
+    const forecastData = await weatherService.getForecast(city);
 
     res.status(200).json({
       success: true,

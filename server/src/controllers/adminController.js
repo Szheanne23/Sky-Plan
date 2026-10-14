@@ -41,23 +41,48 @@ async function getAdminAnalytics(req, res, next) {
       FROM recommendation_rules;
     `);
 
+    const totalSearches = parseInt(searchStats.rows[0].total_searches, 10);
+    const guestSearches = parseInt(searchStats.rows[0].guest_searches, 10);
+    const regSearches = parseInt(searchStats.rows[0].registered_searches, 10);
+    const totalUsers = parseInt(userStats.rows[0].total_users, 10);
+    const adminCount = parseInt(userStats.rows[0].admin_count, 10);
+    const userCount = parseInt(userStats.rows[0].user_count, 10);
+    const totalRules = parseInt(ruleStats.rows[0].total_rules, 10);
+    const activeRules = parseInt(ruleStats.rows[0].active_rules, 10);
+
+    const popularDestinations = topCities.rows.map((row) => ({
+      city_name: row.city_name,
+      search_count: parseInt(row.search_count, 10),
+      last_searched: new Date().toISOString(),
+    }));
+
     res.status(200).json({
       success: true,
       data: {
         searches: {
-          total: parseInt(searchStats.rows[0].total_searches, 10),
-          guest: parseInt(searchStats.rows[0].guest_searches, 10),
-          registered: parseInt(searchStats.rows[0].registered_searches, 10),
+          total: totalSearches,
+          guest: guestSearches,
+          registered: regSearches,
+        },
+        overview: {
+          totalUsers,
+          activeUsers: totalUsers,
+          totalSearches,
+          searchesToday: totalSearches,
+          guestSearches,
+          registeredSearches: regSearches,
+          totalFavorites: 0,
         },
         topDestinations: topCities.rows,
+        popularSearches: popularDestinations,
         users: {
-          total: parseInt(userStats.rows[0].total_users, 10),
-          admins: parseInt(userStats.rows[0].admin_count, 10),
-          standard: parseInt(userStats.rows[0].user_count, 10),
+          total: totalUsers,
+          admins: adminCount,
+          standard: userCount,
         },
         rules: {
-          total: parseInt(ruleStats.rows[0].total_rules, 10),
-          active: parseInt(ruleStats.rows[0].active_rules, 10),
+          total: totalRules,
+          active: activeRules,
         },
       },
       message: 'Admin analytics telemetry retrieved successfully.',
@@ -114,7 +139,22 @@ async function getAdminRules(req, res, next) {
 async function updateAdminRule(req, res, next) {
   try {
     const { id } = req.params;
-    const { isActive, minTemp, maxTemp, maxWindSpeed, maxPrecipChance, priority } = req.body;
+    const resolvedIsActive = req.body.isActive !== undefined ? req.body.isActive : req.body.is_active;
+    const { minTemp, maxTemp, maxWindSpeed, maxPrecipChance, priority } = req.body;
+
+    // Validate numeric values if provided
+    const numericFields = { minTemp, maxTemp, maxWindSpeed, maxPrecipChance, priority };
+    for (const [key, val] of Object.entries(numericFields)) {
+      if (val !== undefined && val !== null && isNaN(Number(val))) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: `Field "${key}" must be a valid numeric value.`,
+          },
+        });
+      }
+    }
 
     const existing = await query(`SELECT id FROM recommendation_rules WHERE id = $1`, [id]);
     if (existing.rows.length === 0) {
@@ -136,7 +176,15 @@ async function updateAdminRule(req, res, next) {
          updated_at = CURRENT_TIMESTAMP
        WHERE id = $7
        RETURNING *`,
-      [isActive, minTemp, maxTemp, maxWindSpeed, maxPrecipChance, priority, id]
+      [
+        resolvedIsActive !== undefined ? resolvedIsActive : null,
+        minTemp !== undefined ? Number(minTemp) : null,
+        maxTemp !== undefined ? Number(maxTemp) : null,
+        maxWindSpeed !== undefined ? Number(maxWindSpeed) : null,
+        maxPrecipChance !== undefined ? Number(maxPrecipChance) : null,
+        priority !== undefined ? Number(priority) : null,
+        id,
+      ]
     );
 
     res.status(200).json({

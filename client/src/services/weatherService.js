@@ -1,13 +1,13 @@
 import apiClient from './apiClient';
 
 export const weatherService = {
-  getCurrentWeather: async (city = 'Interlaken', date = 'Today') => {
+  getCurrentWeather: async (city = 'Manila', date = 'Today') => {
     const params = new URLSearchParams({ city, date });
     const response = await apiClient.get(`/weather/current?${params.toString()}`);
     return response.data;
   },
 
-  getForecast: async (city = 'Interlaken') => {
+  getForecast: async (city = 'Manila') => {
     const params = new URLSearchParams({ city });
     const response = await apiClient.get(`/weather/forecast?${params.toString()}`);
     return response.data;
