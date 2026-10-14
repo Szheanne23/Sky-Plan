@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, UserPlus, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Mail, Lock, User, UserPlus, Sparkles, ArrowRight, ShieldCheck, CalendarPlus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/common/Card';
 import Button from '../components/common/Button';
@@ -18,6 +18,9 @@ export default function RegisterPage() {
 
   const { register } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectUrl = searchParams.get('redirect') || '/itineraries';
+  const isItineraryPrompt = redirectUrl.includes('itinerar') || searchParams.has('redirect');
 
   const validate = () => {
     const errors = {};
@@ -57,7 +60,7 @@ export default function RegisterPage() {
     try {
       const result = await register(email, password, displayName);
       if (result.success) {
-        navigate('/profile', { replace: true });
+        navigate(redirectUrl, { replace: true });
       } else {
         setErrorMessage(result.error || 'Failed to register account.');
       }
@@ -70,6 +73,21 @@ export default function RegisterPage() {
 
   return (
     <div className="max-w-md mx-auto py-8">
+      {/* Contextual notice if arriving from Itinerary creation */}
+      {isItineraryPrompt && (
+        <div className="mb-6 p-4 rounded-2xl bg-primary/10 border border-primary/25 shadow-glass flex items-start gap-3 animate-fade-in">
+          <div className="p-2 rounded-xl bg-primary/20 text-primary mt-0.5 shrink-0">
+            <CalendarPlus className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-on-surface">Sign Up to Add & Save Itineraries</h3>
+            <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
+              Create your free SkyPlan account to plan trips, save weather-recommended activities, and organize your travel timeline.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Header Badge & Title */}
       <div className="text-center mb-8 space-y-2">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-surface-container-high/90 border border-primary/20 text-primary text-xs font-semibold shadow-specular-inset">
@@ -182,7 +200,7 @@ export default function RegisterPage() {
         <CardFooter className="bg-surface-container-lowest/70 border-t border-white/5 py-4 flex items-center justify-center text-xs text-outline">
           <span>Already registered?</span>
           <Link
-            to="/login"
+            to={searchParams.has('redirect') ? `/login?redirect=${encodeURIComponent(redirectUrl)}` : '/login'}
             className="ml-2 font-semibold text-primary hover:text-primary-300 transition-colors"
           >
             Sign In Instead &rarr;

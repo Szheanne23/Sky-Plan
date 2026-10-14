@@ -160,7 +160,7 @@ export default function RecommendationCard({
             title="Save to Itinerary"
           >
             <CalendarPlus className="w-3.5 h-3.5" />
-            <span>Add to Plan</span>
+            <span>Add Itinerary</span>
           </button>
         )}
       </div>

@@ -13,6 +13,22 @@ export function AuthProvider({ children }) {
     let isMounted = true;
 
     async function checkAuth() {
+      const token = localStorage.getItem('skyplan_token');
+      if (!token) {
+        if (isMounted) {
+          setUser(null);
+          setIsLoading(false);
+        }
+        return;
+      }
+
+      // Safety timeout so session verification never hangs indefinitely
+      const timeoutId = setTimeout(() => {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }, 3500);
+
       try {
         const response = await authService.getMe();
         if (isMounted && response?.data?.user) {
@@ -24,6 +40,7 @@ export function AuthProvider({ children }) {
           localStorage.removeItem('skyplan_token');
         }
       } finally {
+        clearTimeout(timeoutId);
         if (isMounted) {
           setIsLoading(false);
         }

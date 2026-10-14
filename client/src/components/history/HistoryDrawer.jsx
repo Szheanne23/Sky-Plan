@@ -4,8 +4,10 @@ import historyService from '../../services/historyService';
 import Button from '../common/Button';
 import Badge from '../common/Badge';
 import EmptyState from '../common/EmptyState';
+import { useTemperature } from '../../context/TemperatureContext';
 
 export default function HistoryDrawer({ isOpen, onClose, onSelectCity }) {
+  const { toDisplayTemp, unitSymbol } = useTemperature();
   const [historyItems, setHistoryItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isClearing, setIsClearing] = useState(false);
@@ -133,7 +135,7 @@ export default function HistoryDrawer({ isOpen, onClose, onSelectCity }) {
                     {weather.temp !== undefined && (
                       <div className="text-right">
                         <span className="font-display font-extrabold text-base text-on-surface font-tabular">
-                          {weather.temp}°C
+                          {toDisplayTemp(weather.temp)}{unitSymbol}
                         </span>
                         <p className="text-[10px] text-on-surface-variant">{weather.condition || 'Clear'}</p>
                       </div>

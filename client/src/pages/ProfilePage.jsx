@@ -143,7 +143,7 @@ export default function ProfilePage() {
           bio: updated.bio,
           homeCity: updated.homeCity || updated.home_city,
         });
-        setProfileSuccess('Profile, avatar & bio successfully updated in Supabase.');
+        setProfileSuccess('Profile, avatar & bio successfully updated.');
       }
     } catch (err) {
       setProfileError(err.message || 'Failed to update profile.');
@@ -229,7 +229,7 @@ export default function ProfilePage() {
             {bio && <p className="text-xs text-on-surface-variant max-w-md">{bio}</p>}
             <p className="text-[11px] text-outline flex items-center gap-2 pt-0.5">
               <Calendar className="w-3.5 h-3.5 text-tertiary" />
-              <span>Member Account • Supabase PostgreSQL Verified</span>
+              <span>Member Account • Verified User</span>
               {homeCity && (
                 <>
                   <span>•</span>

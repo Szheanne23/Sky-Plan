@@ -63,7 +63,7 @@ export default function FavoritesModal({ isOpen, onClose, onSelectCity }) {
             </div>
             <div>
               <h2 className="font-display font-bold text-lg text-on-surface">Saved Destinations</h2>
-              <p className="text-xs text-outline">Quick-access pinned cities stored in Supabase</p>
+              <p className="text-xs text-outline">Quick-access pinned cities stored in your account</p>
             </div>
           </div>
           <button

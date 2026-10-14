@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../common/Button';
 import { cn } from '../../lib/utils';
 import { PHILIPPINE_DESTINATIONS } from '../common/DestinationAutocomplete';
+import { useAuth } from '../../context/AuthContext';
 
 /**
  * Stitch Weather Search Panel Component
@@ -15,6 +16,7 @@ export default function SearchPanel({
   isLoading = false,
   className = '',
 }) {
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [query, setQuery] = useState(currentLocation);
   const [selectedDate, setSelectedDate] = useState('Today');
@@ -298,12 +300,17 @@ export default function SearchPanel({
             icon={CalendarPlus}
             onClick={() => {
               const targetCity = query.trim() || 'Manila';
-              navigate(`/itineraries?city=${encodeURIComponent(targetCity)}&create=true`);
+              const itineraryUrl = `/itineraries?city=${encodeURIComponent(targetCity)}&create=true`;
+              if (!isAuthenticated) {
+                navigate(`/register?redirect=${encodeURIComponent(itineraryUrl)}`);
+                return;
+              }
+              navigate(itineraryUrl);
             }}
             className="flex-1 md:flex-initial whitespace-nowrap hover:border-primary hover:text-primary transition-all text-xs"
-            title="Open itinerary planner for this destination"
+            title="Create an itinerary for this destination"
           >
-            Create Itinerary
+            Add Itinerary
           </Button>
         </div>
       </form>

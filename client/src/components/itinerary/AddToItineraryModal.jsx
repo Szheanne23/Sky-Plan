@@ -57,7 +57,14 @@ export default function AddToItineraryModal({
   ];
 
   useEffect(() => {
-    if (isOpen && isAuthenticated) {
+    if (isOpen) {
+      if (!isAuthenticated) {
+        onClose();
+        const currentPath = window.location.pathname + window.location.search;
+        navigate(`/register?redirect=${encodeURIComponent(currentPath)}`);
+        return;
+      }
+
       setError(null);
       setSuccessMsg(null);
       setNewTitle(`Trip to ${destinationCity}`);
@@ -75,14 +82,16 @@ export default function AddToItineraryModal({
         setError('Failed to fetch itineraries.');
       });
     }
-  }, [isOpen, destinationCity, isAuthenticated]);
+  }, [isOpen, destinationCity, isAuthenticated, navigate, onClose]);
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
-      navigate('/login');
+      onClose();
+      const currentPath = window.location.pathname + window.location.search;
+      navigate(`/register?redirect=${encodeURIComponent(currentPath)}`);
       return;
     }
 

@@ -19,7 +19,11 @@ export default function LoginPage() {
   const location = useLocation();
 
   // Redirect destination after successful login
-  const from = location.state?.from?.pathname || '/profile';
+  const searchParams = new URLSearchParams(location.search);
+  const redirectParam = searchParams.get('redirect');
+  const from = location.state?.from?.pathname
+    ? (location.state.from.pathname + (location.state.from.search || ''))
+    : (redirectParam || '/itineraries');
 
   const validate = () => {
     const errors = {};
@@ -142,7 +146,7 @@ export default function LoginPage() {
         <CardFooter className="bg-surface-container-lowest/70 border-t border-white/5 py-4 flex items-center justify-center text-xs text-outline">
           <span>Don't have an account yet?</span>
           <Link
-            to="/register"
+            to={redirectParam ? `/register?redirect=${encodeURIComponent(redirectParam)}` : '/register'}
             className="ml-2 font-semibold text-primary hover:text-primary-300 transition-colors"
           >
             Create Account &rarr;

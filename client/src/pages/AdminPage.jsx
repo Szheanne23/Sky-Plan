@@ -400,7 +400,7 @@ export default function AdminPage() {
               Registered User Accounts
             </CardTitle>
             <CardDescription>
-              Authenticated users stored in Supabase PostgreSQL with role and search count metrics.
+              Registered user accounts with role, registration date, and telemetry.
             </CardDescription>
           </CardHeader>
           <CardContent>

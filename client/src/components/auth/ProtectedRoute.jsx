@@ -17,6 +17,17 @@ export default function ProtectedRoute({ children, requiredRole }) {
   }
 
   if (!isAuthenticated) {
+    // In guest mode, accessing itineraries directs to the sign-up page
+    if (location.pathname.startsWith('/itineraries')) {
+      const search = location.search || '';
+      return (
+        <Navigate
+          to={`/register?redirect=${encodeURIComponent(location.pathname + search)}`}
+          state={{ from: location }}
+          replace
+        />
+      );
+    }
     // Redirect unauthenticated visitors to login, preserving target location
     return <Navigate to="/login" state={{ from: location }} replace />;
   }

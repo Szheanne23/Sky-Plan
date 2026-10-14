@@ -19,10 +19,14 @@ import {
   Sliders,
   SlidersHorizontal,
   Home,
-  Clock
+  Clock,
+  Sun,
+  Moon
 } from 'lucide-react';
 import healthService from '../services/healthService';
 import { useAuth } from '../context/AuthContext';
+import { useTemperature } from '../context/TemperatureContext';
+import { useTheme } from '../context/ThemeContext';
 import Badge from '../components/common/Badge';
 import Button from '../components/common/Button';
 
@@ -30,7 +34,8 @@ export default function MainLayout() {
   const [apiHealth, setApiHealth] = useState({ status: 'checking', message: 'Checking API...' });
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [unit, setUnit] = useState('C');
+  const { unit, setUnit } = useTemperature();
+  const { theme, setTheme, toggleTheme, isDay } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
@@ -44,7 +49,7 @@ export default function MainLayout() {
           setApiHealth({
             status: 'online',
             service: response?.data?.service || 'SkyPlan API',
-            db: response?.data?.database?.connected ? 'Supabase Connected' : 'Configured (Standby)',
+            db: response?.data?.database?.connected ? 'Online' : 'Standby',
           });
         }
       } catch (err) {
@@ -179,7 +184,37 @@ export default function MainLayout() {
                 </button>
               </div>
 
-              {/* Database Telemetry Beacon */}
+              {/* Day / Night Theme Toggle */}
+              <div className="flex items-center bg-surface-container-low rounded-full p-0.5 border border-white/10 shadow-specular-inset">
+                <button
+                  type="button"
+                  onClick={() => setTheme('day')}
+                  className={`p-1.5 rounded-full transition-all flex items-center justify-center ${
+                    theme === 'day'
+                      ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/30'
+                      : 'text-outline hover:text-on-surface'
+                  }`}
+                  aria-label="Day theme (Light mode)"
+                  title="Day theme (Light mode)"
+                >
+                  <Sun className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme('night')}
+                  className={`p-1.5 rounded-full transition-all flex items-center justify-center ${
+                    theme === 'night'
+                      ? 'bg-primary-container text-on-primary-container shadow-glow'
+                      : 'text-outline hover:text-on-surface'
+                  }`}
+                  aria-label="Night theme (Dark mode)"
+                  title="Night theme (Dark mode)"
+                >
+                  <Moon className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* System Telemetry Beacon */}
               <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high/80 border border-white/10 text-xs text-on-surface shadow-specular-inset">
                 <span className="relative flex h-2 w-2">
                   {apiHealth.status === 'online' && (
@@ -195,9 +230,9 @@ export default function MainLayout() {
                     }`}
                   />
                 </span>
-                <span className="text-outline text-[11px]">DB:</span>
+                <span className="text-outline text-[11px]">System:</span>
                 <strong className={apiHealth.status === 'online' ? 'text-optimal font-semibold text-[11px]' : 'text-error text-[11px]'}>
-                  {apiHealth.status === 'online' ? 'Supabase' : 'Offline'}
+                  {apiHealth.status === 'online' ? 'Live' : 'Offline'}
                 </strong>
               </div>
 
@@ -379,6 +414,47 @@ export default function MainLayout() {
                   </Link>
                 </div>
               )}
+
+              {/* Mobile Quick Preferences (Theme & Temperature) */}
+              <div className="pt-3 mt-2 border-t border-white/10 flex items-center justify-between">
+                <span className="text-xs text-outline font-medium">Display & Unit</span>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center bg-surface-container-low rounded-full p-0.5 border border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => setTheme('day')}
+                      className={`p-1.5 rounded-full ${theme === 'day' ? 'bg-amber-400 text-slate-950' : 'text-outline'}`}
+                      aria-label="Day theme"
+                    >
+                      <Sun className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTheme('night')}
+                      className={`p-1.5 rounded-full ${theme === 'night' ? 'bg-primary-container text-on-primary-container' : 'text-outline'}`}
+                      aria-label="Night theme"
+                    >
+                      <Moon className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <div className="flex items-center bg-surface-container-low rounded-full p-0.5 border border-white/10 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setUnit('C')}
+                      className={`px-2 py-0.5 rounded-full font-semibold ${unit === 'C' ? 'bg-primary-container text-on-primary-container' : 'text-outline'}`}
+                    >
+                      °C
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setUnit('F')}
+                      className={`px-2 py-0.5 rounded-full font-semibold ${unit === 'F' ? 'bg-primary-container text-on-primary-container' : 'text-outline'}`}
+                    >
+                      °F
+                    </button>
+                  </div>
+                </div>
+              </div>
             </nav>
           </div>
         )}
@@ -401,7 +477,7 @@ export default function MainLayout() {
               <Layers className="w-3.5 h-3.5 text-primary" /> React + Tailwind + Express + PostgreSQL
             </span>
             <span className="inline-flex items-center gap-1 text-optimal font-medium">
-              <Shield className="w-3.5 h-3.5" /> Supabase Verified
+              <Shield className="w-3.5 h-3.5" /> System Verified
             </span>
           </div>
         </div>

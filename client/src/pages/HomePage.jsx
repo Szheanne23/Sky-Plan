@@ -51,12 +51,14 @@ import weatherService from '../services/weatherService';
 import recommendationService from '../services/recommendationService';
 import favoritesService from '../services/favoritesService';
 import healthService from '../services/healthService';
-import { getDestinationMedia } from '../services/destinationMediaService';
+import { getDestinationMedia, fetchDestinationMedia } from '../services/destinationMediaService';
 import { useAuth } from '../context/AuthContext';
+import { useTemperature } from '../context/TemperatureContext';
 
 export default function HomePage() {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
+  const { unit, toDisplayTemp, unitSymbol } = useTemperature();
   const [searchParams] = useSearchParams();
   const urlCity = searchParams.get('city');
 
@@ -68,6 +70,28 @@ export default function HomePage() {
   const [recommendations, setRecommendations] = useState([]);
   const [favoritesList, setFavoritesList] = useState([]);
   const [isFavorited, setIsFavorited] = useState(false);
+
+  // Accurate Destination Landmark Media state
+  const [destMedia, setDestMedia] = useState(() => getDestinationMedia(cityName));
+
+  // Sync authentic Wikimedia landmark photo whenever destination changes
+  const effectiveCity = weatherData?.location?.city || cityName;
+  useEffect(() => {
+    // 1. Immediately provide curated verified photo
+    setDestMedia(getDestinationMedia(effectiveCity));
+
+    // 2. Query live Wikipedia/Wikimedia API for fresh authentic landmark & telemetry
+    let isCurrent = true;
+    fetchDestinationMedia(effectiveCity).then((media) => {
+      if (isCurrent && media) {
+        setDestMedia(media);
+      }
+    });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [effectiveCity]);
 
   // UI state
   const [isLoading, setIsLoading] = useState(true);
@@ -289,25 +313,25 @@ export default function HomePage() {
       {/* 3. Hero Atmospheric Snapshot + Telemetry Grid */}
       {/* 3. Hero Atmospheric Snapshot + Telemetry Grid */}
       {weatherData && (() => {
-        const destMedia = getDestinationMedia(weatherData.location?.city || cityName);
+        const activeMedia = destMedia || getDestinationMedia(weatherData.location?.city || cityName);
 
         return (
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             {/* Hero Weather Panel (7 cols) with Destination Landmark Photo */}
             <div className="lg:col-span-7 rounded-3xl bg-surface-container-low/80 backdrop-blur-2xl p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between border border-white/10 shadow-glass group">
-              {/* Cinematic Destination Photo Background */}
+              {/* Cinematic Destination Photo Background - Bright, authentic, and vibrant */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
-                  src={destMedia.imageUrl}
-                  alt={destMedia.title}
-                  className="w-full h-full object-cover object-center brightness-[0.30] contrast-[1.15] saturate-[1.2] transition-transform duration-1000 ease-out group-hover:scale-105"
+                  src={activeMedia.imageUrl}
+                  alt={activeMedia.title}
+                  className="w-full h-full object-cover object-center brightness-[0.92] contrast-[1.05] saturate-[1.1] transition-transform duration-1000 ease-out group-hover:scale-105"
                   onError={(e) => {
-                    e.target.style.display = 'none';
+                    e.target.src = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cd/Boracay_White_Beach.png/1280px-Boracay_White_Beach.png';
                   }}
                 />
-                {/* Multilayer gradient ensuring WCAG AAA contrast for weather metrics */}
-                <div className="absolute inset-0 bg-gradient-to-r from-surface-container-lowest/95 via-surface-container-low/85 to-surface-container-lowest/65" />
-                <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent" />
+                {/* Multilayer gradient ensuring WCAG AAA contrast while letting scenic destination shine through */}
+                <div className="absolute inset-0 bg-gradient-to-r from-surface-container-lowest/90 via-surface-container-lowest/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-black/25" />
               </div>
 
               {/* Specular Radial Gradients */}
@@ -317,22 +341,24 @@ export default function HomePage() {
               <div className="relative z-10 flex items-start justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-semibold text-primary uppercase tracking-widest font-display">
+                    <span className="text-xs font-semibold text-primary uppercase tracking-widest font-display drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
                       Atmospheric Snapshot
                     </span>
                     <span className="text-outline text-xs hidden sm:inline">•</span>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-tertiary bg-tertiary/10 px-2 py-0.5 rounded-full border border-tertiary/20">
-                      <Camera className="w-3 h-3 text-tertiary" /> {destMedia.title}
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-tertiary bg-surface-container-low/80 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-tertiary/30 shadow-md">
+                      <Camera className="w-3 h-3 text-tertiary" /> {activeMedia.title}
                     </span>
                   </div>
 
                   <div className="flex items-baseline gap-2 mt-2">
-                    <span className="font-display text-5xl sm:text-6xl font-extrabold text-on-surface tracking-tight font-tabular">
-                      {weatherData.temperature?.current}°
+                    <span className="font-display text-5xl sm:text-6xl font-extrabold text-on-surface tracking-tight font-tabular drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+                      {toDisplayTemp(weatherData.temperature?.current)}°
                     </span>
-                    <span className="font-display text-2xl font-bold text-on-surface-variant">C</span>
-                    <span className="text-sm font-medium text-outline ml-3">
-                      Feels like {weatherData.temperature?.feelsLike}°C
+                    <span className="font-display text-2xl font-bold text-on-surface-variant drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                      {unit}
+                    </span>
+                    <span className="text-sm font-semibold text-on-surface/90 ml-3 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
+                      Feels like {toDisplayTemp(weatherData.temperature?.feelsLike)}{unitSymbol}
                     </span>
                   </div>
 
@@ -349,20 +375,23 @@ export default function HomePage() {
                   <div className="mt-4 flex items-center gap-3 p-2.5 rounded-2xl bg-black/50 backdrop-blur-md border border-white/15 max-w-md shadow-specular-inset">
                     <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-white/20 shadow-md">
                       <img
-                        src={destMedia.imageUrl}
-                        alt={destMedia.landmark}
+                        src={activeMedia.imageUrl}
+                        alt={activeMedia.landmark}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        onError={(e) => {
+                          e.target.src = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cd/Boracay_White_Beach.png/1280px-Boracay_White_Beach.png';
+                        }}
                       />
                     </div>
                     <div className="min-w-0 pr-1">
                       <div className="flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
                         <span className="font-bold text-xs text-on-surface truncate">
-                          {destMedia.landmark}
+                          {activeMedia.landmark}
                         </span>
                       </div>
                       <p className="text-[11px] text-outline truncate mt-0.5">
-                        {destMedia.tag}
+                        {activeMedia.tag}
                       </p>
                     </div>
                   </div>
@@ -393,13 +422,13 @@ export default function HomePage() {
 
             <div className="relative z-10 pt-6 mt-6 flex items-center justify-between border-t border-white/10 flex-wrap gap-3">
               <div className="flex items-center gap-4 text-xs font-tabular">
-                <div className="flex items-center gap-1 font-semibold text-tertiary">
+                <div className="flex items-center gap-1 font-semibold text-tertiary drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
                   <ArrowUp className="w-3.5 h-3.5" />
-                  <span>High: {weatherData.temperature?.tempMax}°C</span>
+                  <span>High: {toDisplayTemp(weatherData.temperature?.tempMax)}{unitSymbol}</span>
                 </div>
-                <div className="flex items-center gap-1 font-semibold text-primary">
+                <div className="flex items-center gap-1 font-semibold text-primary drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
                   <ArrowDown className="w-3.5 h-3.5" />
-                  <span>Low: {weatherData.temperature?.tempMin}°C</span>
+                  <span>Low: {toDisplayTemp(weatherData.temperature?.tempMin)}{unitSymbol}</span>
                 </div>
                 <div className="flex items-center gap-1 text-outline">
                   <Gauge className="w-3.5 h-3.5 text-secondary" />
@@ -501,8 +530,8 @@ export default function HomePage() {
                   date={f.formattedDate || f.date}
                   condition={f.description || f.condition}
                   icon={WeatherIcon}
-                  highTemp={f.highTemp ?? f.high ?? 20}
-                  lowTemp={f.lowTemp ?? f.low ?? 10}
+                  highTemp={toDisplayTemp(f.highTemp ?? f.high ?? 20)}
+                  lowTemp={toDisplayTemp(f.lowTemp ?? f.low ?? 10)}
                   precipChance={f.precipChance ?? f.precip ?? 0}
                   isSelected={activeDayIndex === idx}
                   onClick={() => {
@@ -537,7 +566,14 @@ export default function HomePage() {
               variant="primary"
               size="sm"
               icon={CalendarPlus}
-              onClick={() => navigate(`/itineraries?city=${encodeURIComponent(cityName)}&create=true`)}
+              onClick={() => {
+                const itineraryUrl = `/itineraries?city=${encodeURIComponent(cityName)}&create=true`;
+                if (!isAuthenticated) {
+                  navigate(`/register?redirect=${encodeURIComponent(itineraryUrl)}`);
+                  return;
+                }
+                navigate(itineraryUrl);
+              }}
               className="shadow-glow whitespace-nowrap"
             >
               Plan Itinerary for {cityName}
@@ -624,6 +660,10 @@ export default function HomePage() {
                   conditions={rec.conditions}
                   icon={RecIcon}
                   onAddToItinerary={() => {
+                    if (!isAuthenticated) {
+                      navigate(`/register?redirect=${encodeURIComponent(`/?city=${encodeURIComponent(cityName)}`)}`);
+                      return;
+                    }
                     setActivityToSchedule(rec);
                     setItineraryModalOpen(true);
                   }}

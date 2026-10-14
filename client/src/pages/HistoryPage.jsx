@@ -20,8 +20,10 @@ import Badge from '../components/common/Badge';
 import EmptyState from '../components/common/EmptyState';
 import Alert from '../components/common/Alert';
 import LoadingSkeleton from '../components/common/LoadingSkeleton';
+import { useTemperature } from '../context/TemperatureContext';
 
 export default function HistoryPage() {
+  const { toDisplayTemp, unitSymbol } = useTemperature();
   const [historyItems, setHistoryItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -186,7 +188,7 @@ export default function HistoryPage() {
                   {(summary.temp !== undefined || summary.condition) && (
                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-container-high/60 border border-white/5 text-xs text-on-surface font-tabular">
                       <CloudSun className="w-4 h-4 text-primary" />
-                      <span className="font-bold">{summary.temp !== undefined ? `${summary.temp}°C` : ''}</span>
+                      <span className="font-bold">{summary.temp !== undefined ? `${toDisplayTemp(summary.temp)}${unitSymbol}` : ''}</span>
                       {summary.condition && <span className="text-outline">{summary.condition}</span>}
                     </div>
                   )}
