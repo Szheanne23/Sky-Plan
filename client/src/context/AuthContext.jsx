@@ -22,6 +22,29 @@ export function AuthProvider({ children }) {
         return;
       }
 
+      // Check if session has expired due to inactivity while the browser was closed
+      try {
+        const lastActivityStr = localStorage.getItem('skyplan_last_activity');
+        if (lastActivityStr) {
+          const lastActivity = Number(lastActivityStr);
+          const customTimeout = Number(localStorage.getItem('skyplan_inactivity_timeout_ms'));
+          const timeoutMs = (!isNaN(customTimeout) && customTimeout > 0) ? customTimeout : 15 * 60 * 1000;
+          if (!isNaN(lastActivity) && (Date.now() - lastActivity >= timeoutMs)) {
+            // Expired during browser closure
+            localStorage.removeItem('skyplan_token');
+            localStorage.removeItem('skyplan_last_activity');
+            sessionStorage.setItem('skyplan_logout_reason', 'inactivity');
+            if (isMounted) {
+              setUser(null);
+              setIsLoading(false);
+            }
+            return;
+          }
+        }
+      } catch {
+        // Ignore storage read error
+      }
+
       // Safety timeout so session verification never hangs indefinitely
       const timeoutId = setTimeout(() => {
         if (isMounted) {
@@ -64,6 +87,7 @@ export function AuthProvider({ children }) {
       if (response?.data?.user) {
         if (response.data.token) {
           localStorage.setItem('skyplan_token', response.data.token);
+          localStorage.setItem('skyplan_last_activity', Date.now().toString());
         }
         setUser(response.data.user);
         return { success: true, user: response.data.user };
@@ -86,6 +110,7 @@ export function AuthProvider({ children }) {
       if (response?.data?.user) {
         if (response.data.token) {
           localStorage.setItem('skyplan_token', response.data.token);
+          localStorage.setItem('skyplan_last_activity', Date.now().toString());
         }
         setUser(response.data.user);
         return { success: true, user: response.data.user };
@@ -108,6 +133,7 @@ export function AuthProvider({ children }) {
       console.warn('Logout request completed with warning:', err.message);
     } finally {
       localStorage.removeItem('skyplan_token');
+      localStorage.removeItem('skyplan_last_activity');
       setUser(null);
       setAuthError(null);
     }

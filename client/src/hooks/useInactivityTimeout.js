@@ -77,7 +77,42 @@ export function useInactivityTimeout({
       return;
     }
 
-    resetTimer();
+    const now = Date.now();
+    const effTimeout = getEffectiveTimeout();
+    const effWarning = getEffectiveWarningDuration();
+    const warningThreshold = effTimeout - effWarning;
+
+    let initialLastActivity = now;
+    try {
+      const stored = localStorage.getItem('skyplan_last_activity');
+      if (stored) {
+        const parsed = Number(stored);
+        if (!isNaN(parsed) && parsed > 0) {
+          initialLastActivity = parsed;
+          lastActivityRef.current = parsed;
+        }
+      }
+    } catch {
+      // Ignore storage read error
+    }
+
+    const elapsedOnMount = now - initialLastActivity;
+    if (elapsedOnMount >= effTimeout) {
+      if (!logoutTriggeredRef.current) {
+        logoutTriggeredRef.current = true;
+        if (onLogout) {
+          onLogout();
+        }
+      }
+      return;
+    } else if (elapsedOnMount >= warningThreshold) {
+      setShowWarning(true);
+      const remainingMs = Math.max(0, effTimeout - elapsedOnMount);
+      setSecondsRemaining(Math.ceil(remainingMs / 1000));
+    } else {
+      // Still active, refresh timer
+      resetTimer();
+    }
 
     let throttleTimeout = null;
     const handleUserActivity = () => {
