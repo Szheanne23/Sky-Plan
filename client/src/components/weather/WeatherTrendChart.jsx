@@ -78,7 +78,7 @@ export default function WeatherTrendChart({ forecastData = [] }) {
         data: precipData,
         backgroundColor: precipColor,
         borderRadius: 6,
-        barThickness: 18,
+        maxBarThickness: 14,
         yAxisID: 'yPrecip',
       },
     ],
@@ -145,7 +145,7 @@ export default function WeatherTrendChart({ forecastData = [] }) {
   };
 
   return (
-    <div className="p-5 sm:p-6 rounded-3xl bg-surface-container-low/80 backdrop-blur-2xl border border-white/10 shadow-glass space-y-3">
+    <div className="p-4 sm:p-6 rounded-3xl bg-surface-container-low/80 backdrop-blur-2xl border border-white/10 shadow-glass space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center">

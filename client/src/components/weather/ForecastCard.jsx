@@ -23,7 +23,7 @@ export default function ForecastCard({
       type="button"
       onClick={onClick}
       className={cn(
-        'flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl transition-all duration-200 text-center min-w-[110px] sm:min-w-[125px] flex-1 border select-none focus:outline-none focus:ring-2 focus:ring-primary',
+        'snap-start shrink-0 flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl transition-all duration-200 text-center min-w-[105px] sm:min-w-[125px] flex-1 border select-none focus:outline-none focus:ring-2 focus:ring-primary',
         isSelected
           ? 'bg-gradient-to-b from-surface-container-high/90 to-surface-container-low/90 border-primary/40 shadow-glow'
           : 'bg-surface-container-low/60 hover:bg-surface-container-high/60 border-white/5 hover:border-white/15',

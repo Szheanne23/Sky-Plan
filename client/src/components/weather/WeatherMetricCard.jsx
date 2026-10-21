@@ -20,24 +20,24 @@ export default function WeatherMetricCard({
   return (
     <div
       className={cn(
-        'rounded-2xl bg-surface-container-low/70 backdrop-blur-md p-4 flex flex-col justify-between border border-white/5 hover:border-white/15 hover:bg-surface-container/80 transition-all duration-200 group shadow-specular-inset',
+        'rounded-2xl bg-surface-container-low/70 backdrop-blur-md p-3.5 sm:p-4 flex flex-col justify-between border border-white/5 hover:border-white/15 hover:bg-surface-container/80 transition-all duration-200 group shadow-specular-inset',
         className
       )}
     >
-      <div className="flex items-center justify-between gap-2 mb-2">
-        <span className="text-xs font-semibold uppercase tracking-wider text-outline font-display">
+      <div className="flex items-center justify-between gap-2 mb-1.5 sm:mb-2">
+        <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-outline font-display truncate">
           {title}
         </span>
         {Icon && (
-          <div className="w-7 h-7 rounded-full bg-surface-container-high/80 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-            <Icon className="w-4 h-4" aria-hidden="true" />
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-surface-container-high/80 flex items-center justify-center text-primary group-hover:scale-110 transition-transform shrink-0">
+            <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
           </div>
         )}
       </div>
 
       <div className="my-1">
         <div className="flex items-baseline gap-1">
-          <span className="font-display font-extrabold text-2xl text-on-surface tracking-tight font-tabular">
+          <span className="font-display font-extrabold text-xl sm:text-2xl text-on-surface tracking-tight font-tabular">
             {value}
           </span>
           {unit && <span className="text-xs font-semibold text-on-surface-variant">{unit}</span>}

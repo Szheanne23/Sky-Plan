@@ -455,7 +455,7 @@ export default function DestinationAutocomplete({
 
       {/* Google Maps Style Autocomplete Dropdown */}
       {isOpen && (
-        <div className="absolute left-0 right-0 top-full mt-1.5 z-50 max-h-[340px] overflow-y-auto rounded-2xl bg-surface-container-low/95 backdrop-blur-2xl border border-white/15 shadow-2xl divide-y divide-white/5 animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="absolute left-0 right-0 top-full mt-1.5 z-50 max-h-[260px] sm:max-h-[340px] overflow-y-auto overscroll-contain rounded-2xl bg-surface-container-low/95 backdrop-blur-2xl border border-white/15 shadow-2xl divide-y divide-white/5 animate-in fade-in slide-in-from-top-2 duration-150">
           {/* Header Indicator */}
           <div className="px-3.5 py-2 flex items-center justify-between text-[11px] text-outline font-medium bg-surface-container/60">
             <span className="flex items-center gap-1.5">

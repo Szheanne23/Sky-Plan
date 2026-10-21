@@ -318,7 +318,7 @@ export default function HomePage() {
         return (
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             {/* Hero Weather Panel (7 cols) with Destination Landmark Photo */}
-            <div className="lg:col-span-7 rounded-3xl bg-surface-container-low/80 backdrop-blur-2xl p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between border border-white/10 shadow-glass group">
+            <div className="lg:col-span-7 rounded-3xl bg-surface-container-low/80 backdrop-blur-2xl p-4 sm:p-8 relative overflow-hidden flex flex-col justify-between border border-white/10 shadow-glass group">
               {/* Cinematic Destination Photo Background - Bright, authentic, and vibrant */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
@@ -338,8 +338,8 @@ export default function HomePage() {
               <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-tertiary/15 blur-3xl pointer-events-none" />
               <div className="absolute right-24 -bottom-16 w-64 h-64 rounded-full bg-primary/15 blur-3xl pointer-events-none" />
 
-              <div className="relative z-10 flex items-start justify-between gap-4">
-                <div>
+              <div className="relative z-10 flex items-start justify-between gap-3 sm:gap-4">
+                <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-semibold text-primary uppercase tracking-widest font-display drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
                       Atmospheric Snapshot
@@ -350,14 +350,14 @@ export default function HomePage() {
                     </span>
                   </div>
 
-                  <div className="flex items-baseline gap-2 mt-2">
-                    <span className="font-display text-5xl sm:text-6xl font-extrabold text-on-surface tracking-tight font-tabular drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+                  <div className="flex items-baseline gap-2 mt-2 flex-wrap">
+                    <span className="font-display text-4xl sm:text-6xl font-extrabold text-on-surface tracking-tight font-tabular drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
                       {toDisplayTemp(weatherData.temperature?.current)}°
                     </span>
-                    <span className="font-display text-2xl font-bold text-on-surface-variant drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                    <span className="font-display text-xl sm:text-2xl font-bold text-on-surface-variant drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                       {unit}
                     </span>
-                    <span className="text-sm font-semibold text-on-surface/90 ml-3 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
+                    <span className="text-xs sm:text-sm font-semibold text-on-surface/90 sm:ml-3 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
                       Feels like {toDisplayTemp(weatherData.temperature?.feelsLike)}{unitSymbol}
                     </span>
                   </div>
@@ -398,7 +398,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Weather Graphic */}
-                <div className="relative w-20 h-20 sm:w-28 sm:h-28 shrink-0 flex items-center justify-center">
+                <div className="relative w-16 h-16 sm:w-28 sm:h-28 shrink-0 flex items-center justify-center">
                   <svg className="w-full h-full drop-shadow-[0_8px_24px_rgba(252,134,2,0.3)]" fill="none" viewBox="0 0 120 120">
                     <circle cx="68" cy="46" fill="url(#sun-grad)" r="26" />
                     <path
@@ -513,7 +513,7 @@ export default function HomePage() {
             </span>
           </div>
 
-          <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
+          <div className="-mx-3.5 px-3.5 sm:mx-0 sm:px-0 flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory touch-pan-x">
             {forecastData.map((f, idx) => {
               const iconMap = {
                 Clear: Sun,
@@ -580,7 +580,7 @@ export default function HomePage() {
             </Button>
 
             {/* Filter Pills */}
-            <div className="flex items-center gap-1.5 bg-surface-container-low/80 p-1 rounded-full border border-white/10">
+            <div className="flex items-center gap-1.5 bg-surface-container-low/80 p-1 rounded-full border border-white/10 overflow-x-auto max-w-full scrollbar-none">
             <button
               type="button"
               onClick={() => setRecommendationFilter('ALL')}

@@ -304,7 +304,7 @@ export default function MainLayout() {
                   )}
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
+                <div className="hidden sm:flex items-center gap-2">
                   <Link to="/login">
                     <Button variant="ghost" size="sm" icon={LogIn}>
                       Sign In
@@ -461,7 +461,7 @@ export default function MainLayout() {
       </header>
 
       {/* Main Page Content */}
-      <main className="flex-1 max-w-[1360px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+      <main className="flex-1 max-w-[1360px] w-full mx-auto px-3.5 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-12">
         <Outlet />
       </main>
 

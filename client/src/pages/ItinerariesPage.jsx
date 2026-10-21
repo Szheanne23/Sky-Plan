@@ -558,7 +558,7 @@ export default function ItinerariesPage() {
       {/* CREATE / EDIT ITINERARY MODAL */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in">
-          <div className="w-full max-w-lg rounded-3xl bg-surface-container-low border border-white/15 p-6 sm:p-8 space-y-5 shadow-glass text-on-surface">
+          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl bg-surface-container-low border border-white/15 p-5 sm:p-8 space-y-5 shadow-glass text-on-surface">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <h3 className="font-display text-lg font-bold">
                 {editingItinerary ? 'Edit Itinerary Details' : 'Create New Trip Itinerary'}
@@ -652,8 +652,8 @@ export default function ItinerariesPage() {
 
       {/* TIMELINE ACTIVITIES MODAL */}
       {selectedItinerary && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in">
-          <div className="w-full max-w-2xl max-h-[85vh] rounded-3xl bg-surface-container-low border border-white/15 p-6 sm:p-8 flex flex-col justify-between shadow-glass text-on-surface overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-md animate-in fade-in">
+          <div className="w-full max-w-2xl max-h-[90vh] rounded-3xl bg-surface-container-low border border-white/15 p-4 sm:p-8 flex flex-col justify-between shadow-glass text-on-surface overflow-hidden">
             {/* Modal Header */}
             <div className="flex items-start justify-between border-b border-white/10 pb-4 shrink-0">
               <div>
