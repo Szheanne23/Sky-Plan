@@ -81,16 +81,16 @@ export default function MainLayout() {
     <div className="min-h-screen bg-surface text-on-surface flex flex-col justify-between selection:bg-primary selection:text-on-primary font-body">
       {/* Modern Sleek Navigation Bar */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-2xl border-b border-white/10 shadow-glass">
-        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 gap-4">
+        <div className="max-w-[1360px] mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 gap-2 sm:gap-4">
             {/* Left: Brand Logo & Main Nav Links */}
-            <div className="flex items-center gap-8 shrink-0">
-              <Link to="/" className="flex items-center gap-2.5 group focus:outline-none focus:ring-2 focus:ring-primary rounded-full p-1">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-primary to-secondary-container flex items-center justify-center text-white shadow-glow group-hover:scale-105 transition-transform duration-200">
-                  <CloudSun className="w-5 h-5" />
+            <div className="flex items-center gap-3 sm:gap-8 shrink-0">
+              <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group focus:outline-none focus:ring-2 focus:ring-primary rounded-full p-1">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-primary to-secondary-container flex items-center justify-center text-white shadow-glow group-hover:scale-105 transition-transform duration-200 shrink-0">
+                  <CloudSun className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-display text-xl font-extrabold tracking-tight text-on-surface">SkyPlan</span>
+                  <span className="font-display text-lg sm:text-xl font-extrabold tracking-tight text-on-surface">SkyPlan</span>
                   <span className="hidden sm:inline-flex text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/25">
                     Philippines • Live
                   </span>
@@ -137,7 +137,7 @@ export default function MainLayout() {
                     className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
                       location.pathname === '/profile'
                         ? 'bg-primary-container text-on-primary-container shadow-glow'
-                        : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
+                      : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
                     }`}
                   >
                     My Preferences
@@ -159,9 +159,9 @@ export default function MainLayout() {
             </div>
 
             {/* Right: Controls, Beacon, Auth */}
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
               {/* Temperature Unit Toggle (°C / °F) */}
-              <div className="flex items-center bg-surface-container-low rounded-full p-0.5 border border-white/10 shadow-specular-inset">
+              <div className="hidden sm:flex items-center bg-surface-container-low rounded-full p-0.5 border border-white/10 shadow-specular-inset">
                 <button
                   type="button"
                   onClick={() => setUnit('C')}
@@ -304,14 +304,14 @@ export default function MainLayout() {
                   )}
                 </div>
               ) : (
-                <div className="hidden sm:flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2">
                   <Link to="/login">
-                    <Button variant="ghost" size="sm" icon={LogIn}>
+                    <Button variant="ghost" size="sm" className="px-2 sm:px-3 py-1 text-xs h-8">
                       Sign In
                     </Button>
                   </Link>
                   <Link to="/register">
-                    <Button variant="primary" size="sm">
+                    <Button variant="primary" size="sm" className="px-2.5 sm:px-3 py-1 text-xs h-8 shadow-glow whitespace-nowrap">
                       Get Started
                     </Button>
                   </Link>
