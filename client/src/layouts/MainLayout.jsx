@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { 
   CloudSun, 
@@ -29,6 +29,8 @@ import { useTemperature } from '../context/TemperatureContext';
 import { useTheme } from '../context/ThemeContext';
 import Badge from '../components/common/Badge';
 import Button from '../components/common/Button';
+import { useInactivityTimeout } from '../hooks/useInactivityTimeout';
+import InactivityWarningModal from '../components/auth/InactivityWarningModal';
 
 export default function MainLayout() {
   const [apiHealth, setApiHealth] = useState({ status: 'checking', message: 'Checking API...' });
@@ -76,6 +78,19 @@ export default function MainLayout() {
     await logout();
     navigate('/');
   };
+
+  const handleAutoLogout = useCallback(async () => {
+    setUserDropdownOpen(false);
+    setMobileMenuOpen(false);
+    await logout();
+    sessionStorage.setItem('skyplan_logout_reason', 'inactivity');
+    navigate('/login?reason=inactivity');
+  }, [logout, navigate]);
+
+  const { showWarning, secondsRemaining, resetTimer } = useInactivityTimeout({
+    isAuthenticated,
+    onLogout: handleAutoLogout,
+  });
 
   return (
     <div className="min-h-screen bg-surface text-on-surface flex flex-col justify-between selection:bg-primary selection:text-on-primary font-body">
@@ -482,6 +497,14 @@ export default function MainLayout() {
           </div>
         </div>
       </footer>
+
+      {/* User Inactivity Auto-Logout Warning Modal */}
+      <InactivityWarningModal
+        isOpen={showWarning}
+        secondsRemaining={secondsRemaining}
+        onStaySignedIn={resetTimer}
+        onLogoutNow={handleLogout}
+      />
     </div>
   );
 }

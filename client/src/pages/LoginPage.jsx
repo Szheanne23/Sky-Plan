@@ -21,6 +21,18 @@ export default function LoginPage() {
   // Redirect destination after successful login
   const searchParams = new URLSearchParams(location.search);
   const redirectParam = searchParams.get('redirect');
+  const reasonParam = searchParams.get('reason');
+  const [isInactivityLogout, setIsInactivityLogout] = useState(
+    reasonParam === 'inactivity' || sessionStorage.getItem('skyplan_logout_reason') === 'inactivity'
+  );
+
+  // Clear session storage flag once consumed
+  React.useEffect(() => {
+    if (sessionStorage.getItem('skyplan_logout_reason') === 'inactivity') {
+      sessionStorage.removeItem('skyplan_logout_reason');
+    }
+  }, []);
+
   const from = location.state?.from?.pathname
     ? (location.state.from.pathname + (location.state.from.search || ''))
     : (redirectParam || '/itineraries');
@@ -92,6 +104,16 @@ export default function LoginPage() {
 
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+            {isInactivityLogout && (
+              <Alert
+                variant="warning"
+                title="Session Timeout Notice"
+                onClose={() => setIsInactivityLogout(false)}
+              >
+                You were automatically signed out due to inactivity to protect your account security. Please sign in again to resume your session.
+              </Alert>
+            )}
+
             {errorMessage && (
               <Alert variant="error" title="Sign In Error" onClose={() => setErrorMessage(null)}>
                 {errorMessage}
