@@ -21,7 +21,28 @@ export default function SearchPanel({
   const [query, setQuery] = useState(currentLocation);
   const [selectedDate, setSelectedDate] = useState('Today');
 
-  const popularCities = ['Manila', 'Baguio', 'Cebu', 'Tagaytay', 'Boracay', 'Siargao', 'Palawan', 'Davao'];
+  const popularCities = [
+    'Manila',
+    'Baguio',
+    'Siargao',
+    'Boracay',
+    'El Nido',
+    'Coron',
+    'Cebu',
+    'Tagaytay',
+    'Bohol',
+    'Batanes',
+    'Sagada',
+    'La Union',
+    'Vigan',
+    'Iloilo',
+    'Legazpi',
+    'Baler',
+    'Dumaguete',
+    'Camiguin',
+    'Siquijor',
+    'Davao',
+  ];
   const dateOptions = ['Today', 'Tomorrow', 'This Weekend', '7-Day Overview'];
 
   useEffect(() => {

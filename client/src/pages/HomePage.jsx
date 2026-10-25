@@ -52,6 +52,7 @@ import recommendationService from '../services/recommendationService';
 import favoritesService from '../services/favoritesService';
 import healthService from '../services/healthService';
 import { getDestinationMedia, fetchDestinationMedia } from '../services/destinationMediaService';
+import { PHILIPPINE_DESTINATIONS, DESTINATION_CATEGORIES } from '../components/common/DestinationAutocomplete';
 import { useAuth } from '../context/AuthContext';
 import { useTemperature } from '../context/TemperatureContext';
 
@@ -103,6 +104,13 @@ export default function HomePage() {
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
   const [itineraryModalOpen, setItineraryModalOpen] = useState(false);
   const [activityToSchedule, setActivityToSchedule] = useState(null);
+  const [showcaseCategory, setShowcaseCategory] = useState('POPULAR');
+
+  const displayedShowcaseDestinations = PHILIPPINE_DESTINATIONS.filter((dest) => {
+    if (showcaseCategory === 'ALL') return true;
+    if (showcaseCategory === 'POPULAR') return dest.popular;
+    return dest.categoryGroup === showcaseCategory;
+  });
 
   // Health probe
   const [healthData, setHealthData] = useState(null);
@@ -722,6 +730,121 @@ export default function HomePage() {
           </div>
         </section>
       )}
+
+      {/* 7. Discover Recommended Destinations Showcase */}
+      <section className="space-y-4 pt-6 border-t border-white/5">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                <Sparkles className="w-4 h-4" />
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold font-display text-on-surface tracking-tight">
+                Recommended Philippine Destinations
+              </h2>
+            </div>
+            <p className="text-xs sm:text-sm text-outline mt-1">
+              Click any destination to inspect current Doppler weather telemetry and tailored activity itineraries.
+            </p>
+          </div>
+
+          {/* Category Filter Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1">
+            {DESTINATION_CATEGORIES.map((cat) => {
+              const CatIcon = cat.icon || Compass;
+              const isActive = showcaseCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setShowcaseCategory(cat.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 ${
+                    isActive
+                      ? 'bg-primary text-on-primary shadow-glow'
+                      : 'bg-surface-container-high/60 text-outline hover:text-on-surface hover:bg-surface-container border border-white/5'
+                  }`}
+                >
+                  <CatIcon className="w-3.5 h-3.5" />
+                  {cat.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Showcase Destinations Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {displayedShowcaseDestinations.slice(0, 8).map((dest) => {
+            const IconComponent = dest.icon || MapPin;
+            const media = getDestinationMedia(dest.shortName || dest.city);
+            const isCurrentActive = cityName.toLowerCase().includes(dest.shortName.toLowerCase());
+
+            return (
+              <div
+                key={dest.city}
+                onClick={() => {
+                  handleSearch({ location: dest.city, date: requestedDate, scrollToActivities: false });
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className={`group relative overflow-hidden rounded-2xl bg-surface-container-low/70 backdrop-blur-md border transition-all duration-300 flex flex-col justify-between shadow-specular-inset cursor-pointer hover:-translate-y-0.5 hover:shadow-glass ${
+                  isCurrentActive
+                    ? 'border-primary ring-1 ring-primary/40'
+                    : 'border-white/5 hover:border-primary/40'
+                }`}
+              >
+                {/* Photo Thumbnail */}
+                <div className="relative h-36 w-full overflow-hidden bg-surface-container-high">
+                  <img
+                    src={media.imageUrl}
+                    alt={dest.city}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-black/20" />
+                  
+                  <div className="absolute top-2.5 left-2.5">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border backdrop-blur-md ${dest.badgeColor || 'bg-black/40 text-white border-white/20'}`}>
+                      {dest.tag}
+                    </span>
+                  </div>
+
+                  <div className="absolute top-2.5 right-2.5">
+                    <div className="w-7 h-7 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-white">
+                      <IconComponent className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
+                  <div>
+                    <h3 className="font-display font-bold text-sm text-on-surface group-hover:text-primary transition-colors truncate">
+                      {dest.city}
+                    </h3>
+                    <p className="text-[11px] text-outline font-medium truncate">
+                      {dest.province}, {dest.region}
+                    </p>
+                    <p className="text-[11px] text-on-surface-variant line-clamp-2 mt-1">
+                      {dest.highlight}
+                    </p>
+                  </div>
+
+                  <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs">
+                    <span className="text-primary font-semibold flex items-center gap-1 text-[11px]">
+                      Analyze Weather <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                    </span>
+                    {isCurrentActive ? (
+                      <span className="text-[10px] font-bold text-optimal bg-optimal/10 px-2 py-0.5 rounded-full border border-optimal/20">
+                        Active View
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       {/* Drawers and Modals */}
       <HistoryDrawer
