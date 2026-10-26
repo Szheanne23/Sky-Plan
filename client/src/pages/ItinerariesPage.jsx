@@ -110,8 +110,8 @@ export default function ItinerariesPage() {
       setEditingItinerary(null);
       const targetCity = cityParam ? decodeURIComponent(cityParam) : '';
       setFormCity(targetCity);
-      setFormTitle(targetCity ? `Trip to ${targetCity}` : 'My Philippine Getaway');
-      setFormCountry('PH');
+      setFormTitle(targetCity ? `Trip to ${targetCity}` : 'My Travel Itinerary');
+      setFormCountry('Global');
       setFormOccasion('Vacation');
       setFormStartDate('');
       setFormEndDate('');
@@ -593,11 +593,14 @@ export default function ItinerariesPage() {
                     onChange={(cityName) => setFormCity(cityName)}
                     onSelectDestination={(dest) => {
                       setFormCity(dest.city);
+                      if (dest.countryCode) {
+                        setFormCountry(dest.countryCode);
+                      }
                       if (!formTitle || formTitle.startsWith('Trip to ') || formTitle.includes('Holiday') || formTitle.includes('Escape')) {
                         setFormTitle(`Trip to ${dest.city}`);
                       }
                     }}
-                    placeholder="Search Philippine destination (e.g. Baguio, Siargao, Boracay)..."
+                    placeholder="Search destination worldwide (e.g. Tokyo, Paris, Baguio, New York)..."
                     required
                   />
                 </div>

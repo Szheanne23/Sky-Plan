@@ -22,26 +22,26 @@ export default function SearchPanel({
   const [selectedDate, setSelectedDate] = useState('Today');
 
   const popularCities = [
+    'Tokyo',
+    'Paris',
+    'New York',
+    'Singapore',
     'Manila',
     'Baguio',
+    'London',
     'Siargao',
+    'Bali',
     'Boracay',
-    'El Nido',
-    'Coron',
+    'Seoul',
     'Cebu',
-    'Tagaytay',
+    'Sydney',
+    'El Nido',
+    'Rome',
+    'Dubai',
     'Bohol',
     'Batanes',
-    'Sagada',
-    'La Union',
-    'Vigan',
-    'Iloilo',
-    'Legazpi',
-    'Baler',
-    'Dumaguete',
-    'Camiguin',
-    'Siquijor',
-    'Davao',
+    'Bangkok',
+    'Barcelona',
   ];
   const dateOptions = ['Today', 'Tomorrow', 'This Weekend', '7-Day Overview'];
 
@@ -91,7 +91,7 @@ export default function SearchPanel({
             value={query}
             onChange={(val) => setQuery(val)}
             onSelectDestination={handleSelectRecommendation}
-            placeholder="Search Philippine destination (e.g. Manila, Baguio, Cebu, Siargao)..."
+            placeholder="Search worldwide destination (e.g. Tokyo, Paris, Manila, New York, Cebu)..."
             label=""
             id="main-destination-search-input"
             className="w-full"

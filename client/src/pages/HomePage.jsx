@@ -49,10 +49,9 @@ import WeatherTrendChart from '../components/weather/WeatherTrendChart';
 
 import weatherService from '../services/weatherService';
 import recommendationService from '../services/recommendationService';
-import favoritesService from '../services/favoritesService';
 import healthService from '../services/healthService';
 import { getDestinationMedia, fetchDestinationMedia } from '../services/destinationMediaService';
-import { PHILIPPINE_DESTINATIONS, DESTINATION_CATEGORIES } from '../components/common/DestinationAutocomplete';
+import { ALL_DESTINATIONS, DESTINATION_CATEGORIES } from '../components/common/DestinationAutocomplete';
 import { useAuth } from '../context/AuthContext';
 import { useTemperature } from '../context/TemperatureContext';
 
@@ -106,9 +105,11 @@ export default function HomePage() {
   const [activityToSchedule, setActivityToSchedule] = useState(null);
   const [showcaseCategory, setShowcaseCategory] = useState('POPULAR');
 
-  const displayedShowcaseDestinations = PHILIPPINE_DESTINATIONS.filter((dest) => {
+  const displayedShowcaseDestinations = ALL_DESTINATIONS.filter((dest) => {
     if (showcaseCategory === 'ALL') return true;
     if (showcaseCategory === 'POPULAR') return dest.popular;
+    if (showcaseCategory === 'GLOBAL') return dest.categoryGroup === 'GLOBAL' || dest.country !== 'Philippines';
+    if (showcaseCategory === 'PHILIPPINES') return dest.country === 'Philippines';
     return dest.categoryGroup === showcaseCategory;
   });
 
@@ -740,11 +741,11 @@ export default function HomePage() {
                 <Sparkles className="w-4 h-4" />
               </span>
               <h2 className="text-xl sm:text-2xl font-bold font-display text-on-surface tracking-tight">
-                Recommended Philippine Destinations
+                Recommended Destinations
               </h2>
             </div>
             <p className="text-xs sm:text-sm text-outline mt-1">
-              Click any destination to inspect current Doppler weather telemetry and tailored activity itineraries.
+              Explore worldwide and local travel destinations with Doppler meteorological telemetry and activity recommendations.
             </p>
           </div>
 
@@ -818,11 +819,12 @@ export default function HomePage() {
                 {/* Content */}
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
                   <div>
-                    <h3 className="font-display font-bold text-sm text-on-surface group-hover:text-primary transition-colors truncate">
-                      {dest.city}
+                    <h3 className="font-display font-bold text-sm text-on-surface group-hover:text-primary transition-colors truncate flex items-center gap-1.5">
+                      {dest.flag && <span className="text-sm shrink-0">{dest.flag}</span>}
+                      <span className="truncate">{dest.city}</span>
                     </h3>
                     <p className="text-[11px] text-outline font-medium truncate">
-                      {dest.province}, {dest.region}
+                      {dest.province}, {dest.country || dest.region}
                     </p>
                     <p className="text-[11px] text-on-surface-variant line-clamp-2 mt-1">
                       {dest.highlight}

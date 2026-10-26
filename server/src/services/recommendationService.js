@@ -1125,6 +1125,29 @@ const DESTINATION_FALLBACK_IMAGES = {
   zamboanga: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Zamboanga_City_Hall_%26_Rizal_Park%2C_Mar_2026.jpg/1280px-Zamboanga_City_Hall_%26_Rizal_Park%2C_Mar_2026.jpg',
   'cagayan de oro': 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/CDO_Poblacion%2C_CM_Recto_Avenue-A._Velez%2C_Misamis_Oriental_Provincial_Capitol_drone_%28Cagayan_De_Oro_City%3B_03-21-2026%29.jpg/1280px-CDO_Poblacion%2C_CM_Recto_Avenue-A._Velez%2C_Misamis_Oriental_Provincial_Capitol_drone_%28Cagayan_De_Oro_City%3B_03-21-2026%29.jpg',
   dumaguete: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Dumaguete_Belfry_park_view_%28Perdices_Street%2C_Dumaguete%2C_Negros_Oriental%3B_01-19-2023%29.jpg/1280px-Dumaguete_Belfry_park_view_%28Perdices_Street%2C_Dumaguete%2C_Negros_Oriental%3B_01-19-2023%29.jpg',
+  
+  // Global & Worldwide Cities
+  tokyo: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Skyscrapers_of_Shinjuku_2009_January.jpg/1280px-Skyscrapers_of_Shinjuku_2009_January.jpg',
+  osaka: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Osaka_Castle_02bs3200.jpg/1280px-Osaka_Castle_02bs3200.jpg',
+  kyoto: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Kinkaku-ji_2019-10.jpg/1280px-Kinkaku-ji_2019-10.jpg',
+  seoul: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Gyeongbokgung_at_night_%28cropped%29.jpg/1280px-Gyeongbokgung_at_night_%28cropped%29.jpg',
+  singapore: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Marina_Bay_Sands_in_the_evening_-_20101120.jpg/1280px-Marina_Bay_Sands_in_the_evening_-_20101120.jpg',
+  bangkok: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Wat_Arun_sunset.jpg/1280px-Wat_Arun_sunset.jpg',
+  bali: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Ulun_Danu_Bratan_Temple_Bali_Indonesia.jpg/1280px-Ulun_Danu_Bratan_Temple_Bali_Indonesia.jpg',
+  taipei: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Taipei_101_from_Elephant_Mountain_2020.jpg/1280px-Taipei_101_from_Elephant_Mountain_2020.jpg',
+  'hong kong': 'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Hong_Kong_Skyline_Restitch_-_Dec_2007.jpg/1280px-Hong_Kong_Skyline_Restitch_-_Dec_2007.jpg',
+  paris: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Tour_Eiffel_Wikimedia_Commons.jpg/1280px-Tour_Eiffel_Wikimedia_Commons.jpg',
+  london: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/London_Skyline_%28125508655%29.jpeg/1280px-London_Skyline_%28125508655%29.jpeg',
+  rome: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/1280px-Colosseo_2020.jpg',
+  barcelona: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Sagrada_Familia_01.jpg/1280px-Sagrada_Familia_01.jpg',
+  amsterdam: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/KeizersgrachtReguliersgrachtAmsterdam.jpg/1280px-KeizersgrachtReguliersgrachtAmsterdam.jpg',
+  'new york': 'https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/New_york_times_square-terabass.jpg/1280px-New_york_times_square-terabass.jpg',
+  'san francisco': 'https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/GoldenGateBridge-001.jpg/1280px-GoldenGateBridge-001.jpg',
+  'los angeles': 'https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/Echo_Park_Lake_with_Downtown_Los_Angeles_Skyline.jpg/1280px-Echo_Park_Lake_with_Downtown_Los_Angeles_Skyline.jpg',
+  honolulu: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/Honolulu_from_Round_Top_01.jpg/1280px-Honolulu_from_Round_Top_01.jpg',
+  sydney: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Sydney_Opera_House_-_Dec_2008.jpg/1280px-Sydney_Opera_House_-_Dec_2008.jpg',
+  melbourne: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Melbourne_skyline_from_Williamstown_-_Nov_2008.jpg/1280px-Melbourne_skyline_from_Williamstown_-_Nov_2008.jpg',
+  dubai: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Dubai_Skylines_at_night_%28Pexels_3787839%29.jpg/1280px-Dubai_Skylines_at_night_%28Pexels_3787839%29.jpg',
 };
 
 function getDestinationFallbackPhoto(city) {

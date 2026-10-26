@@ -354,6 +354,140 @@ export const DESTINATION_MEDIA = {
     imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/Hinatuan_Enchanted_River.jpg/1280px-Hinatuan_Enchanted_River.jpg',
     tag: 'Sapphire Enchanted Springs',
   },
+
+  // Global & Worldwide Travel Destinations
+  tokyo: {
+    title: 'Tokyo, Japan',
+    landmark: 'Shibuya Crossing & Tokyo Skytree Skyline',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Skyscrapers_of_Shinjuku_2009_January.jpg/1280px-Skyscrapers_of_Shinjuku_2009_January.jpg',
+    tag: 'Iconic Metropolis & Tech Capital',
+  },
+  osaka: {
+    title: 'Osaka, Japan',
+    landmark: 'Osaka Castle & Dotonbori Canal',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Osaka_Castle_02bs3200.jpg/1280px-Osaka_Castle_02bs3200.jpg',
+    tag: 'Kitchen of Japan & Cultural Center',
+  },
+  kyoto: {
+    title: 'Kyoto, Japan',
+    landmark: 'Fushimi Inari Taisha & Golden Pavilion',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Kinkaku-ji_2019-10.jpg/1280px-Kinkaku-ji_2019-10.jpg',
+    tag: 'Ancient Temples & Zen Gardens',
+  },
+  seoul: {
+    title: 'Seoul, South Korea',
+    landmark: 'Gyeongbokgung Palace & Namsan Seoul Tower',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Gyeongbokgung_at_night_%28cropped%29.jpg/1280px-Gyeongbokgung_at_night_%28cropped%29.jpg',
+    tag: 'Dynamic K-Wave Capital & Palaces',
+  },
+  singapore: {
+    title: 'Singapore',
+    landmark: 'Marina Bay Sands & Gardens by the Bay',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Marina_Bay_Sands_in_the_evening_-_20101120.jpg/1280px-Marina_Bay_Sands_in_the_evening_-_20101120.jpg',
+    tag: 'Garden City & Global Island State',
+  },
+  bangkok: {
+    title: 'Bangkok, Thailand',
+    landmark: 'Wat Arun & Chao Phraya River',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Wat_Arun_sunset.jpg/1280px-Wat_Arun_sunset.jpg',
+    tag: 'Golden Temples & River Culture',
+  },
+  bali: {
+    title: 'Bali, Indonesia',
+    landmark: 'Uluwatu Temple & Tegallalang Terraces',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Ulun_Danu_Bratan_Temple_Bali_Indonesia.jpg/1280px-Ulun_Danu_Bratan_Temple_Bali_Indonesia.jpg',
+    tag: 'Island of the Gods & Tropical Coast',
+  },
+  taipei: {
+    title: 'Taipei, Taiwan',
+    landmark: 'Taipei 101 & Elephant Mountain Ridge',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Taipei_101_from_Elephant_Mountain_2020.jpg/1280px-Taipei_101_from_Elephant_Mountain_2020.jpg',
+    tag: 'Towering Skylines & Night Markets',
+  },
+  'hong kong': {
+    title: 'Hong Kong',
+    landmark: 'Victoria Peak & Victoria Harbour',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Hong_Kong_Skyline_Restitch_-_Dec_2007.jpg/1280px-Hong_Kong_Skyline_Restitch_-_Dec_2007.jpg',
+    tag: 'Pearl of the Orient & Harbor Bay',
+  },
+  'kuala lumpur': {
+    title: 'Kuala Lumpur, Malaysia',
+    landmark: 'Petronas Twin Towers & KLCC Park',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/8/85/Petronas_Twin_Towers_2016.jpg/1280px-Petronas_Twin_Towers_2016.jpg',
+    tag: 'Iconic Twin Towers & Skyline',
+  },
+  paris: {
+    title: 'Paris, France',
+    landmark: 'Eiffel Tower & Seine Riverfront',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Tour_Eiffel_Wikimedia_Commons.jpg/1280px-Tour_Eiffel_Wikimedia_Commons.jpg',
+    tag: 'City of Light & Classical Art',
+  },
+  london: {
+    title: 'London, United Kingdom',
+    landmark: 'Big Ben & Tower Bridge on the Thames',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/London_Skyline_%28125508655%29.jpeg/1280px-London_Skyline_%28125508655%29.jpeg',
+    tag: 'Historic Royalty & Thames Landmarks',
+  },
+  rome: {
+    title: 'Rome, Italy',
+    landmark: 'The Colosseum & Roman Forum',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/1280px-Colosseo_2020.jpg',
+    tag: 'Eternal City & Ancient Architecture',
+  },
+  barcelona: {
+    title: 'Barcelona, Spain',
+    landmark: 'Basílica de la Sagrada Família & Park Güell',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Sagrada_Familia_01.jpg/1280px-Sagrada_Familia_01.jpg',
+    tag: 'Gaudí Architecture & Mediterranean',
+  },
+  amsterdam: {
+    title: 'Amsterdam, Netherlands',
+    landmark: 'Canal Ring & Historic Dutch Mansions',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/KeizersgrachtReguliersgrachtAmsterdam.jpg/1280px-KeizersgrachtReguliersgrachtAmsterdam.jpg',
+    tag: 'Historic UNESCO Canals & Cycling',
+  },
+  'new york': {
+    title: 'New York City, USA',
+    landmark: 'Manhattan Skyline & Central Park',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/New_york_times_square-terabass.jpg/1280px-New_york_times_square-terabass.jpg',
+    tag: 'Global Financial & Cultural Capital',
+  },
+  'san francisco': {
+    title: 'San Francisco, USA',
+    landmark: 'Golden Gate Bridge & Pacific Bay',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/GoldenGateBridge-001.jpg/1280px-GoldenGateBridge-001.jpg',
+    tag: 'Golden Gate & Pacific Ocean Vistas',
+  },
+  'los angeles': {
+    title: 'Los Angeles, USA',
+    landmark: 'Santa Monica Pier & Hollywood Hills',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/Echo_Park_Lake_with_Downtown_Los_Angeles_Skyline.jpg/1280px-Echo_Park_Lake_with_Downtown_Los_Angeles_Skyline.jpg',
+    tag: 'Coastal Sunset & Entertainment Hub',
+  },
+  honolulu: {
+    title: 'Honolulu, Hawaii, USA',
+    landmark: 'Waikiki Beach & Diamond Head Crater',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/Honolulu_from_Round_Top_01.jpg/1280px-Honolulu_from_Round_Top_01.jpg',
+    tag: 'Tropical Pacific Shores & Volcanoes',
+  },
+  sydney: {
+    title: 'Sydney, Australia',
+    landmark: 'Sydney Opera House & Harbour Bridge',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Sydney_Opera_House_-_Dec_2008.jpg/1280px-Sydney_Opera_House_-_Dec_2008.jpg',
+    tag: 'Harbour Icon & Pacific Coastline',
+  },
+  melbourne: {
+    title: 'Melbourne, Australia',
+    landmark: 'Flinders Street & Yarra River Promenade',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Melbourne_skyline_from_Williamstown_-_Nov_2008.jpg/1280px-Melbourne_skyline_from_Williamstown_-_Nov_2008.jpg',
+    tag: 'Cultural Laneways & Coffee Capital',
+  },
+  dubai: {
+    title: 'Dubai, UAE',
+    landmark: 'Burj Khalifa & Downtown Fountain Vistas',
+    imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Dubai_Skylines_at_night_%28Pexels_3787839%29.jpg/1280px-Dubai_Skylines_at_night_%28Pexels_3787839%29.jpg',
+    tag: 'World Tallest Tower & Modern Luxury',
+  },
 };
 
 // In-memory runtime cache for dynamically fetched locations
@@ -400,7 +534,7 @@ export function getDestinationMedia(cityName) {
 
 /**
  * Fetch dynamic authentic landmark image from Wikipedia / Wikimedia Commons.
- * Accurately matches any Philippine municipality or international city.
+ * Accurately matches any worldwide city or Philippine municipality.
  */
 export async function fetchDestinationMedia(cityName) {
   if (!cityName) return null;
@@ -422,11 +556,12 @@ export async function fetchDestinationMedia(cityName) {
   } catch (_) {}
 
   // List of search candidate titles to try against Wikipedia REST API
+  const baseCity = clean.replace(/ city$/i, '');
   const candidates = [
-    clean.replace(/ city$/i, ''),
-    `${clean.replace(/ city$/i, '')}_City`,
-    `${clean},_Philippines`,
     clean,
+    baseCity,
+    `${baseCity}_City`,
+    `${clean},_Philippines`,
   ];
 
   for (const candidate of candidates) {
@@ -476,6 +611,6 @@ function getDefaultMedia(cityName = 'Destination') {
     title: cityName,
     landmark: `${cityName} Scenic Region`,
     imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cd/Boracay_White_Beach.png/1280px-Boracay_White_Beach.png',
-    tag: 'Philippine Travel Destination',
+    tag: 'Global Travel Destination',
   };
 }

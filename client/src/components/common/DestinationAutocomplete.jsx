@@ -17,14 +17,18 @@ import {
   Trees,
   Utensils,
   Camera,
+  Globe,
+  Plane,
 } from 'lucide-react';
 
 /**
  * Category groups for filtering destinations
  */
 export const DESTINATION_CATEGORIES = [
-  { id: 'ALL', label: 'All Destinations', icon: Compass },
+  { id: 'ALL', label: 'All Worldwide', icon: Compass },
   { id: 'POPULAR', label: 'Top Highlights', icon: Flame },
+  { id: 'GLOBAL', label: 'International', icon: Globe },
+  { id: 'PHILIPPINES', label: 'Philippines', icon: Sparkles },
   { id: 'BEACH_ISLAND', label: 'Beaches & Islands', icon: Palmtree },
   { id: 'HIGHLAND_NATURE', label: 'Highlands & Nature', icon: Mountain },
   { id: 'HERITAGE_CULTURE', label: 'Heritage & Culture', icon: Landmark },
@@ -879,6 +883,376 @@ export const PHILIPPINE_DESTINATIONS = [
 ];
 
 /**
+ * Curated database of iconic International & Worldwide Travel Destinations.
+ */
+export const GLOBAL_DESTINATIONS = [
+  {
+    city: 'Tokyo',
+    shortName: 'Tokyo',
+    province: 'Kanto Region',
+    region: 'Japan',
+    country: 'Japan',
+    flag: '🇯🇵',
+    category: 'Metropolis',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Shibuya Crossing • Shinjuku Skyline • Senso-ji Temple',
+    tag: 'Metropolis of Tomorrow',
+    icon: Building2,
+    badgeColor: 'text-rose-500 bg-rose-500/10 border-rose-500/20',
+    keywords: ['tokyo', 'japan', 'shinjuku', 'shibuya', 'ginza', 'akihabara', 'harajuku', 'asia', 'kanto'],
+  },
+  {
+    city: 'Osaka',
+    shortName: 'Osaka',
+    province: 'Kansai Region',
+    region: 'Japan',
+    country: 'Japan',
+    flag: '🇯🇵',
+    category: 'Food & Culture',
+    categoryGroup: 'METRO_FOOD',
+    popular: true,
+    highlight: 'Dotonbori Neon Canal • Osaka Castle • Street Takoyaki',
+    tag: 'Kitchen of Japan',
+    icon: Utensils,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['osaka', 'japan', 'dotonbori', 'kansai', 'osaka castle', 'namba', 'umeda'],
+  },
+  {
+    city: 'Kyoto',
+    shortName: 'Kyoto',
+    province: 'Kansai Region',
+    region: 'Japan',
+    country: 'Japan',
+    flag: '🇯🇵',
+    category: 'Ancient Heritage',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: true,
+    highlight: 'Fushimi Inari Torii Gates • Kinkaku-ji • Arashiyama Bamboo',
+    tag: 'Cultural Heart of Japan',
+    icon: Landmark,
+    badgeColor: 'text-amber-600 bg-amber-600/10 border-amber-600/20',
+    keywords: ['kyoto', 'japan', 'fushimi inari', 'kinkakuji', 'arashiyama', 'gion', 'geisha', 'temple'],
+  },
+  {
+    city: 'Seoul',
+    shortName: 'Seoul',
+    province: 'Capital Area',
+    region: 'South Korea',
+    country: 'South Korea',
+    flag: '🇰🇷',
+    category: 'Metropolis',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Gyeongbokgung Palace • N Seoul Tower • Myeongdong Street Food',
+    tag: 'Dynamic K-Wave Capital',
+    icon: Building2,
+    badgeColor: 'text-indigo-500 bg-indigo-500/10 border-indigo-500/20',
+    keywords: ['seoul', 'korea', 'south korea', 'hongdae', 'gangnam', 'myeongdong', 'han river', 'palace'],
+  },
+  {
+    city: 'Singapore',
+    shortName: 'Singapore',
+    province: 'Central Region',
+    region: 'Singapore',
+    country: 'Singapore',
+    flag: '🇸🇬',
+    category: 'Garden City',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Marina Bay Sands • Gardens by the Bay • Sentosa Island',
+    tag: 'Global Garden Metropolis',
+    icon: Building2,
+    badgeColor: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
+    keywords: ['singapore', 'marina bay', 'gardens by the bay', 'changi', 'orchard', 'sentosa', 'lion city'],
+  },
+  {
+    city: 'Bangkok',
+    shortName: 'Bangkok',
+    province: 'Central Thailand',
+    region: 'Thailand',
+    country: 'Thailand',
+    flag: '🇹🇭',
+    category: 'Temples & River',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Grand Palace • Wat Arun Riverfront • Floating Markets',
+    tag: 'City of Angels',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['bangkok', 'thailand', 'wat arun', 'chao phraya', 'sukhumvit', 'siam', 'chatuchak'],
+  },
+  {
+    city: 'Bali',
+    shortName: 'Bali',
+    province: 'Denpasar & Ubud',
+    region: 'Indonesia',
+    country: 'Indonesia',
+    flag: '🇮🇩',
+    category: 'Tropical Island',
+    categoryGroup: 'BEACH_ISLAND',
+    popular: true,
+    highlight: 'Uluwatu Sunset Temple • Tegallalang Terraces • Seminyak Beach',
+    tag: 'Island of the Gods',
+    icon: Palmtree,
+    badgeColor: 'text-teal-500 bg-teal-500/10 border-teal-500/20',
+    keywords: ['bali', 'indonesia', 'ubud', 'uluwatu', 'kuta', 'seminyak', 'canggu', 'denpasar', 'tropical'],
+  },
+  {
+    city: 'Taipei',
+    shortName: 'Taipei',
+    province: 'Northern Region',
+    region: 'Taiwan',
+    country: 'Taiwan',
+    flag: '🇹🇼',
+    category: 'Metropolis & Food',
+    categoryGroup: 'METRO_FOOD',
+    popular: true,
+    highlight: 'Taipei 101 Observatory • Shilin Night Market • Elephant Mountain',
+    tag: 'Gastronomy & High-Tech',
+    icon: Utensils,
+    badgeColor: 'text-cyan-500 bg-cyan-500/10 border-cyan-500/20',
+    keywords: ['taipei', 'taiwan', 'taipei 101', 'shilin', 'night market', 'jiufen', 'ximending'],
+  },
+  {
+    city: 'Hong Kong',
+    shortName: 'Hong Kong',
+    province: 'Hong Kong SAR',
+    region: 'China',
+    country: 'Hong Kong',
+    flag: '🇭🇰',
+    category: 'Harbor & Skyline',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Victoria Peak Skyline • Star Ferry • Tsim Sha Tsui Waterfront',
+    tag: 'Pearl of the Orient',
+    icon: Building2,
+    badgeColor: 'text-red-500 bg-red-500/10 border-red-500/20',
+    keywords: ['hong kong', 'hk', 'victoria peak', 'kowloon', 'central', 'lan kwai fong', 'tsim sha tsui'],
+  },
+  {
+    city: 'Kuala Lumpur',
+    shortName: 'Kuala Lumpur',
+    province: 'Federal Territory',
+    region: 'Malaysia',
+    country: 'Malaysia',
+    flag: '🇲🇾',
+    category: 'Metropolis',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Petronas Twin Towers • Batu Caves • Bukit Bintang Food Walk',
+    tag: 'Garden City of Lights',
+    icon: Building2,
+    badgeColor: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
+    keywords: ['kuala lumpur', 'kl', 'malaysia', 'petronas', 'batu caves', 'bukit bintang', 'klcc'],
+  },
+  {
+    city: 'Sydney',
+    shortName: 'Sydney',
+    province: 'New South Wales',
+    region: 'Australia',
+    country: 'Australia',
+    flag: '🇦🇺',
+    category: 'Harbor & Coast',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Sydney Opera House • Bondi Beach Walk • Harbour Bridge Climb',
+    tag: 'Harbour City Icon',
+    icon: Waves,
+    badgeColor: 'text-sky-500 bg-sky-500/10 border-sky-500/20',
+    keywords: ['sydney', 'australia', 'opera house', 'bondi', 'harbour bridge', 'manly', 'darling harbour'],
+  },
+  {
+    city: 'Melbourne',
+    shortName: 'Melbourne',
+    province: 'Victoria',
+    region: 'Australia',
+    country: 'Australia',
+    flag: '🇦🇺',
+    category: 'Culture & Coffee',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Flinders Street • Historic Laneway Cafes • Yarra Riverfront',
+    tag: 'World Coffee & Arts Capital',
+    icon: Utensils,
+    badgeColor: 'text-amber-600 bg-amber-600/10 border-amber-600/20',
+    keywords: ['melbourne', 'australia', 'flinders', 'laneways', 'coffee', 'st kilda', 'yarra'],
+  },
+  {
+    city: 'Paris',
+    shortName: 'Paris',
+    province: 'Île-de-France',
+    region: 'France',
+    country: 'France',
+    flag: '🇫🇷',
+    category: 'Art & Heritage',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Eiffel Tower • Louvre Glass Pyramid • Seine Riverfront Promenade',
+    tag: 'City of Light',
+    icon: Landmark,
+    badgeColor: 'text-blue-600 bg-blue-600/10 border-blue-600/20',
+    keywords: ['paris', 'france', 'eiffel tower', 'louvre', 'champs elysees', 'notre dame', 'montmartre', 'europe'],
+  },
+  {
+    city: 'London',
+    shortName: 'London',
+    province: 'Greater London',
+    region: 'United Kingdom',
+    country: 'United Kingdom',
+    flag: '🇬🇧',
+    category: 'Historic Metropolis',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Big Ben & Westminster • Tower Bridge • British Museum Walk',
+    tag: 'Royal Thames Capital',
+    icon: Landmark,
+    badgeColor: 'text-rose-600 bg-rose-600/10 border-rose-600/20',
+    keywords: ['london', 'uk', 'united kingdom', 'england', 'big ben', 'tower bridge', 'thames', 'buckingham', 'soho'],
+  },
+  {
+    city: 'Rome',
+    shortName: 'Rome',
+    province: 'Lazio',
+    region: 'Italy',
+    country: 'Italy',
+    flag: '🇮🇹',
+    category: 'Ancient Heritage',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: true,
+    highlight: 'The Colosseum • Trevi Fountain • Vatican City & St. Peter’s',
+    tag: 'The Eternal City',
+    icon: Landmark,
+    badgeColor: 'text-amber-600 bg-amber-600/10 border-amber-600/20',
+    keywords: ['rome', 'italy', 'colosseum', 'vatican', 'trevi', 'pantheon', 'trastevere', 'ancient'],
+  },
+  {
+    city: 'Barcelona',
+    shortName: 'Barcelona',
+    province: 'Catalonia',
+    region: 'Spain',
+    country: 'Spain',
+    flag: '🇪🇸',
+    category: 'Architecture & Coast',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Sagrada Família • Park Güell • Mediterranean Beachfront',
+    tag: 'Gaudí Architecture Capital',
+    icon: Landmark,
+    badgeColor: 'text-orange-500 bg-orange-500/10 border-orange-500/20',
+    keywords: ['barcelona', 'spain', 'sagrada familia', 'park guell', 'ramblas', 'catalonia', 'mediterranean'],
+  },
+  {
+    city: 'Amsterdam',
+    shortName: 'Amsterdam',
+    province: 'North Holland',
+    region: 'Netherlands',
+    country: 'Netherlands',
+    flag: '🇳🇱',
+    category: 'Canals & Culture',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'UNESCO Canal Ring • Van Gogh Museum • Vondelpark Cycling',
+    tag: 'Venice of the North',
+    icon: Waves,
+    badgeColor: 'text-orange-600 bg-orange-600/10 border-orange-600/20',
+    keywords: ['amsterdam', 'netherlands', 'holland', 'canals', 'rijksmuseum', 'van gogh', 'cycling'],
+  },
+  {
+    city: 'New York City',
+    shortName: 'New York',
+    province: 'New York State',
+    region: 'United States',
+    country: 'United States',
+    flag: '🇺🇸',
+    category: 'Metropolis',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Times Square • Central Park • Brooklyn Bridge • Broadway',
+    tag: 'The Big Apple',
+    icon: Building2,
+    badgeColor: 'text-primary bg-primary/10 border-primary/20',
+    keywords: ['new york', 'nyc', 'manhattan', 'central park', 'brooklyn', 'times square', 'usa', 'broadway'],
+  },
+  {
+    city: 'San Francisco',
+    shortName: 'San Francisco',
+    province: 'California',
+    region: 'United States',
+    country: 'United States',
+    flag: '🇺🇸',
+    category: 'Coastal Bay',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Golden Gate Bridge • Fisherman’s Wharf • Historic Cable Cars',
+    tag: 'City by the Bay',
+    icon: Waves,
+    badgeColor: 'text-cyan-600 bg-cyan-600/10 border-cyan-600/20',
+    keywords: ['san francisco', 'sf', 'california', 'golden gate', 'bay area', 'alcatraz', 'wharf'],
+  },
+  {
+    city: 'Los Angeles',
+    shortName: 'Los Angeles',
+    province: 'California',
+    region: 'United States',
+    country: 'United States',
+    flag: '🇺🇸',
+    category: 'Entertainment & Coast',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Santa Monica Pier • Hollywood Hills • Griffith Observatory',
+    tag: 'City of Angels',
+    icon: Sun,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['los angeles', 'la', 'hollywood', 'santa monica', 'beverly hills', 'california', 'venice beach'],
+  },
+  {
+    city: 'Honolulu',
+    shortName: 'Honolulu',
+    province: 'Hawaii (Oahu)',
+    region: 'United States',
+    country: 'United States',
+    flag: '🇺🇸',
+    category: 'Tropical Island',
+    categoryGroup: 'BEACH_ISLAND',
+    popular: true,
+    highlight: 'Waikiki Beach • Diamond Head Crater Hike • Tropical Lagoons',
+    tag: 'Tropical Pacific Paradise',
+    icon: Palmtree,
+    badgeColor: 'text-teal-500 bg-teal-500/10 border-teal-500/20',
+    keywords: ['honolulu', 'hawaii', 'waikiki', 'oahu', 'diamond head', 'aloha', 'tropical', 'pacific'],
+  },
+  {
+    city: 'Dubai',
+    shortName: 'Dubai',
+    province: 'Emirate of Dubai',
+    region: 'United Arab Emirates',
+    country: 'United Arab Emirates',
+    flag: '🇦🇪',
+    category: 'Modern Wonder',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Burj Khalifa Skydeck • Dubai Marina • Desert Dune Safari',
+    tag: 'City of Gold & Wonder',
+    icon: Building2,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['dubai', 'uae', 'burj khalifa', 'emirates', 'marina', 'desert', 'downtown dubai'],
+  },
+];
+
+/**
+ * Combined database of all curated destinations worldwide and in the Philippines.
+ */
+export const ALL_DESTINATIONS = [
+  ...GLOBAL_DESTINATIONS,
+  ...PHILIPPINE_DESTINATIONS.map((d) => ({
+    ...d,
+    country: d.country || 'Philippines',
+    flag: d.flag || '🇵🇭',
+  })),
+];
+
+/**
  * Google Maps-Style Destination Autocomplete Input.
  *
  * Props:
@@ -895,7 +1269,7 @@ export default function DestinationAutocomplete({
   value = '',
   onChange,
   onSelectDestination,
-  placeholder = 'Search Philippine destination or city (e.g. Baguio, Siargao, El Nido)...',
+  placeholder = 'Search worldwide destination or city (e.g. Tokyo, Paris, Baguio, New York, Siargao)...',
   label = 'Destination City',
   required = false,
   id = 'destination-autocomplete-input',
@@ -929,10 +1303,11 @@ export default function DestinationAutocomplete({
   const cleanQuery = (query || '').toLowerCase().trim();
 
   const filteredDestinations = cleanQuery
-    ? PHILIPPINE_DESTINATIONS.filter((dest) => {
+    ? ALL_DESTINATIONS.filter((dest) => {
         const matchesQuery =
           dest.city.toLowerCase().includes(cleanQuery) ||
           dest.shortName.toLowerCase().includes(cleanQuery) ||
+          (dest.country && dest.country.toLowerCase().includes(cleanQuery)) ||
           dest.province.toLowerCase().includes(cleanQuery) ||
           dest.region.toLowerCase().includes(cleanQuery) ||
           dest.category.toLowerCase().includes(cleanQuery) ||
@@ -941,11 +1316,15 @@ export default function DestinationAutocomplete({
 
         if (selectedCategory === 'ALL') return matchesQuery;
         if (selectedCategory === 'POPULAR') return matchesQuery && dest.popular;
+        if (selectedCategory === 'GLOBAL') return matchesQuery && (dest.categoryGroup === 'GLOBAL' || dest.country !== 'Philippines');
+        if (selectedCategory === 'PHILIPPINES') return matchesQuery && dest.country === 'Philippines';
         return matchesQuery && dest.categoryGroup === selectedCategory;
       })
-    : PHILIPPINE_DESTINATIONS.filter((dest) => {
+    : ALL_DESTINATIONS.filter((dest) => {
         if (selectedCategory === 'ALL') return true;
         if (selectedCategory === 'POPULAR') return dest.popular;
+        if (selectedCategory === 'GLOBAL') return dest.categoryGroup === 'GLOBAL' || dest.country !== 'Philippines';
+        if (selectedCategory === 'PHILIPPINES') return dest.country === 'Philippines';
         return dest.categoryGroup === selectedCategory;
       });
 
@@ -1093,7 +1472,7 @@ export default function DestinationAutocomplete({
                 : `Recommended destinations (${filteredDestinations.length} available)`}
             </span>
             <span className="text-[10px] uppercase tracking-wider text-primary font-bold px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20">
-              65+ Philippine Places
+              100+ Worldwide & Local
             </span>
           </div>
 
@@ -1133,7 +1512,7 @@ export default function DestinationAutocomplete({
 
                 return (
                   <button
-                    key={dest.city}
+                    key={`${dest.city}-${dest.country || ''}`}
                     type="button"
                     onClick={() => handleSelect(dest)}
                     onMouseEnter={() => setHighlightedIndex(index)}
@@ -1155,8 +1534,9 @@ export default function DestinationAutocomplete({
                     {/* Location Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-1">
-                        <span className="font-semibold text-xs text-on-surface group-hover:text-primary transition-colors truncate">
-                          {highlightMatch(dest.city, cleanQuery)}
+                        <span className="font-semibold text-xs text-on-surface group-hover:text-primary transition-colors truncate flex items-center gap-1">
+                          {dest.flag && <span className="text-sm shrink-0">{dest.flag}</span>}
+                          <span>{highlightMatch(dest.city, cleanQuery)}</span>
                         </span>
                         <div className="flex items-center gap-1 shrink-0">
                           {dest.popular && (
@@ -1173,7 +1553,7 @@ export default function DestinationAutocomplete({
                       </div>
 
                       <p className="text-[11px] text-outline truncate mt-0.5">
-                        {highlightMatch(`${dest.province}, ${dest.region}`, cleanQuery)}
+                        {highlightMatch(`${dest.province}, ${dest.country || dest.region}`, cleanQuery)}
                       </p>
 
                       <p className="text-[10px] text-tertiary truncate mt-0.5">

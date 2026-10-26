@@ -107,7 +107,7 @@ export default function MainLayout() {
                 <div className="flex items-center gap-2">
                   <span className="font-display text-lg sm:text-xl font-extrabold tracking-tight text-on-surface">SkyPlan</span>
                   <span className="hidden sm:inline-flex text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/25">
-                    Philippines • Live
+                    Worldwide • Live
                   </span>
                 </div>
               </Link>
@@ -484,8 +484,8 @@ export default function MainLayout() {
       <footer className="border-t border-white/5 bg-surface-container-lowest/80 backdrop-blur-md py-6 mt-12">
         <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-outline">
           <div>
-            <span className="font-bold text-on-surface font-display">SkyPlan Philippines</span> — Weather-Based Activity Planner &copy; 2026.
-            <span className="ml-2 text-outline/80">Localized for Philippine cities, provinces, and tropical island destinations.</span>
+            <span className="font-bold text-on-surface font-display">SkyPlan</span> — Weather-Based Activity Planner &copy; 2026.
+            <span className="ml-2 text-outline/80">Worldwide & Philippine destinations, Doppler telemetry, and weather-synchronized itineraries.</span>
           </div>
           <div className="flex items-center gap-4">
             <span className="inline-flex items-center gap-1 text-on-surface-variant font-medium">

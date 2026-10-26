@@ -175,38 +175,123 @@ const PHILIPPINE_LOCATIONS = {
   'tacloban': { city: 'Tacloban City', country: 'Philippines', countryCode: 'PH', lat: '11.2444', lon: '125.0039', elevation: '14m', tempBase: 29, isCool: false },
   'kalanggaman': { city: 'Kalanggaman Island', country: 'Philippines', countryCode: 'PH', lat: '11.1167', lon: '124.2500', elevation: '4m', tempBase: 29, isCool: false },
   'hinatuan': { city: 'Hinatuan & Bislig', country: 'Philippines', countryCode: 'PH', lat: '8.3667', lon: '126.3333', elevation: '18m', tempBase: 29, isCool: false },
+
+  // East & Southeast Asia
+  'tokyo': { city: 'Tokyo', country: 'Japan', countryCode: 'JP', lat: '35.6762', lon: '139.6503', elevation: '40m', tempBase: 19, isCool: false },
+  'osaka': { city: 'Osaka', country: 'Japan', countryCode: 'JP', lat: '34.6937', lon: '135.5023', elevation: '20m', tempBase: 20, isCool: false },
+  'kyoto': { city: 'Kyoto', country: 'Japan', countryCode: 'JP', lat: '35.0116', lon: '135.7681', elevation: '50m', tempBase: 18, isCool: false },
+  'sapporo': { city: 'Sapporo', country: 'Japan', countryCode: 'JP', lat: '43.0618', lon: '141.3545', elevation: '25m', tempBase: 12, isCool: true },
+  'seoul': { city: 'Seoul', country: 'South Korea', countryCode: 'KR', lat: '37.5665', lon: '126.9780', elevation: '38m', tempBase: 17, isCool: false },
+  'busan': { city: 'Busan', country: 'South Korea', countryCode: 'KR', lat: '35.1796', lon: '129.0756', elevation: '22m', tempBase: 18, isCool: false },
+  'taipei': { city: 'Taipei', country: 'Taiwan', countryCode: 'TW', lat: '25.0330', lon: '121.5654', elevation: '10m', tempBase: 25, isCool: false },
+  'hong kong': { city: 'Hong Kong', country: 'Hong Kong', countryCode: 'HK', lat: '22.3193', lon: '114.1694', elevation: '15m', tempBase: 26, isCool: false },
+  'singapore': { city: 'Singapore', country: 'Singapore', countryCode: 'SG', lat: '1.3521', lon: '103.8198', elevation: '15m', tempBase: 31, isCool: false },
+  'bangkok': { city: 'Bangkok', country: 'Thailand', countryCode: 'TH', lat: '13.7563', lon: '100.5018', elevation: '5m', tempBase: 32, isCool: false },
+  'phuket': { city: 'Phuket', country: 'Thailand', countryCode: 'TH', lat: '7.8804', lon: '98.3923', elevation: '12m', tempBase: 30, isCool: false },
+  'chiang mai': { city: 'Chiang Mai', country: 'Thailand', countryCode: 'TH', lat: '18.7883', lon: '98.9853', elevation: '310m', tempBase: 27, isCool: false },
+  'bali': { city: 'Bali (Denpasar)', country: 'Indonesia', countryCode: 'ID', lat: '-8.6705', lon: '115.2126', elevation: '25m', tempBase: 29, isCool: false },
+  'jakarta': { city: 'Jakarta', country: 'Indonesia', countryCode: 'ID', lat: '-6.2088', lon: '106.8456', elevation: '8m', tempBase: 31, isCool: false },
+  'kuala lumpur': { city: 'Kuala Lumpur', country: 'Malaysia', countryCode: 'MY', lat: '3.1390', lon: '101.6869', elevation: '60m', tempBase: 31, isCool: false },
+  'penang': { city: 'Penang (George Town)', country: 'Malaysia', countryCode: 'MY', lat: '5.4164', lon: '100.3327', elevation: '10m', tempBase: 30, isCool: false },
+  'hanoi': { city: 'Hanoi', country: 'Vietnam', countryCode: 'VN', lat: '21.0285', lon: '105.8542', elevation: '16m', tempBase: 26, isCool: false },
+  'ho chi minh city': { city: 'Ho Chi Minh City', country: 'Vietnam', countryCode: 'VN', lat: '10.8231', lon: '106.6297', elevation: '19m', tempBase: 31, isCool: false },
+  'saigon': { city: 'Ho Chi Minh City', country: 'Vietnam', countryCode: 'VN', lat: '10.8231', lon: '106.6297', elevation: '19m', tempBase: 31, isCool: false },
+
+  // Europe
+  'london': { city: 'London', country: 'United Kingdom', countryCode: 'GB', lat: '51.5074', lon: '-0.1278', elevation: '35m', tempBase: 15, isCool: true },
+  'paris': { city: 'Paris', country: 'France', countryCode: 'FR', lat: '48.8566', lon: '2.3522', elevation: '35m', tempBase: 16, isCool: true },
+  'rome': { city: 'Rome', country: 'Italy', countryCode: 'IT', lat: '41.9028', lon: '12.4964', elevation: '21m', tempBase: 21, isCool: false },
+  'milan': { city: 'Milan', country: 'Italy', countryCode: 'IT', lat: '45.4642', lon: '9.1900', elevation: '120m', tempBase: 18, isCool: false },
+  'barcelona': { city: 'Barcelona', country: 'Spain', countryCode: 'ES', lat: '41.3879', lon: '2.1699', elevation: '12m', tempBase: 22, isCool: false },
+  'madrid': { city: 'Madrid', country: 'Spain', countryCode: 'ES', lat: '40.4168', lon: '-3.7038', elevation: '650m', tempBase: 21, isCool: false },
+  'amsterdam': { city: 'Amsterdam', country: 'Netherlands', countryCode: 'NL', lat: '52.3676', lon: '4.9041', elevation: '2m', tempBase: 14, isCool: true },
+  'berlin': { city: 'Berlin', country: 'Germany', countryCode: 'DE', lat: '52.5200', lon: '13.4050', elevation: '34m', tempBase: 15, isCool: true },
+  'munich': { city: 'Munich', country: 'Germany', countryCode: 'DE', lat: '48.1351', lon: '11.5820', elevation: '520m', tempBase: 14, isCool: true },
+  'vienna': { city: 'Vienna', country: 'Austria', countryCode: 'AT', lat: '48.2082', lon: '16.3738', elevation: '170m', tempBase: 16, isCool: true },
+  'zurich': { city: 'Zurich', country: 'Switzerland', countryCode: 'CH', lat: '47.3769', lon: '8.5417', elevation: '408m', tempBase: 13, isCool: true },
+  'prague': { city: 'Prague', country: 'Czech Republic', countryCode: 'CZ', lat: '50.0755', lon: '14.4378', elevation: '235m', tempBase: 14, isCool: true },
+  'athens': { city: 'Athens', country: 'Greece', countryCode: 'GR', lat: '37.9838', lon: '23.7275', elevation: '70m', tempBase: 24, isCool: false },
+  'dublin': { city: 'Dublin', country: 'Ireland', countryCode: 'IE', lat: '53.3498', lon: '-6.2603', elevation: '20m', tempBase: 13, isCool: true },
+  'edinburgh': { city: 'Edinburgh', country: 'United Kingdom', countryCode: 'GB', lat: '55.9533', lon: '-3.1883', elevation: '47m', tempBase: 12, isCool: true },
+  'lisbon': { city: 'Lisbon', country: 'Portugal', countryCode: 'PT', lat: '38.7223', lon: '-9.1393', elevation: '30m', tempBase: 22, isCool: false },
+  'copenhagen': { city: 'Copenhagen', country: 'Denmark', countryCode: 'DK', lat: '55.6761', lon: '12.5683', elevation: '14m', tempBase: 13, isCool: true },
+  'stockholm': { city: 'Stockholm', country: 'Sweden', countryCode: 'SE', lat: '59.3293', lon: '18.0686', elevation: '28m', tempBase: 11, isCool: true },
+  'oslo': { city: 'Oslo', country: 'Norway', countryCode: 'NO', lat: '59.9139', lon: '10.7522', elevation: '23m', tempBase: 10, isCool: true },
+  'reykjavik': { city: 'Reykjavik', country: 'Iceland', countryCode: 'IS', lat: '64.1466', lon: '-21.9426', elevation: '15m', tempBase: 7, isCool: true },
+
+  // Americas
+  'new york': { city: 'New York City', country: 'United States', countryCode: 'US', lat: '40.7128', lon: '-74.0060', elevation: '10m', tempBase: 18, isCool: false },
+  'nyc': { city: 'New York City', country: 'United States', countryCode: 'US', lat: '40.7128', lon: '-74.0060', elevation: '10m', tempBase: 18, isCool: false },
+  'los angeles': { city: 'Los Angeles', country: 'United States', countryCode: 'US', lat: '34.0522', lon: '-118.2437', elevation: '87m', tempBase: 23, isCool: false },
+  'la': { city: 'Los Angeles', country: 'United States', countryCode: 'US', lat: '34.0522', lon: '-118.2437', elevation: '87m', tempBase: 23, isCool: false },
+  'san francisco': { city: 'San Francisco', country: 'United States', countryCode: 'US', lat: '37.7749', lon: '-122.4194', elevation: '16m', tempBase: 16, isCool: true },
+  'chicago': { city: 'Chicago', country: 'United States', countryCode: 'US', lat: '41.8781', lon: '-87.6298', elevation: '181m', tempBase: 16, isCool: false },
+  'miami': { city: 'Miami', country: 'United States', countryCode: 'US', lat: '25.7617', lon: '-80.1918', elevation: '2m', tempBase: 28, isCool: false },
+  'seattle': { city: 'Seattle', country: 'United States', countryCode: 'US', lat: '47.6062', lon: '-122.3321', elevation: '53m', tempBase: 14, isCool: true },
+  'las vegas': { city: 'Las Vegas', country: 'United States', countryCode: 'US', lat: '36.1699', lon: '-115.1398', elevation: '610m', tempBase: 28, isCool: false },
+  'honolulu': { city: 'Honolulu (Hawaii)', country: 'United States', countryCode: 'US', lat: '21.3069', lon: '-157.8583', elevation: '6m', tempBase: 28, isCool: false },
+  'vancouver': { city: 'Vancouver', country: 'Canada', countryCode: 'CA', lat: '49.2827', lon: '-123.1207', elevation: '4m', tempBase: 14, isCool: true },
+  'toronto': { city: 'Toronto', country: 'Canada', countryCode: 'CA', lat: '43.6532', lon: '-79.3832', elevation: '76m', tempBase: 16, isCool: false },
+  'mexico city': { city: 'Mexico City', country: 'Mexico', countryCode: 'MX', lat: '19.4326', lon: '-99.1332', elevation: '2240m', tempBase: 20, isCool: true },
+  'rio de janeiro': { city: 'Rio de Janeiro', country: 'Brazil', countryCode: 'BR', lat: '-22.9068', lon: '-43.1729', elevation: '5m', tempBase: 27, isCool: false },
+  'buenos aires': { city: 'Buenos Aires', country: 'Argentina', countryCode: 'AR', lat: '-34.6037', lon: '-58.3816', elevation: '25m', tempBase: 20, isCool: false },
+
+  // Oceania
+  'sydney': { city: 'Sydney', country: 'Australia', countryCode: 'AU', lat: '-33.8688', lon: '151.2093', elevation: '19m', tempBase: 22, isCool: false },
+  'melbourne': { city: 'Melbourne', country: 'Australia', countryCode: 'AU', lat: '-37.8136', lon: '144.9631', elevation: '31m', tempBase: 19, isCool: false },
+  'brisbane': { city: 'Brisbane', country: 'Australia', countryCode: 'AU', lat: '-27.4698', lon: '153.0251', elevation: '28m', tempBase: 25, isCool: false },
+  'auckland': { city: 'Auckland', country: 'New Zealand', countryCode: 'NZ', lat: '-36.8485', lon: '174.7633', elevation: '26m', tempBase: 18, isCool: false },
+  'queenstown': { city: 'Queenstown', country: 'New Zealand', countryCode: 'NZ', lat: '-45.0312', lon: '168.6626', elevation: '310m', tempBase: 12, isCool: true },
+
+  // Middle East & Africa
+  'dubai': { city: 'Dubai', country: 'United Arab Emirates', countryCode: 'AE', lat: '25.2048', lon: '55.2708', elevation: '5m', tempBase: 34, isCool: false },
+  'abu dhabi': { city: 'Abu Dhabi', country: 'United Arab Emirates', countryCode: 'AE', lat: '24.4539', lon: '54.3773', elevation: '7m', tempBase: 33, isCool: false },
+  'doha': { city: 'Doha', country: 'Qatar', countryCode: 'QA', lat: '25.2854', lon: '51.5310', elevation: '10m', tempBase: 32, isCool: false },
+  'cairo': { city: 'Cairo', country: 'Egypt', countryCode: 'EG', lat: '30.0444', lon: '31.2357', elevation: '23m', tempBase: 27, isCool: false },
+  'cape town': { city: 'Cape Town', country: 'South Africa', countryCode: 'ZA', lat: '-33.9249', lon: '18.4241', elevation: '15m', tempBase: 20, isCool: false },
 };
 
 /**
- * Deterministic fallback weather generator localized to the Philippines and global queries.
+ * Deterministic fallback weather generator supporting Philippine and global destinations.
  */
 function getDeterministicFallback(city) {
   const normCity = city.toLowerCase().trim();
-  const matchedLoc = PHILIPPINE_LOCATIONS[normCity];
+  const matchedLoc = PHILIPPINE_LOCATIONS[normCity] || Object.values(PHILIPPINE_LOCATIONS).find(
+    (loc) => loc.city.toLowerCase() === normCity || normCity.includes(loc.city.toLowerCase())
+  );
+
+  // Parse potential "City, Country" formats
+  let parsedCity = city;
+  let parsedCountry = null;
+  if (city.includes(',')) {
+    const parts = city.split(',').map((p) => p.trim());
+    parsedCity = parts[0];
+    parsedCountry = parts[1];
+  }
 
   const hash = city.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const tempBase = matchedLoc ? matchedLoc.tempBase : 27 + (hash % 6);
-  const humidity = 65 + (hash % 25); // Tropical humidity
+  const tempBase = matchedLoc ? matchedLoc.tempBase : 22 + (hash % 8);
+  const humidity = matchedLoc ? (matchedLoc.isCool ? 55 : 65 + (hash % 20)) : 50 + (hash % 30);
   const wind = 10 + (hash % 15);
-  const precip = hash % 5 === 0 ? 55 : hash % 3 === 0 ? 20 : 5;
-  const condition = precip > 35 ? 'Rain' : precip > 15 ? 'Clouds' : 'Clear';
+  const precip = hash % 5 === 0 ? 50 : hash % 3 === 0 ? 15 : 0;
+  const condition = precip > 35 ? 'Rain' : precip > 10 ? 'Clouds' : 'Clear';
 
   const dateNow = new Date();
   const days = Array.from({ length: 7 }).map((_, idx) => {
     const d = new Date(dateNow);
     d.setDate(d.getDate() + idx);
     const dHash = hash + idx * 7;
-    const dPrecip = dHash % 4 === 0 ? 60 : dHash % 2 === 0 ? 15 : 0;
-    const dCond = dPrecip > 40 ? 'Rain' : dPrecip > 0 ? 'Clouds' : 'Clear';
+    const dPrecip = dHash % 4 === 0 ? 50 : dHash % 2 === 0 ? 15 : 0;
+    const dCond = dPrecip > 35 ? 'Rain' : dPrecip > 0 ? 'Clouds' : 'Clear';
     const dHigh = tempBase + (dHash % 3);
-    const dLow = dHigh - (matchedLoc?.isCool ? 5 : 4);
+    const dLow = dHigh - (matchedLoc?.isCool ? 6 : 5);
 
     return {
       date: d.toISOString().split('T')[0],
       day: idx === 0 ? 'Today' : d.toLocaleDateString('en-US', { weekday: 'short' }),
       formattedDate: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      condition: dCond === 'Rain' ? 'Tropical Showers' : dCond === 'Clouds' ? 'Partly Cloudy' : 'Sunny & Warm',
-      description: dCond === 'Rain' ? 'Localized monsoon rain showers' : dCond === 'Clouds' ? 'Scattered tropical cloud cover' : 'Clear sunny tropical skies',
+      condition: dCond === 'Rain' ? 'Passing Showers' : dCond === 'Clouds' ? 'Partly Cloudy' : 'Clear & Sunny',
+      description: dCond === 'Rain' ? 'Scattered seasonal rain showers' : dCond === 'Clouds' ? 'Scattered cloud cover & pleasant breeze' : 'Clear sunny skies & comfortable conditions',
       icon: dCond === 'Rain' ? '10d' : dCond === 'Clouds' ? '02d' : '01d',
       highTemp: dHigh,
       lowTemp: dLow,
@@ -216,11 +301,11 @@ function getDeterministicFallback(city) {
     };
   });
 
-  const resolvedCityName = matchedLoc ? matchedLoc.city : city.charAt(0).toUpperCase() + city.slice(1);
-  const resolvedCountry = matchedLoc ? matchedLoc.country : 'Philippines';
-  const resolvedLat = matchedLoc ? matchedLoc.lat : (12.0 + (hash % 6)).toFixed(4);
-  const resolvedLon = matchedLoc ? matchedLoc.lon : (120.0 + (hash % 4)).toFixed(4);
-  const resolvedElevation = matchedLoc ? matchedLoc.elevation : `${20 + (hash % 150)}m`;
+  const resolvedCityName = matchedLoc ? matchedLoc.city : parsedCity.charAt(0).toUpperCase() + parsedCity.slice(1);
+  const resolvedCountry = matchedLoc ? matchedLoc.country : (parsedCountry || 'International');
+  const resolvedLat = matchedLoc ? matchedLoc.lat : (25.0 + (hash % 25)).toFixed(4);
+  const resolvedLon = matchedLoc ? matchedLoc.lon : (10.0 + (hash % 120)).toFixed(4);
+  const resolvedElevation = matchedLoc ? matchedLoc.elevation : `${30 + (hash % 100)}m`;
 
   return {
     current: {
