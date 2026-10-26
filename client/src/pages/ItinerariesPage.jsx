@@ -120,6 +120,18 @@ export default function ItinerariesPage() {
     }
   }, [searchParams]);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (shareDialogData) setShareDialogData(null);
+        else if (isCreateModalOpen) setIsCreateModalOpen(false);
+        else if (selectedItinerary) setSelectedItinerary(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [shareDialogData, isCreateModalOpen, selectedItinerary]);
+
   const openCreateModal = () => {
     setEditingItinerary(null);
     setFormTitle('');
@@ -557,10 +569,15 @@ export default function ItinerariesPage() {
 
       {/* CREATE / EDIT ITINERARY MODAL */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="itinerary-form-modal-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in"
+        >
           <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl bg-surface-container-low border border-white/15 p-5 sm:p-8 space-y-5 shadow-glass text-on-surface">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
-              <h3 className="font-display text-lg font-bold">
+              <h3 id="itinerary-form-modal-title" className="font-display text-lg font-bold">
                 {editingItinerary ? 'Edit Itinerary Details' : 'Create New Trip Itinerary'}
               </h3>
               <button
@@ -655,7 +672,12 @@ export default function ItinerariesPage() {
 
       {/* TIMELINE ACTIVITIES MODAL */}
       {selectedItinerary && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-md animate-in fade-in">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="timeline-activities-modal-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-md animate-in fade-in"
+        >
           <div className="w-full max-w-2xl max-h-[90vh] rounded-3xl bg-surface-container-low border border-white/15 p-4 sm:p-8 flex flex-col justify-between shadow-glass text-on-surface overflow-hidden">
             {/* Modal Header */}
             <div className="flex items-start justify-between border-b border-white/10 pb-4 shrink-0">
@@ -668,7 +690,7 @@ export default function ItinerariesPage() {
                     <MapPin className="w-3 h-3 text-primary" /> {selectedItinerary.destination_city}
                   </span>
                 </div>
-                <h3 className="font-display text-xl font-bold text-on-surface mt-1">
+                <h3 id="timeline-activities-modal-title" className="font-display text-xl font-bold text-on-surface mt-1">
                   {selectedItinerary.title} — Timeline
                 </h3>
               </div>
@@ -866,14 +888,19 @@ export default function ItinerariesPage() {
 
       {/* SHARE ITINERARY MODAL */}
       {shareDialogData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="share-itinerary-modal-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in"
+        >
           <div className="w-full max-w-md rounded-3xl bg-surface-container-low border border-white/15 p-6 sm:p-8 space-y-5 shadow-glass text-on-surface">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                   <Share2 className="w-4 h-4" />
                 </div>
-                <h3 className="font-display text-lg font-bold">Share Itinerary</h3>
+                <h3 id="share-itinerary-modal-title" className="font-display text-lg font-bold">Share Itinerary</h3>
               </div>
               <button
                 type="button"

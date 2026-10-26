@@ -72,6 +72,17 @@ export default function MainLayout() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (mobileMenuOpen) setMobileMenuOpen(false);
+        if (userDropdownOpen) setUserDropdownOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen, userDropdownOpen]);
+
   const handleLogout = async () => {
     setUserDropdownOpen(false);
     setMobileMenuOpen(false);
@@ -337,7 +348,7 @@ export default function MainLayout() {
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high focus:outline-none"
+                className="md:hidden p-2 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 aria-label="Toggle mobile menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

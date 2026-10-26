@@ -26,9 +26,18 @@ export default function FavoritesModal({ isOpen, onClose, onSelectCity }) {
   };
 
   useEffect(() => {
-    if (isOpen) {
-      fetchFavorites();
-    }
+    if (!isOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    fetchFavorites();
+
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
   const handleRemove = async (e, id) => {
@@ -47,7 +56,12 @@ export default function FavoritesModal({ isOpen, onClose, onSelectCity }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="favorites-modal-title"
+      className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4"
+    >
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-surface-container-lowest/80 backdrop-blur-sm transition-opacity" 
@@ -62,7 +76,7 @@ export default function FavoritesModal({ isOpen, onClose, onSelectCity }) {
               <Star className="w-5 h-5 fill-tertiary text-tertiary" />
             </div>
             <div>
-              <h2 className="font-display font-bold text-lg text-on-surface">Saved Destinations</h2>
+              <h2 id="favorites-modal-title" className="font-display font-bold text-lg text-on-surface">Saved Destinations</h2>
               <p className="text-xs text-outline">Quick-access pinned cities stored in your account</p>
             </div>
           </div>

@@ -74,13 +74,13 @@
 
     --color-on-surface: 15 23 42;
     --color-on-surface-variant: 51 65 85;
-    --color-outline: 100 116 139;
+    --color-outline: 71 85 105;
     --color-outline-variant: 203 213 225;
 
-    --color-primary: 2 132 199;
+    --color-primary: 3 105 161;
     --color-primary-container: 186 230 253;
     --color-on-primary: 255 255 255;
-    --color-on-primary-container: 3 105 161;
+    --color-on-primary-container: 12 74 110;
     --color-primary-fixed: 224 242 254;
     --color-primary-fixed-dim: 56 189 248;
 
@@ -91,15 +91,15 @@
     --color-secondary-fixed: 239 246 255;
     --color-secondary-fixed-dim: 96 165 250;
 
-    --color-tertiary: 217 119 6;
+    --color-tertiary: 146 64 14;
     --color-tertiary-container: 254 243 199;
     --color-on-tertiary: 255 255 255;
-    --color-on-tertiary-container: 146 64 14;
+    --color-on-tertiary-container: 120 53 15;
     --color-tertiary-fixed: 254 243 199;
     --color-tertiary-fixed-dim: 245 158 11;
 
-    --color-optimal: 5 150 105;
-    --color-caution: 217 119 6;
+    --color-optimal: 4 120 87;
+    --color-caution: 146 64 14;
     --color-azure: 37 99 235;
 
     --color-error: 220 38 38;
@@ -388,7 +388,7 @@ html.light .text-on-surface-variant,
 
 html.light .text-outline,
 [data-theme="day"] .text-outline {
-  color: #64748b !important;
+  color: #475569 !important;
 }
 
 html.light input,
@@ -399,12 +399,12 @@ html.light textarea,
 [data-theme="day"] textarea {
   background-color: #ffffff !important;
   color: #0f172a !important;
-  border-color: rgba(15, 23, 42, 0.15) !important;
+  border-color: rgba(15, 23, 42, 0.2) !important;
 }
 
 html.light input::placeholder,
 [data-theme="day"] input::placeholder {
-  color: #94a3b8 !important;
+  color: #64748b !important;
 }
 
 html.light button.bg-gradient-to-r,
@@ -413,4 +413,11 @@ html.light button.bg-gradient-to-r *,
 [data-theme="day"] button.bg-gradient-to-r * {
   color: #ffffff !important;
 }
+
+/* Accessible Keyboard Focus Visible Styles (R-21, R-32) */
+:focus-visible {
+  outline: 2px solid rgb(var(--color-primary)) !important;
+  outline-offset: 2px !important;
+}
+
 

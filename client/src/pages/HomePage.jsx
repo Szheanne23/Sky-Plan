@@ -707,8 +707,17 @@ export default function HomePage() {
             {favoritesList.map((place) => (
               <div
                 key={place.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`Inspect forecast for saved location ${place.city_name}`}
                 onClick={() => fetchCityData(place.city_name, 'Today')}
-                className="p-5 rounded-2xl bg-surface-container-low/70 backdrop-blur-md border border-white/5 hover:border-primary/40 hover:bg-surface-container-high transition-all group flex flex-col justify-between shadow-specular-inset cursor-pointer"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    fetchCityData(place.city_name, 'Today');
+                  }
+                }}
+                className="p-5 rounded-2xl bg-surface-container-low/70 backdrop-blur-md border border-white/5 hover:border-primary/40 hover:bg-surface-container-high transition-all group flex flex-col justify-between shadow-specular-inset cursor-pointer focus-visible:ring-2 focus-visible:ring-primary"
               >
                 <div className="flex items-start justify-between">
                   <div>
@@ -787,11 +796,21 @@ export default function HomePage() {
             return (
               <div
                 key={dest.city}
+                role="button"
+                tabIndex={0}
+                aria-label={`Explore ${dest.city}, ${dest.province}`}
                 onClick={() => {
                   handleSearch({ location: dest.city, date: requestedDate, scrollToActivities: false });
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className={`group relative overflow-hidden rounded-2xl bg-surface-container-low/70 backdrop-blur-md border transition-all duration-300 flex flex-col justify-between shadow-specular-inset cursor-pointer hover:-translate-y-0.5 hover:shadow-glass ${
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleSearch({ location: dest.city, date: requestedDate, scrollToActivities: false });
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
+                className={`group relative overflow-hidden rounded-2xl bg-surface-container-low/70 backdrop-blur-md border transition-all duration-300 flex flex-col justify-between shadow-specular-inset cursor-pointer hover:-translate-y-0.5 hover:shadow-glass focus-visible:ring-2 focus-visible:ring-primary ${
                   isCurrentActive
                     ? 'border-primary ring-1 ring-primary/40'
                     : 'border-white/5 hover:border-primary/40'

@@ -190,7 +190,7 @@ export default function RecommendationCard({
               e.stopPropagation();
               onAddToItinerary();
             }}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/25 text-[11px] font-semibold transition-all active:scale-95 shadow-specular-inset shrink-0"
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/25 text-[11px] font-semibold transition-all active:scale-95 shadow-specular-inset shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             title="Save to Itinerary"
           >
             <CalendarPlus className="w-3.5 h-3.5" />

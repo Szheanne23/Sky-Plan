@@ -57,31 +57,40 @@ export default function AddToItineraryModal({
   ];
 
   useEffect(() => {
-    if (isOpen) {
-      if (!isAuthenticated) {
-        onClose();
-        const currentPath = window.location.pathname + window.location.search;
-        navigate(`/register?redirect=${encodeURIComponent(currentPath)}`);
-        return;
-      }
+    if (!isOpen) return;
 
-      setError(null);
-      setSuccessMsg(null);
-      setNewTitle(`Trip to ${destinationCity}`);
-      itineraryService.getItineraries().then((list) => {
-        setItineraries(list);
-        if (list && list.length > 0) {
-          // Preselect matching city itinerary if available, or first one
-          const match = list.find((it) => it.destination_city.toLowerCase() === destinationCity.toLowerCase());
-          setSelectedItineraryId(match ? match.id : list[0].id);
-          setIsCreatingNew(false);
-        } else {
-          setIsCreatingNew(true);
-        }
-      }).catch((err) => {
-        setError('Failed to fetch itineraries.');
-      });
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    if (!isAuthenticated) {
+      onClose();
+      const currentPath = window.location.pathname + window.location.search;
+      navigate(`/register?redirect=${encodeURIComponent(currentPath)}`);
+      return () => window.removeEventListener('keydown', handleKeyDown);
     }
+
+    setError(null);
+    setSuccessMsg(null);
+    setNewTitle(`Trip to ${destinationCity}`);
+    itineraryService.getItineraries().then((list) => {
+      setItineraries(list);
+      if (list && list.length > 0) {
+        // Preselect matching city itinerary if available, or first one
+        const match = list.find((it) => it.destination_city.toLowerCase() === destinationCity.toLowerCase());
+        setSelectedItineraryId(match ? match.id : list[0].id);
+        setIsCreatingNew(false);
+      } else {
+        setIsCreatingNew(true);
+      }
+    }).catch((err) => {
+      setError('Failed to fetch itineraries.');
+    });
+
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, destinationCity, isAuthenticated, navigate, onClose]);
 
   if (!isOpen) return null;
@@ -142,7 +151,12 @@ export default function AddToItineraryModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3.5 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-itinerary-modal-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3.5 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-200"
+    >
       <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl bg-surface-container-low border border-white/15 shadow-glass-hover p-5 sm:p-8 space-y-5 text-on-surface">
         {/* Header */}
         <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
@@ -151,7 +165,7 @@ export default function AddToItineraryModal({
               <CalendarPlus className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-display text-lg font-bold text-on-surface">
+              <h3 id="add-itinerary-modal-title" className="font-display text-lg font-bold text-on-surface">
                 Add to Itinerary
               </h3>
               <p className="text-xs text-outline">
