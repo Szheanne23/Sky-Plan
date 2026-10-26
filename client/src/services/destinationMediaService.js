@@ -1053,13 +1053,21 @@ export async function fetchDestinationMedia(cityName) {
     return memoryCache.get(cacheKey);
   }
 
-  // Check sessionStorage
+  // Check sessionStorage (purge any legacy cached flags/svgs)
   try {
     const cached = sessionStorage.getItem(`skyplan_dest_media_${cacheKey}`);
     if (cached) {
       const parsed = JSON.parse(cached);
-      memoryCache.set(cacheKey, parsed);
-      return parsed;
+      if (
+        parsed.imageUrl &&
+        !parsed.imageUrl.includes('.svg') &&
+        !/flag|coat_of_arms|seal_of|logo/i.test(parsed.imageUrl)
+      ) {
+        memoryCache.set(cacheKey, parsed);
+        return parsed;
+      } else {
+        sessionStorage.removeItem(`skyplan_dest_media_${cacheKey}`);
+      }
     }
   } catch (_) {}
 
@@ -1091,17 +1099,19 @@ export async function fetchDestinationMedia(cityName) {
       const data = await response.json();
       const rawThumb = data.thumbnail?.source || data.originalimage?.source;
 
-      // Reject non-photographic flags, coat of arms, or tiny logos
+      // Strictly reject flags, coat of arms, or logos
       if (
         rawThumb &&
         !rawThumb.includes('.svg') &&
         !/flag|coat_of_arms|seal_of|logo/i.test(rawThumb)
       ) {
+        const famousSpotName = data.description || `${data.title || clean} Famous Landmark`;
         const mediaObj = {
           title: data.title || clean,
-          landmark: data.description || `${data.title || clean} Landmark`,
+          landmark: famousSpotName,
+          famousSpot: famousSpotName,
           imageUrl: rawThumb,
-          tag: data.description || 'Authentic Location Telemetry',
+          tag: data.description || 'Famous Travel Landmark',
           extract: data.extract,
         };
 

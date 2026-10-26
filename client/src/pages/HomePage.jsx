@@ -395,8 +395,10 @@ export default function HomePage() {
                       />
                     </div>
                     <div className="min-w-0 pr-1">
-                      <div className="flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-primary uppercase tracking-wider bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20">
+                          <MapPin className="w-3 h-3 text-primary" /> Famous Spot
+                        </span>
                         <span className="font-bold text-xs text-on-surface truncate">
                           {activeMedia.landmark}
                         </span>
@@ -820,14 +822,21 @@ export default function HomePage() {
                       <IconComponent className="w-3.5 h-3.5" />
                     </div>
                   </div>
+
+                  {/* Famous Spot Capsule */}
+                  <div className="absolute bottom-2 left-2 right-2">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-black/70 backdrop-blur-md border border-white/20 text-white text-[11px] font-medium shadow-md">
+                      <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
+                      <span className="truncate font-medium">{media.landmark}</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Content */}
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
                   <div>
-                    <h3 className="font-display font-bold text-sm text-on-surface group-hover:text-primary transition-colors truncate flex items-center gap-1.5">
-                      {dest.flag && <span className="text-sm shrink-0">{dest.flag}</span>}
-                      <span className="truncate">{dest.city}</span>
+                    <h3 className="font-display font-bold text-sm text-on-surface group-hover:text-primary transition-colors truncate">
+                      {dest.city}
                     </h3>
                     <p className="text-[11px] text-outline font-medium truncate">
                       {dest.province}, {dest.country || dest.region}

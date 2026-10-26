@@ -892,7 +892,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Kanto Region',
     region: 'Japan',
     country: 'Japan',
-    flag: '🇯🇵',
     category: 'Metropolis',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -908,7 +907,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Kansai Region',
     region: 'Japan',
     country: 'Japan',
-    flag: '🇯🇵',
     category: 'Food & Culture',
     categoryGroup: 'METRO_FOOD',
     popular: true,
@@ -924,7 +922,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Kansai Region',
     region: 'Japan',
     country: 'Japan',
-    flag: '🇯🇵',
     category: 'Ancient Heritage',
     categoryGroup: 'HERITAGE_CULTURE',
     popular: true,
@@ -940,7 +937,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Capital Area',
     region: 'South Korea',
     country: 'South Korea',
-    flag: '🇰🇷',
     category: 'Metropolis',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -956,7 +952,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Central Region',
     region: 'Singapore',
     country: 'Singapore',
-    flag: '🇸🇬',
     category: 'Garden City',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -972,7 +967,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Central Thailand',
     region: 'Thailand',
     country: 'Thailand',
-    flag: '🇹🇭',
     category: 'Temples & River',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -988,7 +982,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Denpasar & Ubud',
     region: 'Indonesia',
     country: 'Indonesia',
-    flag: '🇮🇩',
     category: 'Tropical Island',
     categoryGroup: 'BEACH_ISLAND',
     popular: true,
@@ -1004,7 +997,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Northern Region',
     region: 'Taiwan',
     country: 'Taiwan',
-    flag: '🇹🇼',
     category: 'Metropolis & Food',
     categoryGroup: 'METRO_FOOD',
     popular: true,
@@ -1020,7 +1012,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Hong Kong SAR',
     region: 'China',
     country: 'Hong Kong',
-    flag: '🇭🇰',
     category: 'Harbor & Skyline',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -1036,7 +1027,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Federal Territory',
     region: 'Malaysia',
     country: 'Malaysia',
-    flag: '🇲🇾',
     category: 'Metropolis',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -1052,7 +1042,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'New South Wales',
     region: 'Australia',
     country: 'Australia',
-    flag: '🇦🇺',
     category: 'Harbor & Coast',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -1068,7 +1057,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Victoria',
     region: 'Australia',
     country: 'Australia',
-    flag: '🇦🇺',
     category: 'Culture & Coffee',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -1084,7 +1072,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Île-de-France',
     region: 'France',
     country: 'France',
-    flag: '🇫🇷',
     category: 'Art & Heritage',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -1100,7 +1087,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Greater London',
     region: 'United Kingdom',
     country: 'United Kingdom',
-    flag: '🇬🇧',
     category: 'Historic Metropolis',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -1116,7 +1102,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Lazio',
     region: 'Italy',
     country: 'Italy',
-    flag: '🇮🇹',
     category: 'Ancient Heritage',
     categoryGroup: 'HERITAGE_CULTURE',
     popular: true,
@@ -1132,7 +1117,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Catalonia',
     region: 'Spain',
     country: 'Spain',
-    flag: '🇪🇸',
     category: 'Architecture & Coast',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -1148,7 +1132,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'North Holland',
     region: 'Netherlands',
     country: 'Netherlands',
-    flag: '🇳🇱',
     category: 'Canals & Culture',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -1164,7 +1147,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'New York State',
     region: 'United States',
     country: 'United States',
-    flag: '🇺🇸',
     category: 'Metropolis',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -1180,7 +1162,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'California',
     region: 'United States',
     country: 'United States',
-    flag: '🇺🇸',
     category: 'Coastal Bay',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -1196,7 +1177,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'California',
     region: 'United States',
     country: 'United States',
-    flag: '🇺🇸',
     category: 'Entertainment & Coast',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -1212,7 +1192,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Hawaii (Oahu)',
     region: 'United States',
     country: 'United States',
-    flag: '🇺🇸',
     category: 'Tropical Island',
     categoryGroup: 'BEACH_ISLAND',
     popular: true,
@@ -1228,7 +1207,6 @@ export const GLOBAL_DESTINATIONS = [
     province: 'Emirate of Dubai',
     region: 'United Arab Emirates',
     country: 'United Arab Emirates',
-    flag: '🇦🇪',
     category: 'Modern Wonder',
     categoryGroup: 'GLOBAL',
     popular: true,
@@ -1248,7 +1226,6 @@ export const ALL_DESTINATIONS = [
   ...PHILIPPINE_DESTINATIONS.map((d) => ({
     ...d,
     country: d.country || 'Philippines',
-    flag: d.flag || '🇵🇭',
   })),
 ];
 
@@ -1534,9 +1511,8 @@ export default function DestinationAutocomplete({
                     {/* Location Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-1">
-                        <span className="font-semibold text-xs text-on-surface group-hover:text-primary transition-colors truncate flex items-center gap-1">
-                          {dest.flag && <span className="text-sm shrink-0">{dest.flag}</span>}
-                          <span>{highlightMatch(dest.city, cleanQuery)}</span>
+                        <span className="font-semibold text-xs text-on-surface group-hover:text-primary transition-colors truncate">
+                          {highlightMatch(dest.city, cleanQuery)}
                         </span>
                         <div className="flex items-center gap-1 shrink-0">
                           {dest.popular && (
@@ -1556,8 +1532,10 @@ export default function DestinationAutocomplete({
                         {highlightMatch(`${dest.province}, ${dest.country || dest.region}`, cleanQuery)}
                       </p>
 
-                      <p className="text-[10px] text-tertiary truncate mt-0.5">
-                        {dest.highlight}
+                      <p className="text-[10px] text-tertiary truncate mt-0.5 flex items-center gap-1">
+                        <MapPin className="w-3 h-3 text-primary shrink-0" />
+                        <span className="font-semibold text-primary">Famous Spot:</span>
+                        <span className="truncate">{dest.highlight}</span>
                       </p>
                     </div>
 
