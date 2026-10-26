@@ -101,6 +101,9 @@ export default function RecommendationCard({
               onError={(e) => {
                 if (destinationMedia?.imageUrl && e.target.src !== destinationMedia.imageUrl) {
                   e.target.src = destinationMedia.imageUrl;
+                } else {
+                  e.target.onerror = null;
+                  e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1280&q=80';
                 }
               }}
             />

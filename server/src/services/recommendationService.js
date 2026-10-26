@@ -1127,35 +1127,75 @@ const DESTINATION_FALLBACK_IMAGES = {
   dumaguete: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Dumaguete_Belfry_park_view_%28Perdices_Street%2C_Dumaguete%2C_Negros_Oriental%3B_01-19-2023%29.jpg/1280px-Dumaguete_Belfry_park_view_%28Perdices_Street%2C_Dumaguete%2C_Negros_Oriental%3B_01-19-2023%29.jpg',
   
   // Global & Worldwide Cities
-  tokyo: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Skyscrapers_of_Shinjuku_2009_January.jpg/1280px-Skyscrapers_of_Shinjuku_2009_January.jpg',
-  osaka: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Osaka_Castle_02bs3200.jpg/1280px-Osaka_Castle_02bs3200.jpg',
-  kyoto: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Kinkaku-ji_2019-10.jpg/1280px-Kinkaku-ji_2019-10.jpg',
-  seoul: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Gyeongbokgung_at_night_%28cropped%29.jpg/1280px-Gyeongbokgung_at_night_%28cropped%29.jpg',
-  singapore: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Marina_Bay_Sands_in_the_evening_-_20101120.jpg/1280px-Marina_Bay_Sands_in_the_evening_-_20101120.jpg',
-  bangkok: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Wat_Arun_sunset.jpg/1280px-Wat_Arun_sunset.jpg',
-  bali: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Ulun_Danu_Bratan_Temple_Bali_Indonesia.jpg/1280px-Ulun_Danu_Bratan_Temple_Bali_Indonesia.jpg',
-  taipei: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Taipei_101_from_Elephant_Mountain_2020.jpg/1280px-Taipei_101_from_Elephant_Mountain_2020.jpg',
-  'hong kong': 'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Hong_Kong_Skyline_Restitch_-_Dec_2007.jpg/1280px-Hong_Kong_Skyline_Restitch_-_Dec_2007.jpg',
-  paris: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Tour_Eiffel_Wikimedia_Commons.jpg/1280px-Tour_Eiffel_Wikimedia_Commons.jpg',
-  london: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/London_Skyline_%28125508655%29.jpeg/1280px-London_Skyline_%28125508655%29.jpeg',
-  rome: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/1280px-Colosseo_2020.jpg',
-  barcelona: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Sagrada_Familia_01.jpg/1280px-Sagrada_Familia_01.jpg',
-  amsterdam: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/KeizersgrachtReguliersgrachtAmsterdam.jpg/1280px-KeizersgrachtReguliersgrachtAmsterdam.jpg',
-  'new york': 'https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/New_york_times_square-terabass.jpg/1280px-New_york_times_square-terabass.jpg',
-  'san francisco': 'https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/GoldenGateBridge-001.jpg/1280px-GoldenGateBridge-001.jpg',
-  'los angeles': 'https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/Echo_Park_Lake_with_Downtown_Los_Angeles_Skyline.jpg/1280px-Echo_Park_Lake_with_Downtown_Los_Angeles_Skyline.jpg',
-  honolulu: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/Honolulu_from_Round_Top_01.jpg/1280px-Honolulu_from_Round_Top_01.jpg',
-  sydney: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Sydney_Opera_House_-_Dec_2008.jpg/1280px-Sydney_Opera_House_-_Dec_2008.jpg',
-  melbourne: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Melbourne_skyline_from_Williamstown_-_Nov_2008.jpg/1280px-Melbourne_skyline_from_Williamstown_-_Nov_2008.jpg',
-  dubai: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Dubai_Skylines_at_night_%28Pexels_3787839%29.jpg/1280px-Dubai_Skylines_at_night_%28Pexels_3787839%29.jpg',
+  tokyo: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1280&q=80',
+  osaka: 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=1280&q=80',
+  kyoto: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1280&q=80',
+  seoul: 'https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&w=1280&q=80',
+  singapore: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1280&q=80',
+  bangkok: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1280&q=80',
+  bali: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1280&q=80',
+  taipei: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1280&q=80',
+  'hong kong': 'https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?auto=format&fit=crop&w=1280&q=80',
+  'kuala lumpur': 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?auto=format&fit=crop&w=1280&q=80',
+  paris: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1280&q=80',
+  london: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1280&q=80',
+  rome: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1280&q=80',
+  barcelona: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?auto=format&fit=crop&w=1280&q=80',
+  amsterdam: 'https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?auto=format&fit=crop&w=1280&q=80',
+  'new york': 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=1280&q=80',
+  'san francisco': 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1280&q=80',
+  'los angeles': 'https://images.unsplash.com/photo-1580655653885-65763b2597d0?auto=format&fit=crop&w=1280&q=80',
+  honolulu: 'https://images.unsplash.com/photo-1545652985-5edd365b12eb?auto=format&fit=crop&w=1280&q=80',
+  sydney: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1280&q=80',
+  melbourne: 'https://images.unsplash.com/photo-1514395462725-fb4566210144?auto=format&fit=crop&w=1280&q=80',
+  dubai: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1280&q=80',
+  
+  // Additional Philippine Dest
+  siquijor: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1280&q=80',
+  mati: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1280&q=80',
+  samal: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1280&q=80',
+  bantayan: 'https://images.unsplash.com/photo-1509233725247-49e657c54213?auto=format&fit=crop&w=1280&q=80',
+  malapascua: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1280&q=80',
+  caramoan: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=1280&q=80',
+  calaguas: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1280&q=80',
+  catanduanes: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1280&q=80',
+  romblon: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1280&q=80',
+  gigantes: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1280&q=80',
+  guimaras: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1280&q=80',
+  zambales: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1280&q=80',
+  gensan: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1280&q=80',
+  'lake sebu': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1280&q=80',
+  bukidnon: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1280&q=80',
+  hinatuan: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1280&q=80',
+  iligan: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1280&q=80',
 };
 
 function getDestinationFallbackPhoto(city) {
-  if (!city) return DESTINATION_MEDIA_URLS.boracayWhiteBeach;
+  if (!city) return 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1280&q=80';
   const c = city.toLowerCase().trim();
+  
+  // Direct match
   if (DESTINATION_FALLBACK_IMAGES[c]) return DESTINATION_FALLBACK_IMAGES[c];
-  const found = Object.keys(DESTINATION_FALLBACK_IMAGES).find(k => c.includes(k) || k.includes(c));
-  return found ? DESTINATION_FALLBACK_IMAGES[found] : DESTINATION_MEDIA_URLS.boracayWhiteBeach;
+  
+  // Stripped match
+  const stripped = c.replace(/\s*\([^)]*\)/g, '').split(',')[0].replace(/ city$/i, '').trim();
+  if (DESTINATION_FALLBACK_IMAGES[stripped]) return DESTINATION_FALLBACK_IMAGES[stripped];
+
+  const found = Object.keys(DESTINATION_FALLBACK_IMAGES).find(k => c.includes(k) || k.includes(c) || stripped.includes(k));
+  if (found) return DESTINATION_FALLBACK_IMAGES[found];
+
+  // Category fallback
+  if (/beach|island|cove|sea|bay|coral|surf|coast|sand/i.test(c)) {
+    return 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1280&q=80';
+  }
+  if (/mountain|peak|ridge|hill|forest|pine|highland/i.test(c)) {
+    return 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1280&q=80';
+  }
+  if (/city|metro|town|center|capital/i.test(c)) {
+    return 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1280&q=80';
+  }
+
+  return 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1280&q=80';
 }
 
 /**

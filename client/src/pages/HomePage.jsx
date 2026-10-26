@@ -335,7 +335,8 @@ export default function HomePage() {
                   alt={activeMedia.title}
                   className="w-full h-full object-cover object-center brightness-[0.92] contrast-[1.05] saturate-[1.1] transition-transform duration-1000 ease-out group-hover:scale-105"
                   onError={(e) => {
-                    e.target.src = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cd/Boracay_White_Beach.png/1280px-Boracay_White_Beach.png';
+                    e.target.onerror = null;
+                    e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1280&q=80';
                   }}
                 />
                 {/* Multilayer gradient ensuring WCAG AAA contrast while letting scenic destination shine through */}
@@ -388,7 +389,8 @@ export default function HomePage() {
                         alt={activeMedia.landmark}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         onError={(e) => {
-                          e.target.src = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cd/Boracay_White_Beach.png/1280px-Boracay_White_Beach.png';
+                          e.target.onerror = null;
+                          e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1280&q=80';
                         }}
                       />
                     </div>
@@ -800,6 +802,10 @@ export default function HomePage() {
                     alt={dest.city}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1280&q=80';
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-black/20" />
                   

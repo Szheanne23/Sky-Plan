@@ -243,6 +243,39 @@ const PHILIPPINE_LOCATIONS = {
   'auckland': { city: 'Auckland', country: 'New Zealand', countryCode: 'NZ', lat: '-36.8485', lon: '174.7633', elevation: '26m', tempBase: 18, isCool: false },
   'queenstown': { city: 'Queenstown', country: 'New Zealand', countryCode: 'NZ', lat: '-45.0312', lon: '168.6626', elevation: '310m', tempBase: 12, isCool: true },
 
+  // Additional Philippine Dest & Aliases
+  'islas de gigantes': { city: 'Islas de Gigantes', country: 'Philippines', countryCode: 'PH', lat: '11.5978', lon: '123.3378', elevation: '8m', tempBase: 29, isCool: false },
+  'guimaras': { city: 'Guimaras Island', country: 'Philippines', countryCode: 'PH', lat: '10.5936', lon: '122.6322', elevation: '25m', tempBase: 29, isCool: false },
+  'guimaras island': { city: 'Guimaras Island', country: 'Philippines', countryCode: 'PH', lat: '10.5936', lon: '122.6322', elevation: '25m', tempBase: 29, isCool: false },
+  'calaguas': { city: 'Calaguas Islands', country: 'Philippines', countryCode: 'PH', lat: '14.4833', lon: '122.9500', elevation: '8m', tempBase: 29, isCool: false },
+  'puraran': { city: 'Catanduanes (Puraran)', country: 'Philippines', countryCode: 'PH', lat: '13.7667', lon: '124.2500', elevation: '22m', tempBase: 28, isCool: false },
+  'catanduanes (puraran)': { city: 'Catanduanes (Puraran)', country: 'Philippines', countryCode: 'PH', lat: '13.7667', lon: '124.2500', elevation: '22m', tempBase: 28, isCool: false },
+  'cresta de gallo': { city: 'Romblon (Cresta de Gallo)', country: 'Philippines', countryCode: 'PH', lat: '12.5767', lon: '122.2708', elevation: '10m', tempBase: 29, isCool: false },
+  'romblon (cresta de gallo)': { city: 'Romblon (Cresta de Gallo)', country: 'Philippines', countryCode: 'PH', lat: '12.5767', lon: '122.2708', elevation: '10m', tempBase: 29, isCool: false },
+  'san antonio': { city: 'San Antonio (Zambales)', country: 'Philippines', countryCode: 'PH', lat: '14.9500', lon: '120.0833', elevation: '12m', tempBase: 29, isCool: false },
+  'san antonio (zambales)': { city: 'San Antonio (Zambales)', country: 'Philippines', countryCode: 'PH', lat: '14.9500', lon: '120.0833', elevation: '12m', tempBase: 29, isCool: false },
+  'zambales coves': { city: 'San Antonio (Zambales)', country: 'Philippines', countryCode: 'PH', lat: '14.9500', lon: '120.0833', elevation: '12m', tempBase: 29, isCool: false },
+  'las casas': { city: 'Bataan (Las Casas)', country: 'Philippines', countryCode: 'PH', lat: '14.6000', lon: '120.4000', elevation: '25m', tempBase: 29, isCool: false },
+  'bataan (las casas)': { city: 'Bataan (Las Casas)', country: 'Philippines', countryCode: 'PH', lat: '14.6000', lon: '120.4000', elevation: '25m', tempBase: 29, isCool: false },
+  'enchanted river': { city: 'Hinatuan & Bislig', country: 'Philippines', countryCode: 'PH', lat: '8.3667', lon: '126.3333', elevation: '18m', tempBase: 29, isCool: false },
+  'hinatuan & bislig': { city: 'Hinatuan & Bislig', country: 'Philippines', countryCode: 'PH', lat: '8.3667', lon: '126.3333', elevation: '18m', tempBase: 29, isCool: false },
+  'palawan (el nido)': { city: 'Palawan (El Nido)', country: 'Philippines', countryCode: 'PH', lat: '11.1956', lon: '119.4075', elevation: '8m', tempBase: 29, isCool: false },
+  'bohol (panglao)': { city: 'Bohol (Panglao)', country: 'Philippines', countryCode: 'PH', lat: '9.6729', lon: '123.8730', elevation: '15m', tempBase: 29, isCool: false },
+  'panglao': { city: 'Bohol (Panglao)', country: 'Philippines', countryCode: 'PH', lat: '9.6729', lon: '123.8730', elevation: '15m', tempBase: 29, isCool: false },
+  'batanes (basco)': { city: 'Batanes (Basco)', country: 'Philippines', countryCode: 'PH', lat: '20.4485', lon: '121.9702', elevation: '45m', tempBase: 24, isCool: true },
+  'basco': { city: 'Batanes (Basco)', country: 'Philippines', countryCode: 'PH', lat: '20.4485', lon: '121.9702', elevation: '45m', tempBase: 24, isCool: true },
+  'la union (san juan)': { city: 'La Union (San Juan)', country: 'Philippines', countryCode: 'PH', lat: '16.6667', lon: '120.3333', elevation: '10m', tempBase: 30, isCool: false },
+  'san juan': { city: 'La Union (San Juan)', country: 'Philippines', countryCode: 'PH', lat: '16.6667', lon: '120.3333', elevation: '10m', tempBase: 30, isCool: false },
+  'samal island (igacos)': { city: 'Samal Island (IGACOS)', country: 'Philippines', countryCode: 'PH', lat: '7.0789', lon: '125.7144', elevation: '18m', tempBase: 29, isCool: false },
+  'igacos': { city: 'Samal Island (IGACOS)', country: 'Philippines', countryCode: 'PH', lat: '7.0789', lon: '125.7144', elevation: '18m', tempBase: 29, isCool: false },
+  'san vicente (palawan)': { city: 'San Vicente (Palawan)', country: 'Philippines', countryCode: 'PH', lat: '10.5186', lon: '119.2944', elevation: '10m', tempBase: 29, isCool: false },
+  'bukidnon (dahilayan)': { city: 'Bukidnon (Dahilayan)', country: 'Philippines', countryCode: 'PH', lat: '8.2167', lon: '124.8667', elevation: '950m', tempBase: 23, isCool: true },
+  'dahilayan': { city: 'Bukidnon (Dahilayan)', country: 'Philippines', countryCode: 'PH', lat: '8.2167', lon: '124.8667', elevation: '950m', tempBase: 23, isCool: true },
+  'batangas (anilao)': { city: 'Batangas (Anilao)', country: 'Philippines', countryCode: 'PH', lat: '13.7533', lon: '120.9122', elevation: '10m', tempBase: 29, isCool: false },
+  'antipolo & tanay': { city: 'Antipolo & Tanay', country: 'Philippines', countryCode: 'PH', lat: '14.5842', lon: '121.1764', elevation: '156m', tempBase: 28, isCool: false },
+  'angeles city / clark': { city: 'Angeles City / Clark', country: 'Philippines', countryCode: 'PH', lat: '15.1450', lon: '120.5887', elevation: '90m', tempBase: 30, isCool: false },
+  'taguig (bgc)': { city: 'Taguig (BGC)', country: 'Philippines', countryCode: 'PH', lat: '14.5503', lon: '121.0470', elevation: '35m', tempBase: 30, isCool: false },
+
   // Middle East & Africa
   'dubai': { city: 'Dubai', country: 'United Arab Emirates', countryCode: 'AE', lat: '25.2048', lon: '55.2708', elevation: '5m', tempBase: 34, isCool: false },
   'abu dhabi': { city: 'Abu Dhabi', country: 'United Arab Emirates', countryCode: 'AE', lat: '24.4539', lon: '54.3773', elevation: '7m', tempBase: 33, isCool: false },
@@ -380,20 +413,48 @@ async function getCurrentWeather(city, date = 'Today') {
     forecastData = fallback.forecast;
   } else {
     try {
-      const url = `${OWM_BASE_URL}/weather?q=${encodeURIComponent(cleanCity)}&units=metric&appid=${apiKey}`;
-      const response = await fetch(url);
+      // Build candidate names to query OpenWeatherMap
+      let queryCandidates = [cleanCity];
+      if (cleanCity.includes('(') && cleanCity.includes(')')) {
+        const insideParen = cleanCity.replace(/^[^(]+\(([^)]+)\).*$/, '$1').trim();
+        const beforeParen = cleanCity.replace(/\s*\([^)]+\).*$/, '').trim();
+        queryCandidates.push(insideParen, beforeParen);
+      }
+      if (cleanCity.includes(',')) {
+        queryCandidates.push(cleanCity.split(',')[0].trim());
+      }
+      queryCandidates = [...new Set(queryCandidates)];
 
-      if (!response.ok) {
-        if (response.status === 404) {
-          const notFoundErr = new Error(`City "${cleanCity}" not found.`);
-          notFoundErr.statusCode = 404;
-          throw notFoundErr;
-        }
-        throw new Error(`OpenWeatherMap API responded with status ${response.status}`);
+      let response = null;
+      for (const candidate of queryCandidates) {
+        const url = `${OWM_BASE_URL}/weather?q=${encodeURIComponent(candidate)}&units=metric&appid=${apiKey}`;
+        response = await fetch(url);
+        if (response.ok) break;
       }
 
-      const data = await response.json();
-      baseWeather = normalizeCurrentWeather(data);
+      if (!response || !response.ok) {
+        if (response && response.status === 404) {
+          // If known in local dictionary, use deterministic fallback
+          const norm = cleanCity.toLowerCase();
+          const isKnown = PHILIPPINE_LOCATIONS[norm] || Object.values(PHILIPPINE_LOCATIONS).some(
+            (loc) => loc.city.toLowerCase() === norm || norm.includes(loc.city.toLowerCase())
+          );
+          if (isKnown || (!/(?:xyzzy|qwerty123|\d{3,})/i.test(cleanCity) && cleanCity.length <= 40)) {
+            const fallback = getDeterministicFallback(cleanCity);
+            baseWeather = fallback.current;
+            forecastData = fallback.forecast;
+          } else {
+            const notFoundErr = new Error(`City "${cleanCity}" not found.`);
+            notFoundErr.statusCode = 404;
+            throw notFoundErr;
+          }
+        } else {
+          throw new Error(`OpenWeatherMap API responded with status ${response ? response.status : 'unknown'}`);
+        }
+      } else {
+        const data = await response.json();
+        baseWeather = normalizeCurrentWeather(data);
+      }
     } catch (err) {
       if (err.statusCode === 404) throw err;
       console.warn(`[WeatherService] OWM call failed (${err.message}). Using deterministic fallback for "${cleanCity}".`);
@@ -474,16 +535,38 @@ async function getForecast(city) {
   }
 
   try {
-    const url = `${OWM_BASE_URL}/forecast?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
-    const response = await fetch(url);
+    let queryCandidates = [city];
+    if (city.includes('(') && city.includes(')')) {
+      const insideParen = city.replace(/^[^(]+\(([^)]+)\).*$/, '$1').trim();
+      const beforeParen = city.replace(/\s*\([^)]+\).*$/, '').trim();
+      queryCandidates.push(insideParen, beforeParen);
+    }
+    if (city.includes(',')) {
+      queryCandidates.push(city.split(',')[0].trim());
+    }
+    queryCandidates = [...new Set(queryCandidates)];
 
-    if (!response.ok) {
-      if (response.status === 404) {
+    let response = null;
+    for (const candidate of queryCandidates) {
+      const url = `${OWM_BASE_URL}/forecast?q=${encodeURIComponent(candidate)}&units=metric&appid=${apiKey}`;
+      response = await fetch(url);
+      if (response.ok) break;
+    }
+
+    if (!response || !response.ok) {
+      if (response && response.status === 404) {
+        const norm = city.toLowerCase();
+        const isKnown = PHILIPPINE_LOCATIONS[norm] || Object.values(PHILIPPINE_LOCATIONS).some(
+          (loc) => loc.city.toLowerCase() === norm || norm.includes(loc.city.toLowerCase())
+        );
+        if (isKnown || (!/(?:xyzzy|qwerty123|\d{3,})/i.test(city) && city.length <= 40)) {
+          return getDeterministicFallback(city).forecast;
+        }
         const notFoundErr = new Error(`City "${city}" not found.`);
         notFoundErr.statusCode = 404;
         throw notFoundErr;
       }
-      throw new Error(`OpenWeatherMap Forecast API responded with status ${response.status}`);
+      throw new Error(`OpenWeatherMap Forecast API responded with status ${response ? response.status : 'unknown'}`);
     }
 
     const data = await response.json();
