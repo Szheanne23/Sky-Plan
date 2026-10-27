@@ -23,7 +23,6 @@ import {
   Sun,
   Moon
 } from 'lucide-react';
-import healthService from '../services/healthService';
 import { useAuth } from '../context/AuthContext';
 import { useTemperature } from '../context/TemperatureContext';
 import { useTheme } from '../context/ThemeContext';
@@ -33,7 +32,6 @@ import { useInactivityTimeout } from '../hooks/useInactivityTimeout';
 import InactivityWarningModal from '../components/auth/InactivityWarningModal';
 
 export default function MainLayout() {
-  const [apiHealth, setApiHealth] = useState({ status: 'checking', message: 'Checking API...' });
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { unit, setUnit } = useTemperature();
@@ -41,36 +39,6 @@ export default function MainLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
-
-  useEffect(() => {
-    let isMounted = true;
-    async function verifyBackend() {
-      try {
-        const response = await healthService.checkHealth();
-        if (isMounted) {
-          setApiHealth({
-            status: 'online',
-            service: response?.data?.service || 'SkyPlan API',
-            db: response?.data?.database?.connected ? 'Online' : 'Standby',
-          });
-        }
-      } catch (err) {
-        if (isMounted) {
-          setApiHealth({
-            status: 'offline',
-            message: 'API Offline or Unreachable',
-          });
-        }
-      }
-    }
-
-    verifyBackend();
-    const interval = setInterval(verifyBackend, 15000);
-    return () => {
-      isMounted = false;
-      clearInterval(interval);
-    };
-  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -118,7 +86,7 @@ export default function MainLayout() {
                 <div className="flex items-center gap-2">
                   <span className="font-display text-lg sm:text-xl font-extrabold tracking-tight text-on-surface">SkyPlan</span>
                   <span className="hidden sm:inline-flex text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/25">
-                    Worldwide • Live
+                    Worldwide
                   </span>
                 </div>
               </Link>
@@ -238,28 +206,6 @@ export default function MainLayout() {
                 >
                   <Moon className="w-3.5 h-3.5" />
                 </button>
-              </div>
-
-              {/* System Telemetry Beacon */}
-              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high/80 border border-white/10 text-xs text-on-surface shadow-specular-inset">
-                <span className="relative flex h-2 w-2">
-                  {apiHealth.status === 'online' && (
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-optimal opacity-75" />
-                  )}
-                  <span
-                    className={`relative inline-flex rounded-full h-2 w-2 ${
-                      apiHealth.status === 'online'
-                        ? 'bg-optimal'
-                        : apiHealth.status === 'checking'
-                        ? 'bg-caution'
-                        : 'bg-error'
-                    }`}
-                  />
-                </span>
-                <span className="text-outline text-[11px]">System:</span>
-                <strong className={apiHealth.status === 'online' ? 'text-optimal font-semibold text-[11px]' : 'text-error text-[11px]'}>
-                  {apiHealth.status === 'online' ? 'Live' : 'Offline'}
-                </strong>
               </div>
 
               {/* User Identity / Authentication Controls */}
