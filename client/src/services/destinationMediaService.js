@@ -882,8 +882,219 @@ export const DESTINATION_MEDIA = {
   dubai: {
     title: 'Dubai',
     landmark: 'Burj Khalifa & Downtown Illuminated Fountains',
+    famousSpot: 'Burj Khalifa & Downtown Illuminated Fountains',
     imageUrl: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1280&q=80',
     tag: 'Futuristic Desert Oasis',
+  },
+  reykjavik: {
+    title: 'Reykjavik',
+    landmark: 'Hallgrímskirkja & Geothermal Lagoons',
+    famousSpot: 'Hallgrímskirkja & Geothermal Lagoons',
+    imageUrl: 'https://images.unsplash.com/photo-1529963183134-61a90db47eaf?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Nordic Volcanic Capital',
+  },
+  cairo: {
+    title: 'Cairo',
+    landmark: 'Great Pyramids of Giza & The Sphinx',
+    famousSpot: 'Great Pyramids of Giza & The Sphinx',
+    imageUrl: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Cradle of Ancient Wonder',
+  },
+  cusco: {
+    title: 'Cusco',
+    landmark: 'Machu Picchu & Historic Plaza de Armas',
+    famousSpot: 'Machu Picchu & Historic Plaza de Armas',
+    imageUrl: 'https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Inca Imperial Citadel',
+  },
+  nairobi: {
+    title: 'Nairobi',
+    landmark: 'Nairobi National Park & Rift Valley',
+    famousSpot: 'Nairobi National Park & Rift Valley',
+    imageUrl: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Wildlife Safari Capital',
+  },
+  berlin: {
+    title: 'Berlin',
+    landmark: 'Brandenburg Gate & Museum Island',
+    famousSpot: 'Brandenburg Gate & Museum Island',
+    imageUrl: 'https://images.unsplash.com/photo-1560969184-10fe8719e047?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Historic Gateway of Europe',
+  },
+  munich: {
+    title: 'Munich',
+    landmark: 'Marienplatz & Neuschwanstein Castle',
+    famousSpot: 'Marienplatz & Neuschwanstein Castle',
+    imageUrl: 'https://images.unsplash.com/photo-1587330979470-3595ac045ab0?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Bavarian Alpine Capital',
+  },
+  vienna: {
+    title: 'Vienna',
+    landmark: "Schönbrunn Palace & St. Stephen's Cathedral",
+    famousSpot: "Schönbrunn Palace & St. Stephen's Cathedral",
+    imageUrl: 'https://images.unsplash.com/photo-1516550893923-42d28e5677af?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Imperial Capital of Music',
+  },
+  prague: {
+    title: 'Prague',
+    landmark: 'Charles Bridge & Prague Castle',
+    famousSpot: 'Charles Bridge & Prague Castle',
+    imageUrl: 'https://images.unsplash.com/photo-1541849546-216549ae216d?auto=format&fit=crop&w=1280&q=80',
+    tag: 'City of a Hundred Spires',
+  },
+  zurich: {
+    title: 'Zurich',
+    landmark: 'Lake Zurich & Old Town Altstadt',
+    famousSpot: 'Lake Zurich & Old Town Altstadt',
+    imageUrl: 'https://images.unsplash.com/photo-1515488764276-beab7607c1e6?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Alpine Lakeside Haven',
+  },
+  athens: {
+    title: 'Athens',
+    landmark: 'The Acropolis & Parthenon Temple',
+    famousSpot: 'The Acropolis & Parthenon Temple',
+    imageUrl: 'https://images.unsplash.com/photo-1555993539-1732b0258235?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Ancient Birthplace of Democracy',
+  },
+  venice: {
+    title: 'Venice',
+    landmark: "St. Mark's Campanile & Grand Canal",
+    famousSpot: "St. Mark's Campanile & Grand Canal",
+    imageUrl: 'https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Floating Lagoon City',
+  },
+  florence: {
+    title: 'Florence',
+    landmark: 'Duomo Cathedral & Ponte Vecchio',
+    famousSpot: 'Duomo Cathedral & Ponte Vecchio',
+    imageUrl: 'https://images.unsplash.com/photo-1543429776-2782fc8e1acd?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Renaissance Masterpiece',
+  },
+  madrid: {
+    title: 'Madrid',
+    landmark: 'Royal Palace of Madrid & Plaza Mayor',
+    famousSpot: 'Royal Palace of Madrid & Plaza Mayor',
+    imageUrl: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Golden Heart of Spain',
+  },
+  lisbon: {
+    title: 'Lisbon',
+    landmark: 'Belém Tower & Historic Tram 28',
+    famousSpot: 'Belém Tower & Historic Tram 28',
+    imageUrl: 'https://images.unsplash.com/photo-1509817677585-89378f53f384?auto=format&fit=crop&w=1280&q=80',
+    tag: 'City of Seven Hills',
+  },
+  edinburgh: {
+    title: 'Edinburgh',
+    landmark: 'Edinburgh Castle & Royal Mile',
+    famousSpot: 'Edinburgh Castle & Royal Mile',
+    imageUrl: 'https://images.unsplash.com/photo-1506377585622-be757b0a1e1e?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Historic Scottish Capital',
+  },
+  dublin: {
+    title: 'Dublin',
+    landmark: 'Trinity College & Temple Bar',
+    famousSpot: 'Trinity College & Temple Bar',
+    imageUrl: 'https://images.unsplash.com/photo-1549918864-48ac978761a4?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Literary & Emerald Hub',
+  },
+  istanbul: {
+    title: 'Istanbul',
+    landmark: 'Hagia Sophia & Bosphorus Strait',
+    famousSpot: 'Hagia Sophia & Bosphorus Strait',
+    imageUrl: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Bridge Between Two Continents',
+  },
+  'rio de janeiro': {
+    title: 'Rio de Janeiro',
+    landmark: 'Christ the Redeemer & Copacabana Beach',
+    famousSpot: 'Christ the Redeemer & Copacabana Beach',
+    imageUrl: 'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Marvelous Coastal City',
+  },
+  'buenos aires': {
+    title: 'Buenos Aires',
+    landmark: 'The Obelisco & La Boca Caminito',
+    famousSpot: 'The Obelisco & La Boca Caminito',
+    imageUrl: 'https://images.unsplash.com/photo-1589909202802-8f4aadce1849?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Paris of South America',
+  },
+  vancouver: {
+    title: 'Vancouver',
+    landmark: 'Stanley Park Seawall & Lions Gate Bridge',
+    famousSpot: 'Stanley Park Seawall & Lions Gate Bridge',
+    imageUrl: 'https://images.unsplash.com/photo-1559511260-66a65e0982d5?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Pacific Coastal Rainforest',
+  },
+  toronto: {
+    title: 'Toronto',
+    landmark: 'CN Tower & Lake Ontario Skyline',
+    famousSpot: 'CN Tower & Lake Ontario Skyline',
+    imageUrl: 'https://images.unsplash.com/photo-1507992781348-310259076fa0?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Metropolitan Great Lake Icon',
+  },
+  chicago: {
+    title: 'Chicago',
+    landmark: 'Cloud Gate (The Bean) & Millennium Park',
+    famousSpot: 'Cloud Gate (The Bean) & Millennium Park',
+    imageUrl: 'https://images.unsplash.com/photo-1494522855154-9297ac14b55f?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Architectural City of Winds',
+  },
+  miami: {
+    title: 'Miami',
+    landmark: 'South Beach & Ocean Drive Art Deco',
+    famousSpot: 'South Beach & Ocean Drive Art Deco',
+    imageUrl: 'https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Biscayne Tropical Coast',
+  },
+  'las vegas': {
+    title: 'Las Vegas',
+    landmark: 'The Las Vegas Strip & Bellagio Fountains',
+    famousSpot: 'The Las Vegas Strip & Bellagio Fountains',
+    imageUrl: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Neon Oasis of Entertainment',
+  },
+  'cape town': {
+    title: 'Cape Town',
+    landmark: 'Table Mountain & Cape Peninsula',
+    famousSpot: 'Table Mountain & Cape Peninsula',
+    imageUrl: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Mother City of Two Oceans',
+  },
+  auckland: {
+    title: 'Auckland',
+    landmark: 'Auckland Sky Tower & Waitemata Harbour',
+    famousSpot: 'Auckland Sky Tower & Waitemata Harbour',
+    imageUrl: 'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&w=1280&q=80',
+    tag: 'City of Sails',
+  },
+  queenstown: {
+    title: 'Queenstown',
+    landmark: 'The Remarkables Alpine Range & Lake Wakatipu',
+    famousSpot: 'The Remarkables Alpine Range & Lake Wakatipu',
+    imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Adventure Capital of the World',
+  },
+  beijing: {
+    title: 'Beijing',
+    landmark: 'The Great Wall of China & Forbidden City',
+    famousSpot: 'The Great Wall of China & Forbidden City',
+    imageUrl: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Ancient Imperial Capital',
+  },
+  shanghai: {
+    title: 'Shanghai',
+    landmark: 'The Bund & Oriental Pearl Tower',
+    famousSpot: 'The Bund & Oriental Pearl Tower',
+    imageUrl: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Futuristic Pearl of the Orient',
+  },
+  milan: {
+    title: 'Milan',
+    landmark: 'Duomo di Milano & Galleria Vittorio Emanuele',
+    famousSpot: 'Duomo di Milano & Galleria Vittorio Emanuele',
+    imageUrl: 'https://images.unsplash.com/photo-1513581166391-887a96ddeafd?auto=format&fit=crop&w=1280&q=80',
+    tag: 'Fashion & Gothic Capital',
   },
 };
 
@@ -932,10 +1143,22 @@ const DESTINATION_ALIASES = {
   'la': 'los angeles',
   'san francisco': 'san francisco',
   'sf': 'san francisco',
+  'rio': 'rio de janeiro',
+  'vegas': 'las vegas',
+  'd.c.': 'washington',
 };
 
 // In-memory cache for dynamic API results
 const memoryCache = new Map();
+
+/**
+ * Validates that an image URL is a real photograph and NOT a flag, coat of arms, seal, or SVG icon.
+ */
+function isValidPhotoUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  if (url.includes('.svg')) return false;
+  return !/(?:flag|coat_of_arms|seal_of|logo|insignia|emblem|symbol|sign_of|icon_)/i.test(url);
+}
 
 /**
  * Get curated photo and landmark info for a given destination city synchronously.
@@ -952,12 +1175,14 @@ export function getDestinationMedia(cityName) {
 
   // 1. Direct lookup
   if (DESTINATION_MEDIA[clean]) {
-    return DESTINATION_MEDIA[clean];
+    const item = DESTINATION_MEDIA[clean];
+    return { ...item, famousSpot: item.landmark || item.famousSpot };
   }
 
   // 2. Direct alias lookup
   if (DESTINATION_ALIASES[clean] && DESTINATION_MEDIA[DESTINATION_ALIASES[clean]]) {
-    return DESTINATION_MEDIA[DESTINATION_ALIASES[clean]];
+    const item = DESTINATION_MEDIA[DESTINATION_ALIASES[clean]];
+    return { ...item, famousSpot: item.landmark || item.famousSpot };
   }
 
   // 3. Normalized stripped search (strip parentheses and commas)
@@ -969,11 +1194,13 @@ export function getDestinationMedia(cityName) {
     .trim();
 
   if (DESTINATION_MEDIA[stripped]) {
-    return DESTINATION_MEDIA[stripped];
+    const item = DESTINATION_MEDIA[stripped];
+    return { ...item, famousSpot: item.landmark || item.famousSpot };
   }
 
   if (DESTINATION_ALIASES[stripped] && DESTINATION_MEDIA[DESTINATION_ALIASES[stripped]]) {
-    return DESTINATION_MEDIA[DESTINATION_ALIASES[stripped]];
+    const item = DESTINATION_MEDIA[DESTINATION_ALIASES[stripped]];
+    return { ...item, famousSpot: item.landmark || item.famousSpot };
   }
 
   // 4. Substring key matching
@@ -982,11 +1209,13 @@ export function getDestinationMedia(cityName) {
   );
 
   if (matchKey) {
-    return DESTINATION_MEDIA[matchKey];
+    const item = DESTINATION_MEDIA[matchKey];
+    return { ...item, famousSpot: item.landmark || item.famousSpot };
   }
 
   // 5. Intelligent category-based fallback
-  return resolveCategoryFallback(cityName);
+  const cat = resolveCategoryFallback(cityName);
+  return { ...cat, famousSpot: cat.landmark };
 }
 
 /**
@@ -998,7 +1227,8 @@ function resolveCategoryFallback(cityName = 'Destination') {
   if (/beach|island|cove|sea|bay|coral|surf|coast|sand|white/i.test(norm)) {
     return {
       title: cityName,
-      landmark: `${cityName} Coastal Region`,
+      landmark: `${cityName} Coastal Lagoon`,
+      famousSpot: `${cityName} Coastal Lagoon`,
       imageUrl: CATEGORY_FALLBACKS.BEACH_ISLAND.imageUrl,
       tag: 'Tropical Coastal Region',
     };
@@ -1008,6 +1238,7 @@ function resolveCategoryFallback(cityName = 'Destination') {
     return {
       title: cityName,
       landmark: `${cityName} Highland Range`,
+      famousSpot: `${cityName} Highland Range`,
       imageUrl: CATEGORY_FALLBACKS.HIGHLAND_NATURE.imageUrl,
       tag: 'Scenic Mountain Vista',
     };
@@ -1017,6 +1248,7 @@ function resolveCategoryFallback(cityName = 'Destination') {
     return {
       title: cityName,
       landmark: `${cityName} Metropolitan Center`,
+      famousSpot: `${cityName} Metropolitan Center`,
       imageUrl: CATEGORY_FALLBACKS.METRO_FOOD.imageUrl,
       tag: 'Urban Metropolis',
     };
@@ -1026,6 +1258,7 @@ function resolveCategoryFallback(cityName = 'Destination') {
     return {
       title: cityName,
       landmark: `${cityName} Cultural Heritage`,
+      famousSpot: `${cityName} Cultural Heritage`,
       imageUrl: CATEGORY_FALLBACKS.HERITAGE_CULTURE.imageUrl,
       tag: 'Cultural Heritage',
     };
@@ -1033,18 +1266,22 @@ function resolveCategoryFallback(cityName = 'Destination') {
 
   return {
     title: cityName,
-    landmark: `${cityName} Scenic Region`,
+    landmark: `${cityName} Scenic Landmark`,
+    famousSpot: `${cityName} Scenic Landmark`,
     imageUrl: CATEGORY_FALLBACKS.GLOBAL.imageUrl,
     tag: 'Global Travel Destination',
   };
 }
 
 /**
- * Fetch dynamic authentic landmark image from Wikipedia / Wikimedia Commons.
- * Accurately matches any worldwide city or Philippine municipality.
- * Rejects flags, coat of arms, or icons in favor of genuine landscape photography.
+ * Fetch dynamic authentic landmark image using multi-source verification:
+ * Source 1: Curated hand-verified high-res landmark database
+ * Source 2: Target-specific landmark Wikipedia API (queries the famous spot directly to avoid country flags)
+ * Source 3: Wikimedia Commons query API with strict anti-flag and anti-logo filters
+ *
+ * Accurately matches any worldwide city or Philippine municipality without displaying flags.
  */
-export async function fetchDestinationMedia(cityName) {
+export async function fetchDestinationMedia(cityName, targetLandmark = null) {
   if (!cityName) return null;
   const clean = cityName.trim();
   const cacheKey = clean.toLowerCase();
@@ -1053,16 +1290,12 @@ export async function fetchDestinationMedia(cityName) {
     return memoryCache.get(cacheKey);
   }
 
-  // Check sessionStorage (purge any legacy cached flags/svgs)
+  // 1. Check sessionStorage (purge any legacy cached flags/svgs)
   try {
     const cached = sessionStorage.getItem(`skyplan_dest_media_${cacheKey}`);
     if (cached) {
       const parsed = JSON.parse(cached);
-      if (
-        parsed.imageUrl &&
-        !parsed.imageUrl.includes('.svg') &&
-        !/flag|coat_of_arms|seal_of|logo/i.test(parsed.imageUrl)
-      ) {
+      if (isValidPhotoUrl(parsed.imageUrl)) {
         memoryCache.set(cacheKey, parsed);
         return parsed;
       } else {
@@ -1071,20 +1304,31 @@ export async function fetchDestinationMedia(cityName) {
     }
   } catch (_) {}
 
-  // Candidates to try
+  // 2. First check if we have a verified curated landmark entry
+  const curated = getDestinationMedia(clean);
+  if (curated && curated.imageUrl && isValidPhotoUrl(curated.imageUrl) && curated.tag !== 'Global Travel Destination') {
+    memoryCache.set(cacheKey, curated);
+    return curated;
+  }
+
+  // 3. Resolve base names and candidate landmark queries
   const baseCity = clean
     .replace(/\s*\([^)]*\)/g, '')
     .split(',')[0]
     .replace(/ city$/i, '')
     .trim();
 
-  const candidates = [
-    clean,
-    baseCity,
-    `${baseCity}_City`,
-    `${clean},_Philippines`,
-  ];
+  const landmarkQuery = targetLandmark || curated?.landmark || `${baseCity} landmark`;
 
+  // Candidate spot queries specifically designed to fetch REAL LANDMARKS, avoiding general country/city flags
+  const candidates = [
+    targetLandmark,
+    curated?.landmark,
+    `${baseCity} Landmark`,
+    baseCity,
+  ].filter(Boolean);
+
+  // Source 2: Direct Wikipedia summary for the famous spot
   for (const candidate of candidates) {
     try {
       const endpoint = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(candidate)}`;
@@ -1092,27 +1336,25 @@ export async function fetchDestinationMedia(cityName) {
         headers: {
           'User-Agent': 'SkyPlanApp/1.0 (contact: mark@skyplan.dev)',
         },
+        signal: AbortSignal.timeout(3500),
       });
 
       if (!response.ok) continue;
 
       const data = await response.json();
-      const rawThumb = data.thumbnail?.source || data.originalimage?.source;
+      const rawThumb = data.originalimage?.source || data.thumbnail?.source;
 
-      // Strictly reject flags, coat of arms, or logos
-      if (
-        rawThumb &&
-        !rawThumb.includes('.svg') &&
-        !/flag|coat_of_arms|seal_of|logo/i.test(rawThumb)
-      ) {
-        const famousSpotName = data.description || `${data.title || clean} Famous Landmark`;
+      // Strictly verify it is a real landscape photo and not a flag/coat of arms/logo
+      if (isValidPhotoUrl(rawThumb)) {
+        const spotName = targetLandmark || data.title || `${baseCity} Famous Spot`;
         const mediaObj = {
-          title: data.title || clean,
-          landmark: famousSpotName,
-          famousSpot: famousSpotName,
+          title: data.title || baseCity,
+          landmark: spotName,
+          famousSpot: spotName,
           imageUrl: rawThumb,
           tag: data.description || 'Famous Travel Landmark',
           extract: data.extract,
+          source: 'wikipedia-landmark',
         };
 
         memoryCache.set(cacheKey, mediaObj);
@@ -1127,8 +1369,42 @@ export async function fetchDestinationMedia(cityName) {
     }
   }
 
-  // Seamless fallback to our curated verified high-res photo database
-  const fallback = getDestinationMedia(clean);
-  memoryCache.set(cacheKey, fallback);
-  return fallback;
+  // Source 3: Wikimedia Commons multi-image search for authentic tourist landmark photography
+  try {
+    const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(
+      landmarkQuery + ' tourist attraction'
+    )}&gsrlimit=3&prop=pageimages&piprop=thumbnail|original&pithumbsize=1280&format=json&origin=*`;
+    
+    const searchRes = await fetch(searchUrl, { signal: AbortSignal.timeout(3500) });
+    if (searchRes.ok) {
+      const searchData = await searchRes.json();
+      const pages = Object.values(searchData.query?.pages || {});
+      for (const page of pages) {
+        const thumbUrl = page.original?.source || page.thumbnail?.source;
+        if (isValidPhotoUrl(thumbUrl)) {
+          const spotName = page.title || landmarkQuery;
+          const mediaObj = {
+            title: baseCity,
+            landmark: spotName,
+            famousSpot: spotName,
+            imageUrl: thumbUrl,
+            tag: 'Famous Landmark Spot',
+            source: 'commons-search',
+          };
+
+          memoryCache.set(cacheKey, mediaObj);
+          try {
+            sessionStorage.setItem(`skyplan_dest_media_${cacheKey}`, JSON.stringify(mediaObj));
+          } catch (_) {}
+
+          return mediaObj;
+        }
+      }
+    }
+  } catch (_) {}
+
+  // Fallback to our curated verified high-res photo database
+  memoryCache.set(cacheKey, curated);
+  return curated;
 }
+

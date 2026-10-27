@@ -19,7 +19,10 @@ import {
   Camera,
   Globe,
   Plane,
+  Loader2,
 } from 'lucide-react';
+import { getDestinationMedia } from '../../services/destinationMediaService';
+
 
 /**
  * Category groups for filtering destinations
@@ -1216,6 +1219,456 @@ export const GLOBAL_DESTINATIONS = [
     badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
     keywords: ['dubai', 'uae', 'burj khalifa', 'emirates', 'marina', 'desert', 'downtown dubai'],
   },
+  {
+    city: 'Reykjavik',
+    shortName: 'Reykjavik',
+    province: 'Capital Region',
+    region: 'Iceland',
+    country: 'Iceland',
+    category: 'Highland & Nature',
+    categoryGroup: 'HIGHLAND_NATURE',
+    popular: true,
+    highlight: 'Hallgrímskirkja • Blue Lagoon • Northern Lights & Glaciers',
+    tag: 'Land of Fire & Ice',
+    icon: Mountain,
+    badgeColor: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
+    keywords: ['reykjavik', 'iceland', 'hallgrimskirkja', 'blue lagoon', 'aurora', 'glacier', 'geysir'],
+  },
+  {
+    city: 'Cairo',
+    shortName: 'Cairo',
+    province: 'Cairo Governorate',
+    region: 'Egypt',
+    country: 'Egypt',
+    category: 'Ancient Heritage',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: true,
+    highlight: 'Giza Pyramids • Great Sphinx • Nile River Feluccas',
+    tag: 'Cradle of Ancient Wonder',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['cairo', 'egypt', 'pyramids', 'giza', 'sphinx', 'nile', 'museum'],
+  },
+  {
+    city: 'Cusco',
+    shortName: 'Cusco',
+    province: 'Cusco Region',
+    region: 'Peru',
+    country: 'Peru',
+    category: 'Highland & Heritage',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: true,
+    highlight: 'Machu Picchu • Sacred Valley • Plaza de Armas',
+    tag: 'Imperial Inca Capital',
+    icon: Mountain,
+    badgeColor: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
+    keywords: ['cusco', 'cuzco', 'peru', 'machu picchu', 'andes', 'inca', 'sacred valley'],
+  },
+  {
+    city: 'Nairobi',
+    shortName: 'Nairobi',
+    province: 'Nairobi County',
+    region: 'Kenya',
+    country: 'Kenya',
+    category: 'Highland & Wildlife',
+    categoryGroup: 'HIGHLAND_NATURE',
+    popular: true,
+    highlight: 'Nairobi National Park • Giraffe Centre • Great Rift Valley',
+    tag: 'Green City in the Sun',
+    icon: Trees,
+    badgeColor: 'text-emerald-600 bg-emerald-600/10 border-emerald-600/20',
+    keywords: ['nairobi', 'kenya', 'safari', 'national park', 'giraffe centre', 'africa'],
+  },
+  {
+    city: 'Berlin',
+    shortName: 'Berlin',
+    province: 'Berlin State',
+    region: 'Germany',
+    country: 'Germany',
+    category: 'Metropolis & History',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Brandenburg Gate • Museum Island • Reichstag Dome',
+    tag: 'Historic Cultural Capital',
+    icon: Building2,
+    badgeColor: 'text-sky-500 bg-sky-500/10 border-sky-500/20',
+    keywords: ['berlin', 'germany', 'brandenburg gate', 'reichstag', 'museum island', 'europe'],
+  },
+  {
+    city: 'Munich',
+    shortName: 'Munich',
+    province: 'Bavaria',
+    region: 'Germany',
+    country: 'Germany',
+    category: 'Culture & Heritage',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Marienplatz • Nymphenburg Palace • English Garden',
+    tag: 'Heart of Bavaria',
+    icon: Landmark,
+    badgeColor: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
+    keywords: ['munich', 'muenchen', 'germany', 'bavaria', 'marienplatz', 'nymphenburg'],
+  },
+  {
+    city: 'Vienna',
+    shortName: 'Vienna',
+    province: 'Vienna State',
+    region: 'Austria',
+    country: 'Austria',
+    category: 'Imperial Heritage',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: true,
+    highlight: 'Schönbrunn Palace • St. Stephen’s Cathedral • Opera House',
+    tag: 'City of Classical Music',
+    icon: Landmark,
+    badgeColor: 'text-amber-600 bg-amber-600/10 border-amber-600/20',
+    keywords: ['vienna', 'wien', 'austria', 'schonbrunn', 'hofburg', 'danube', 'mozart'],
+  },
+  {
+    city: 'Prague',
+    shortName: 'Prague',
+    province: 'Bohemia',
+    region: 'Czech Republic',
+    country: 'Czech Republic',
+    category: 'Historic Architecture',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: true,
+    highlight: 'Charles Bridge • Prague Castle • Old Town Astronomical Clock',
+    tag: 'City of a Hundred Spires',
+    icon: Landmark,
+    badgeColor: 'text-rose-500 bg-rose-500/10 border-rose-500/20',
+    keywords: ['prague', 'praha', 'czech', 'charles bridge', 'prague castle', 'astronomical clock'],
+  },
+  {
+    city: 'Zurich',
+    shortName: 'Zurich',
+    province: 'Canton of Zurich',
+    region: 'Switzerland',
+    country: 'Switzerland',
+    category: 'Lakes & Alps',
+    categoryGroup: 'HIGHLAND_NATURE',
+    popular: true,
+    highlight: 'Lake Zurich Promenade • Altstadt Old Town • Alpine Vistas',
+    tag: 'Alpine Lakeside Metropolis',
+    icon: Mountain,
+    badgeColor: 'text-teal-600 bg-teal-600/10 border-teal-600/20',
+    keywords: ['zurich', 'switzerland', 'swiss', 'lake zurich', 'alps', 'altstadt'],
+  },
+  {
+    city: 'Athens',
+    shortName: 'Athens',
+    province: 'Attica',
+    region: 'Greece',
+    country: 'Greece',
+    category: 'Ancient Heritage',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: true,
+    highlight: 'The Parthenon & Acropolis • Plaka Historic Quarter • Temple of Zeus',
+    tag: 'Birthplace of Western Civilization',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['athens', 'greece', 'acropolis', 'parthenon', 'plaka', 'aegean'],
+  },
+  {
+    city: 'Venice',
+    shortName: 'Venice',
+    province: 'Veneto',
+    region: 'Italy',
+    country: 'Italy',
+    category: 'Canals & Romance',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'St. Mark’s Basilica • Grand Canal Gondolas • Rialto Bridge',
+    tag: 'Floating Canal Oasis',
+    icon: Waves,
+    badgeColor: 'text-sky-600 bg-sky-600/10 border-sky-600/20',
+    keywords: ['venice', 'venezia', 'italy', 'grand canal', 'rialto', 'san marco', 'gondola'],
+  },
+  {
+    city: 'Florence',
+    shortName: 'Florence',
+    province: 'Tuscany',
+    region: 'Italy',
+    country: 'Italy',
+    category: 'Renaissance Art',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: true,
+    highlight: 'Florence Cathedral Duomo • Ponte Vecchio • Uffizi Gallery',
+    tag: 'Cradle of the Renaissance',
+    icon: Landmark,
+    badgeColor: 'text-amber-600 bg-amber-600/10 border-amber-600/20',
+    keywords: ['florence', 'firenze', 'italy', 'tuscany', 'duomo', 'ponte vecchio', 'uffizi'],
+  },
+  {
+    city: 'Madrid',
+    shortName: 'Madrid',
+    province: 'Community of Madrid',
+    region: 'Spain',
+    country: 'Spain',
+    category: 'Metropolis & Art',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Royal Palace of Madrid • Prado Museum • Retiro Park Glass Palace',
+    tag: 'Royal Heart of Spain',
+    icon: Building2,
+    badgeColor: 'text-orange-500 bg-orange-500/10 border-orange-500/20',
+    keywords: ['madrid', 'spain', 'royal palace', 'prado', 'retiro', 'gran via'],
+  },
+  {
+    city: 'Lisbon',
+    shortName: 'Lisbon',
+    province: 'Lisbon District',
+    region: 'Portugal',
+    country: 'Portugal',
+    category: 'Coastal Heritage',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Belém Tower • Jerónimos Monastery • Tram 28 Miradouros',
+    tag: 'City of Seven Hills',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['lisbon', 'lisboa', 'portugal', 'belem tower', 'alfama', 'tram 28', 'tagus'],
+  },
+  {
+    city: 'Edinburgh',
+    shortName: 'Edinburgh',
+    province: 'Scotland',
+    region: 'United Kingdom',
+    country: 'United Kingdom',
+    category: 'Historic Castles',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: true,
+    highlight: 'Edinburgh Castle • Royal Mile • Arthur’s Seat Volcanic Peak',
+    tag: 'Gothic Castle Capital',
+    icon: Landmark,
+    badgeColor: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
+    keywords: ['edinburgh', 'scotland', 'uk', 'edinburgh castle', 'royal mile', 'arthurs seat'],
+  },
+  {
+    city: 'Dublin',
+    shortName: 'Dublin',
+    province: 'Leinster',
+    region: 'Ireland',
+    country: 'Ireland',
+    category: 'Heritage & Pubs',
+    categoryGroup: 'GLOBAL',
+    popular: false,
+    highlight: 'Trinity College Long Room • Temple Bar • St. Stephen’s Green',
+    tag: 'Emerald Literary Capital',
+    icon: Landmark,
+    badgeColor: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
+    keywords: ['dublin', 'ireland', 'trinity college', 'temple bar', 'guinness'],
+  },
+  {
+    city: 'Istanbul',
+    shortName: 'Istanbul',
+    province: 'Marmara Region',
+    region: 'Turkey',
+    country: 'Turkey',
+    category: 'East Meets West',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: true,
+    highlight: 'Hagia Sophia • Blue Mosque • Bosphorus Sunset Cruise',
+    tag: 'Crossroads of Two Continents',
+    icon: Landmark,
+    badgeColor: 'text-teal-600 bg-teal-600/10 border-teal-600/20',
+    keywords: ['istanbul', 'turkey', 'turkiye', 'hagia sophia', 'blue mosque', 'bosphorus', 'bazaar'],
+  },
+  {
+    city: 'Rio de Janeiro',
+    shortName: 'Rio de Janeiro',
+    province: 'State of Rio de Janeiro',
+    region: 'Brazil',
+    country: 'Brazil',
+    category: 'Beaches & Wonders',
+    categoryGroup: 'BEACH_ISLAND',
+    popular: true,
+    highlight: 'Christ the Redeemer • Copacabana Beach • Sugarloaf Mountain',
+    tag: 'Marvelous Coastal City',
+    icon: Palmtree,
+    badgeColor: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
+    keywords: ['rio', 'rio de janeiro', 'brazil', 'copacabana', 'christ the redeemer', 'ipanema', 'sugarloaf'],
+  },
+  {
+    city: 'Buenos Aires',
+    shortName: 'Buenos Aires',
+    province: 'Autonomous City',
+    region: 'Argentina',
+    country: 'Argentina',
+    category: 'Culture & Tango',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Obelisco de Buenos Aires • Plaza de Mayo • Caminito La Boca',
+    tag: 'Paris of South America',
+    icon: Building2,
+    badgeColor: 'text-sky-500 bg-sky-500/10 border-sky-500/20',
+    keywords: ['buenos aires', 'argentina', 'obelisco', 'tango', 'la boca', 'recoleta'],
+  },
+  {
+    city: 'Vancouver',
+    shortName: 'Vancouver',
+    province: 'British Columbia',
+    region: 'Canada',
+    country: 'Canada',
+    category: 'Nature & Metropolis',
+    categoryGroup: 'HIGHLAND_NATURE',
+    popular: true,
+    highlight: 'Stanley Park Seawall • Capilano Suspension Bridge • Coastal Mountains',
+    tag: 'Pacific Coastal Gem',
+    icon: Mountain,
+    badgeColor: 'text-teal-600 bg-teal-600/10 border-teal-600/20',
+    keywords: ['vancouver', 'canada', 'stanley park', 'capilano', 'british columbia', 'granville'],
+  },
+  {
+    city: 'Toronto',
+    shortName: 'Toronto',
+    province: 'Ontario',
+    region: 'Canada',
+    country: 'Canada',
+    category: 'Metropolis',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'CN Tower Skydeck • Toronto Islands • Distillery Historic District',
+    tag: 'Global Cultural Mosaic',
+    icon: Building2,
+    badgeColor: 'text-red-500 bg-red-500/10 border-red-500/20',
+    keywords: ['toronto', 'canada', 'cn tower', 'ontario', 'lake ontario'],
+  },
+  {
+    city: 'Chicago',
+    shortName: 'Chicago',
+    province: 'Illinois',
+    region: 'United States',
+    country: 'United States',
+    category: 'Architecture & Lake',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Cloud Gate (The Bean) • Millennium Park • Willis Tower Skydeck',
+    tag: 'Windy City Skyline',
+    icon: Building2,
+    badgeColor: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
+    keywords: ['chicago', 'illinois', 'usa', 'cloud gate', 'the bean', 'millennium park', 'willis tower'],
+  },
+  {
+    city: 'Miami',
+    shortName: 'Miami',
+    province: 'Florida',
+    region: 'United States',
+    country: 'United States',
+    category: 'Beach & Deco',
+    categoryGroup: 'BEACH_ISLAND',
+    popular: true,
+    highlight: 'South Beach Ocean Drive • Art Deco Historic District • Biscayne Bay',
+    tag: 'Magic City Waterfront',
+    icon: Palmtree,
+    badgeColor: 'text-pink-500 bg-pink-500/10 border-pink-500/20',
+    keywords: ['miami', 'florida', 'usa', 'south beach', 'ocean drive', 'art deco', 'biscayne'],
+  },
+  {
+    city: 'Las Vegas',
+    shortName: 'Las Vegas',
+    province: 'Nevada',
+    region: 'United States',
+    country: 'United States',
+    category: 'Entertainment',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'The Las Vegas Strip • Bellagio Fountains • High Roller Observation Wheel',
+    tag: 'Neon Entertainment Capital',
+    icon: Building2,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['las vegas', 'vegas', 'nevada', 'usa', 'strip', 'bellagio', 'fountains'],
+  },
+  {
+    city: 'Cape Town',
+    shortName: 'Cape Town',
+    province: 'Western Cape',
+    region: 'South Africa',
+    country: 'South Africa',
+    category: 'Mountain & Ocean',
+    categoryGroup: 'HIGHLAND_NATURE',
+    popular: true,
+    highlight: 'Table Mountain Cableway • V&A Waterfront • Cape Point Ocean Cliffs',
+    tag: 'Mother City of Two Oceans',
+    icon: Mountain,
+    badgeColor: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
+    keywords: ['cape town', 'south africa', 'table mountain', 'waterfront', 'cape of good hope', 'africa'],
+  },
+  {
+    city: 'Auckland',
+    shortName: 'Auckland',
+    province: 'North Island',
+    region: 'New Zealand',
+    country: 'New Zealand',
+    category: 'Harbor & Volcanoes',
+    categoryGroup: 'GLOBAL',
+    popular: false,
+    highlight: 'Sky Tower • Waitematā Harbour • Mount Eden Volcanic Crater',
+    tag: 'City of Sails',
+    icon: Waves,
+    badgeColor: 'text-sky-500 bg-sky-500/10 border-sky-500/20',
+    keywords: ['auckland', 'new zealand', 'sky tower', 'waitemata', 'nz'],
+  },
+  {
+    city: 'Queenstown',
+    shortName: 'Queenstown',
+    province: 'Otago, South Island',
+    region: 'New Zealand',
+    country: 'New Zealand',
+    category: 'Alpine Adventure',
+    categoryGroup: 'SURF_ADVENTURE',
+    popular: true,
+    highlight: 'Lake Wakatipu • The Remarkables Alps • Milford Sound Gateway',
+    tag: 'Adventure Capital of the World',
+    icon: Mountain,
+    badgeColor: 'text-cyan-500 bg-cyan-500/10 border-cyan-500/20',
+    keywords: ['queenstown', 'new zealand', 'remarkables', 'lake wakatipu', 'milford sound', 'adventure', 'nz'],
+  },
+  {
+    city: 'Beijing',
+    shortName: 'Beijing',
+    province: 'Capital Municipality',
+    region: 'China',
+    country: 'China',
+    category: 'Ancient Dynasties',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: true,
+    highlight: 'The Forbidden City • Great Wall of China • Temple of Heaven',
+    tag: 'Imperial Dynasty Heart',
+    icon: Landmark,
+    badgeColor: 'text-red-600 bg-red-600/10 border-red-600/20',
+    keywords: ['beijing', 'china', 'forbidden city', 'great wall', 'temple of heaven', 'tiananmen'],
+  },
+  {
+    city: 'Shanghai',
+    shortName: 'Shanghai',
+    province: 'Municipality',
+    region: 'China',
+    country: 'China',
+    category: 'Futuristic Metropolis',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'The Bund Waterfront • Oriental Pearl Tower • Yu Garden',
+    tag: 'Paris of the East',
+    icon: Building2,
+    badgeColor: 'text-purple-600 bg-purple-600/10 border-purple-600/20',
+    keywords: ['shanghai', 'china', 'the bund', 'oriental pearl', 'pudong', 'yu garden'],
+  },
+  {
+    city: 'Milan',
+    shortName: 'Milan',
+    province: 'Lombardy',
+    region: 'Italy',
+    country: 'Italy',
+    category: 'Fashion & Heritage',
+    categoryGroup: 'GLOBAL',
+    popular: true,
+    highlight: 'Duomo di Milano • Galleria Vittorio Emanuele II • Sforza Castle',
+    tag: 'Global Fashion & Design Capital',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['milan', 'milano', 'italy', 'duomo', 'galleria', 'fashion', 'lombardy'],
+  },
 ];
 
 /**
@@ -1279,6 +1732,64 @@ export default function DestinationAutocomplete({
   // Filter recommendations based on query and selected category tab
   const cleanQuery = (query || '').toLowerCase().trim();
 
+  // Worldwide live geocoding search for queries not limited to presets
+  const [liveResults, setLiveResults] = useState([]);
+  const [isLiveSearching, setIsLiveSearching] = useState(false);
+
+  useEffect(() => {
+    const trimmed = cleanQuery;
+    if (trimmed.length < 2) {
+      setLiveResults([]);
+      setIsLiveSearching(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        setIsLiveSearching(true);
+        const res = await fetch(
+          `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(trimmed)}&count=6&language=en`,
+          { signal: AbortSignal.timeout(3000) }
+        );
+        if (!res.ok) throw new Error('Geocoding request failed');
+        const data = await res.json();
+        if (Array.isArray(data.results)) {
+          const formatted = data.results.map((r) => {
+            const locName = `${r.name}${r.admin1 ? `, ${r.admin1}` : ''}`;
+            const media = getDestinationMedia(r.name);
+            return {
+              city: locName,
+              shortName: r.name,
+              province: r.admin1 || r.country || 'Global',
+              region: r.country || 'International',
+              country: r.country || 'Worldwide',
+              category: 'Worldwide',
+              categoryGroup: r.country === 'Philippines' ? 'PHILIPPINES' : 'GLOBAL',
+              popular: false,
+              highlight: media.landmark || `${r.name} • ${r.admin1 ? `${r.admin1}, ` : ''}${r.country || 'Worldwide'}`,
+              tag: r.country || 'Worldwide',
+              icon: Globe,
+              badgeColor: 'text-sky-500 bg-sky-500/10 border-sky-500/20',
+              keywords: [r.name.toLowerCase(), (r.country || '').toLowerCase()],
+              latitude: r.latitude,
+              longitude: r.longitude,
+              isLive: true,
+            };
+          });
+          setLiveResults(formatted);
+        } else {
+          setLiveResults([]);
+        }
+      } catch (err) {
+        setLiveResults([]);
+      } finally {
+        setIsLiveSearching(false);
+      }
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [cleanQuery]);
+
   const filteredDestinations = cleanQuery
     ? ALL_DESTINATIONS.filter((dest) => {
         const matchesQuery =
@@ -1304,6 +1815,27 @@ export default function DestinationAutocomplete({
         if (selectedCategory === 'PHILIPPINES') return dest.country === 'Philippines';
         return dest.categoryGroup === selectedCategory;
       });
+
+  // Seamlessly merge curated destinations with worldwide live geocoding results
+  const combinedDestinations = [...filteredDestinations];
+  if (cleanQuery.length >= 2 && liveResults.length > 0) {
+    liveResults.forEach((liveDest) => {
+      const alreadyExists = combinedDestinations.some(
+        (cd) =>
+          cd.city.toLowerCase() === liveDest.city.toLowerCase() ||
+          cd.shortName.toLowerCase() === liveDest.shortName.toLowerCase()
+      );
+      if (!alreadyExists) {
+        if (selectedCategory === 'ALL') {
+          combinedDestinations.push(liveDest);
+        } else if (selectedCategory === 'PHILIPPINES' && liveDest.country === 'Philippines') {
+          combinedDestinations.push(liveDest);
+        } else if (selectedCategory === 'GLOBAL' && liveDest.country !== 'Philippines') {
+          combinedDestinations.push(liveDest);
+        }
+      }
+    });
+  }
 
   const handleInputChange = (e) => {
     const val = e.target.value;
@@ -1345,7 +1877,7 @@ export default function DestinationAutocomplete({
       return;
     }
 
-    const totalItems = filteredDestinations.length + (cleanQuery ? 1 : 0);
+    const totalItems = combinedDestinations.length + (cleanQuery ? 1 : 0);
 
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -1355,12 +1887,12 @@ export default function DestinationAutocomplete({
       setHighlightedIndex((prev) => (prev - 1 >= 0 ? prev - 1 : totalItems - 1));
     } else if (e.key === 'Enter') {
       e.preventDefault();
-      if (highlightedIndex >= 0 && highlightedIndex < filteredDestinations.length) {
-        handleSelect(filteredDestinations[highlightedIndex]);
-      } else if (highlightedIndex === filteredDestinations.length && cleanQuery) {
+      if (highlightedIndex >= 0 && highlightedIndex < combinedDestinations.length) {
+        handleSelect(combinedDestinations[highlightedIndex]);
+      } else if (highlightedIndex === combinedDestinations.length && cleanQuery) {
         handleSelectCustom();
-      } else if (filteredDestinations.length > 0) {
-        handleSelect(filteredDestinations[0]);
+      } else if (combinedDestinations.length > 0) {
+        handleSelect(combinedDestinations[0]);
       } else {
         handleSelectCustom();
       }
@@ -1440,13 +1972,17 @@ export default function DestinationAutocomplete({
       {/* Comprehensive Destination Autocomplete and Recommendations Dropdown */}
       {isOpen && (
         <div className="absolute left-0 right-0 top-full mt-1.5 z-50 rounded-2xl bg-surface-container-low/95 backdrop-blur-2xl border border-white/15 shadow-2xl divide-y divide-white/5 animate-in fade-in slide-in-from-top-2 duration-150 overflow-hidden">
-          {/* Header Indicator with Count */}
+          {/* Header Indicator with Count & Live Geocoding Status */}
           <div className="px-3.5 py-2.5 flex items-center justify-between text-[11px] text-outline font-medium bg-surface-container/60 border-b border-white/5">
             <span className="flex items-center gap-1.5 text-on-surface font-semibold">
-              <Sparkles className="w-3.5 h-3.5 text-primary" />
+              {isLiveSearching ? (
+                <Loader2 className="w-3.5 h-3.5 text-primary animate-spin" />
+              ) : (
+                <Sparkles className="w-3.5 h-3.5 text-primary" />
+              )}
               {cleanQuery
-                ? `Matching destinations (${filteredDestinations.length})`
-                : `Recommended destinations (${filteredDestinations.length} available)`}
+                ? `Matching worldwide destinations (${combinedDestinations.length})`
+                : `Recommended destinations (${combinedDestinations.length} available)`}
             </span>
             <span className="text-[10px] uppercase tracking-wider text-primary font-bold px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20">
               100+ Worldwide & Local
@@ -1479,17 +2015,18 @@ export default function DestinationAutocomplete({
             })}
           </div>
 
-          {/* List of Destination Cards */}
+          {/* List of Destination Cards with Famous Spot Previews */}
           <div className="max-h-[300px] sm:max-h-[380px] overflow-y-auto overscroll-contain p-1.5 space-y-1 scrollbar-thin">
-            {filteredDestinations.length > 0 ? (
-              filteredDestinations.map((dest, index) => {
+            {combinedDestinations.length > 0 ? (
+              combinedDestinations.map((dest, index) => {
                 const IconComponent = dest.icon || MapPin;
                 const isSelected = highlightedIndex === index;
                 const isExactActive = (value || '').toLowerCase() === dest.city.toLowerCase();
+                const media = getDestinationMedia(dest.shortName || dest.city);
 
                 return (
                   <button
-                    key={`${dest.city}-${dest.country || ''}`}
+                    key={`${dest.city}-${dest.country || ''}-${index}`}
                     type="button"
                     onClick={() => handleSelect(dest)}
                     onMouseEnter={() => setHighlightedIndex(index)}
@@ -1499,13 +2036,19 @@ export default function DestinationAutocomplete({
                         : 'hover:bg-surface-container/80 text-on-surface-variant'
                     } ${isExactActive ? 'border-l-2 border-primary bg-primary/5' : ''}`}
                   >
-                    {/* Destination Icon Capsule */}
-                    <div
-                      className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 ${
-                        dest.badgeColor || 'bg-primary/10 text-primary border border-primary/20'
-                      }`}
-                    >
-                      <IconComponent className="w-4 h-4" />
+                    {/* Destination Famous Spot Preview Thumbnail */}
+                    <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-white/10 shadow-sm bg-surface-container group-hover:border-primary/40 transition-all">
+                      <img
+                        src={media.imageUrl}
+                        alt={media.landmark || dest.city}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=300&q=80';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
                     </div>
 
                     {/* Location Info */}
@@ -1532,10 +2075,11 @@ export default function DestinationAutocomplete({
                         {highlightMatch(`${dest.province}, ${dest.country || dest.region}`, cleanQuery)}
                       </p>
 
-                      <p className="text-[10px] text-tertiary truncate mt-0.5 flex items-center gap-1">
-                        <MapPin className="w-3 h-3 text-primary shrink-0" />
-                        <span className="font-semibold text-primary">Famous Spot:</span>
-                        <span className="truncate">{dest.highlight}</span>
+                      <p className="text-[10px] text-tertiary truncate mt-1 flex items-center gap-1.5">
+                        <span className="inline-flex items-center gap-1 font-bold text-[9px] text-primary uppercase tracking-wider bg-primary/10 px-1.5 py-0.2 rounded border border-primary/20 shrink-0">
+                          <MapPin className="w-2.5 h-2.5 text-primary" /> Famous Spot
+                        </span>
+                        <span className="truncate text-on-surface/90 font-medium">{media.landmark || dest.highlight}</span>
                       </p>
                     </div>
 
@@ -1563,9 +2107,9 @@ export default function DestinationAutocomplete({
               <button
                 type="button"
                 onClick={handleSelectCustom}
-                onMouseEnter={() => setHighlightedIndex(filteredDestinations.length)}
+                onMouseEnter={() => setHighlightedIndex(combinedDestinations.length)}
                 className={`w-full text-left p-2.5 rounded-xl transition-all flex items-center gap-3 border-t border-white/5 ${
-                  highlightedIndex === filteredDestinations.length
+                  highlightedIndex === combinedDestinations.length
                     ? 'bg-surface-container-highest text-primary'
                     : 'hover:bg-surface-container/60 text-outline'
                 }`}
