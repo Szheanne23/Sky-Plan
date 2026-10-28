@@ -883,6 +883,538 @@ export const PHILIPPINE_DESTINATIONS = [
     badgeColor: 'text-secondary bg-secondary/10 border-secondary/20',
     keywords: ['pasig', 'ortigas', 'kapitolyo', 'emerald avenue', 'metro manila'],
   },
+  {
+    city: 'Antipolo City',
+    shortName: 'Antipolo',
+    province: 'Rizal',
+    region: 'CALABARZON (Region 4A)',
+    category: 'Highland',
+    categoryGroup: 'HIGHLAND_NATURE',
+    popular: true,
+    highlight: 'Pinto Art Museum • Hinulugang Taktak • Scenic Overlooking Cafes',
+    tag: 'Pilgrimage & Art City',
+    icon: Mountain,
+    badgeColor: 'text-primary bg-primary/10 border-primary/20',
+    keywords: ['antipolo', 'rizal', 'pinto art', 'hinulugang taktak', 'overlooking', 'calabarzon'],
+  },
+  {
+    city: 'Lucena City',
+    shortName: 'Lucena',
+    province: 'Quezon Province',
+    region: 'CALABARZON (Region 4A)',
+    category: 'Heritage & Food',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Pancit Habhab Delights • Lucena Cathedral • Dalahican Bay Ports',
+    tag: 'Bio-City of the South',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['lucena', 'quezon', 'habhab', 'dalahican', 'calabarzon', 'southern tagalog'],
+  },
+  {
+    city: 'Cabanatuan City',
+    shortName: 'Cabanatuan',
+    province: 'Nueva Ecija',
+    region: 'Central Luzon (Region 3)',
+    category: 'Metro',
+    categoryGroup: 'METRO_FOOD',
+    popular: false,
+    highlight: 'Plaza Lucero • Historic General Luna Statue • Local Longganisa',
+    tag: 'Tricycle Capital & Granary Hub',
+    icon: Utensils,
+    badgeColor: 'text-secondary bg-secondary/10 border-secondary/20',
+    keywords: ['cabanatuan', 'nueva ecija', 'longganisa', 'central luzon'],
+  },
+  {
+    city: 'Tarlac City',
+    shortName: 'Tarlac',
+    province: 'Tarlac',
+    region: 'Central Luzon (Region 3)',
+    category: 'Heritage & Culture',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Monasterio de Tarlac • Aquino Center & Museum • Kart City',
+    tag: 'Heart of Central Luzon',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['tarlac', 'monasterio', 'aquino center', 'central luzon'],
+  },
+  {
+    city: 'San Fernando (Pampanga)',
+    shortName: 'San Fernando',
+    province: 'Pampanga',
+    region: 'Central Luzon (Region 3)',
+    category: 'Heritage & Food',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Giant Lantern Festival • Historic Railway Station • Kapampangan Culinary',
+    tag: 'Christmas Capital of the Philippines',
+    icon: Sparkles,
+    badgeColor: 'text-primary bg-primary/10 border-primary/20',
+    keywords: ['san fernando', 'pampanga', 'giant lantern', 'parol', 'central luzon'],
+  },
+  {
+    city: 'San Fernando (La Union)',
+    shortName: 'San Fernando LU',
+    province: 'La Union',
+    region: 'Ilocos Region (Region 1)',
+    category: 'Coast & Culture',
+    categoryGroup: 'SURF_ADVENTURE',
+    popular: false,
+    highlight: 'Poro Point Lighthouse • Ma-Cho Taoist Temple • Botanical Gardens',
+    tag: 'Gateway to the North Coast',
+    icon: Waves,
+    badgeColor: 'text-tertiary bg-tertiary/10 border-tertiary/20',
+    keywords: ['san fernando la union', 'san fernando lu', 'poro point', 'ma-cho temple', 'la union', 'ilocos'],
+  },
+  {
+    city: 'Alaminos (Hundred Islands)',
+    shortName: 'Hundred Islands',
+    province: 'Pangasinan',
+    region: 'Ilocos Region (Region 1)',
+    category: 'Island',
+    categoryGroup: 'BEACH_ISLAND',
+    popular: true,
+    highlight: '124 Mushroom-Shaped Islands • Governor Island Zipline • Snorkeling Marine Sanctuary',
+    tag: 'National Marine Park',
+    icon: Palmtree,
+    badgeColor: 'text-optimal bg-optimal/10 border-optimal/20',
+    keywords: ['alaminos', 'hundred islands', 'pangasinan', 'governor island', 'snorkeling', 'ilocos'],
+  },
+  {
+    city: 'Dagupan City',
+    shortName: 'Dagupan',
+    province: 'Pangasinan',
+    region: 'Ilocos Region (Region 1)',
+    category: 'Food & Coastal',
+    categoryGroup: 'METRO_FOOD',
+    popular: false,
+    highlight: 'Bonuan Tondaligan Blue Beach • World-Renowned Bangus Capital • Seafood Docks',
+    tag: 'Bangus Capital of the Philippines',
+    icon: Utensils,
+    badgeColor: 'text-tertiary bg-tertiary/10 border-tertiary/20',
+    keywords: ['dagupan', 'pangasinan', 'bangus', 'tondaligan', 'bonuan', 'ilocos'],
+  },
+  {
+    city: 'Cavite City',
+    shortName: 'Cavite City',
+    province: 'Cavite',
+    region: 'CALABARZON (Region 4A)',
+    category: 'Heritage & Culture',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Corregidor Island Gateway • Historic Sangley Point • Fort San Felipe',
+    tag: 'Historic Peninsular City',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['cavite', 'cavite city', 'sangley point', 'corregidor', 'calabarzon'],
+  },
+  {
+    city: 'Bacoor City',
+    shortName: 'Bacoor',
+    province: 'Cavite',
+    region: 'CALABARZON (Region 4A)',
+    category: 'Metro',
+    categoryGroup: 'METRO_FOOD',
+    popular: false,
+    highlight: 'Bahay Tisa Ancestral Home • Digman Halo-Halo • Coastal Mangroves',
+    tag: 'City of Journey Gateway',
+    icon: Building2,
+    badgeColor: 'text-secondary bg-secondary/10 border-secondary/20',
+    keywords: ['bacoor', 'cavite', 'digman', 'halo halo', 'calabarzon'],
+  },
+  {
+    city: 'Imus City',
+    shortName: 'Imus',
+    province: 'Cavite',
+    region: 'CALABARZON (Region 4A)',
+    category: 'Heritage & Culture',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Battle of Alapan Flag Monument • Imus Cathedral • Famous Savory Longganisa',
+    tag: 'Flag Capital of the Philippines',
+    icon: Landmark,
+    badgeColor: 'text-amber-600 bg-amber-600/10 border-amber-600/20',
+    keywords: ['imus', 'cavite', 'battle of alapan', 'flag capital', 'calabarzon'],
+  },
+  {
+    city: 'Dasmariñas City',
+    shortName: 'Dasmarinas',
+    province: 'Cavite',
+    region: 'CALABARZON (Region 4A)',
+    category: 'Metro',
+    categoryGroup: 'METRO_FOOD',
+    popular: false,
+    highlight: 'Museo De La Salle • Promenade Parks • Bustling University Metropolis',
+    tag: 'University Capital of Cavite',
+    icon: Building2,
+    badgeColor: 'text-secondary bg-secondary/10 border-secondary/20',
+    keywords: ['dasmarinas', 'dasma', 'cavite', 'la salle', 'calabarzon'],
+  },
+  {
+    city: 'Calamba City',
+    shortName: 'Calamba',
+    province: 'Laguna',
+    region: 'CALABARZON (Region 4A)',
+    category: 'Heritage & Thermal',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Rizal Shrine Birthplace • Mount Makiling Thermal Hot Springs • Calamba Claypot',
+    tag: 'Resort Capital of the Philippines',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['calamba', 'laguna', 'rizal shrine', 'hot springs', 'pansol', 'calabarzon'],
+  },
+  {
+    city: 'Santa Rosa (Laguna)',
+    shortName: 'Santa Rosa',
+    province: 'Laguna',
+    region: 'CALABARZON (Region 4A)',
+    category: 'Metro & Leisure',
+    categoryGroup: 'METRO_FOOD',
+    popular: false,
+    highlight: 'Enchanted Kingdom Theme Park • Nuvali Eco-Park Lake • Paseo Outlets',
+    tag: 'Lion City of the South',
+    icon: Sparkles,
+    badgeColor: 'text-primary bg-primary/10 border-primary/20',
+    keywords: ['santa rosa', 'laguna', 'enchanted kingdom', 'nuvali', 'calabarzon'],
+  },
+  {
+    city: 'Biñan City',
+    shortName: 'Binan',
+    province: 'Laguna',
+    region: 'CALABARZON (Region 4A)',
+    category: 'Heritage & Food',
+    categoryGroup: 'METRO_FOOD',
+    popular: false,
+    highlight: 'Historic Alberto Mansion • Authentic Special Puto Biñan • Splash Island',
+    tag: 'City of Heritage & Puto',
+    icon: Utensils,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['binan', 'laguna', 'puto binan', 'splash island', 'calabarzon'],
+  },
+  {
+    city: 'San Pedro City',
+    shortName: 'San Pedro',
+    province: 'Laguna',
+    region: 'CALABARZON (Region 4A)',
+    category: 'Metro',
+    categoryGroup: 'METRO_FOOD',
+    popular: false,
+    highlight: 'Sampaguita Festival Gardens • Historic San Pedro Apostol Parish',
+    tag: 'Sampaguita Capital of the Philippines',
+    icon: Building2,
+    badgeColor: 'text-secondary bg-secondary/10 border-secondary/20',
+    keywords: ['san pedro', 'laguna', 'sampaguita', 'calabarzon'],
+  },
+  {
+    city: 'Lipa City',
+    shortName: 'Lipa',
+    province: 'Batangas',
+    region: 'CALABARZON (Region 4A)',
+    category: 'Highland & Heritage',
+    categoryGroup: 'HIGHLAND_NATURE',
+    popular: false,
+    highlight: 'San Sebastian Cathedral • Mount Malarayat Cool Breezes • Famous Barako Coffee',
+    tag: 'Little Rome of the Philippines',
+    icon: Mountain,
+    badgeColor: 'text-primary bg-primary/10 border-primary/20',
+    keywords: ['lipa', 'batangas', 'barako', 'malarayat', 'little rome', 'calabarzon'],
+  },
+  {
+    city: 'Batangas City',
+    shortName: 'Batangas',
+    province: 'Batangas',
+    region: 'CALABARZON (Region 4A)',
+    category: 'Coastal Port',
+    categoryGroup: 'METRO_FOOD',
+    popular: false,
+    highlight: 'Basilica of the Immaculate Conception • Batangas International Seaport • Authentic Lomi',
+    tag: 'Industrial Port of Southern Luzon',
+    icon: Building2,
+    badgeColor: 'text-secondary bg-secondary/10 border-secondary/20',
+    keywords: ['batangas', 'batangas city', 'port', 'lomi', 'calabarzon'],
+  },
+  {
+    city: 'Olongapo City',
+    shortName: 'Olongapo',
+    province: 'Zambales',
+    region: 'Central Luzon (Region 3)',
+    category: 'Metro & Coastal',
+    categoryGroup: 'METRO_FOOD',
+    popular: false,
+    highlight: 'Subic Bay Waterfront • Marikit Park • Duty-Free Shopping Districts',
+    tag: 'City of Volunteerism',
+    icon: Building2,
+    badgeColor: 'text-secondary bg-secondary/10 border-secondary/20',
+    keywords: ['olongapo', 'zambales', 'subic', 'central luzon'],
+  },
+  {
+    city: 'Dingalan (Aurora)',
+    shortName: 'Dingalan',
+    province: 'Aurora',
+    region: 'Central Luzon (Region 3)',
+    category: 'Highland & Ocean',
+    categoryGroup: 'HIGHLAND_NATURE',
+    popular: true,
+    highlight: 'Batanes of the East Mountain Viewpoint • White Beach • Lamao Caves',
+    tag: 'Batanes of the East',
+    icon: Mountain,
+    badgeColor: 'text-primary bg-primary/10 border-primary/20',
+    keywords: ['dingalan', 'aurora', 'batanes of the east', 'white beach', 'lamao', 'central luzon'],
+  },
+  {
+    city: 'Sorsogon City',
+    shortName: 'Sorsogon',
+    province: 'Sorsogon',
+    region: 'Bicol Region (Region 5)',
+    category: 'Nature & Coastal',
+    categoryGroup: 'HIGHLAND_NATURE',
+    popular: false,
+    highlight: 'Bulusan Volcano Natural Park Lake • Paguriran Island Lagoon • Rompeolas Boardwalk',
+    tag: 'Gateway to Southern Bicol',
+    icon: Mountain,
+    badgeColor: 'text-primary bg-primary/10 border-primary/20',
+    keywords: ['sorsogon', 'bulusan', 'paguriran', 'bicol'],
+  },
+  {
+    city: 'Ormoc City',
+    shortName: 'Ormoc',
+    province: 'Leyte',
+    region: 'Eastern Visayas (Region 8)',
+    category: 'Highland & Lake',
+    categoryGroup: 'HIGHLAND_NATURE',
+    popular: false,
+    highlight: 'Lake Danao Guitar-Shaped Lake • Queen Pineapple Plantations • Alto Peak Highpoint',
+    tag: 'City of Beautiful People & Sweet Pineapples',
+    icon: Mountain,
+    badgeColor: 'text-primary bg-primary/10 border-primary/20',
+    keywords: ['ormoc', 'leyte', 'lake danao', 'pineapple', 'eastern visayas'],
+  },
+  {
+    city: 'Roxas City',
+    shortName: 'Roxas',
+    province: 'Capiz',
+    region: 'Western Visayas (Region 6)',
+    category: 'Coastal & Seafood',
+    categoryGroup: 'METRO_FOOD',
+    popular: false,
+    highlight: 'Baybay Beach Seafood Boulevard • Pan-ay Church Biggest Bell in Asia • River Cruises',
+    tag: 'Seafood Capital of the Philippines',
+    icon: Utensils,
+    badgeColor: 'text-optimal bg-optimal/10 border-optimal/20',
+    keywords: ['roxas', 'capiz', 'seafood capital', 'pan-ay', 'western visayas'],
+  },
+  {
+    city: 'Kalibo (Aklan)',
+    shortName: 'Kalibo',
+    province: 'Aklan',
+    region: 'Western Visayas (Region 6)',
+    category: 'Heritage & Nature',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Ati-Atihan Mother of All PH Festivals • Bakhawan Mangrove Eco-Park • Pina Weaving',
+    tag: 'Home of the Ati-Atihan',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['kalibo', 'aklan', 'ati-atihan', 'bakhawan', 'western visayas'],
+  },
+  {
+    city: 'Tagbilaran City',
+    shortName: 'Tagbilaran',
+    province: 'Bohol',
+    region: 'Central Visayas (Region 7)',
+    category: 'Heritage & Port',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Blood Compact Shrine (Sandugo) • St. Joseph the Worker Cathedral • Bohol Gateway',
+    tag: 'City of Peace and Friendship',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['tagbilaran', 'bohol', 'sandugo', 'central visayas'],
+  },
+  {
+    city: 'Butuan City',
+    shortName: 'Butuan',
+    province: 'Agusan del Norte',
+    region: 'Caraga Region (Region 13)',
+    category: 'Heritage & History',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Balangay Ancient Boats Shrine • Agusan River Walk • National Museum Butuan',
+    tag: 'Timber City & Ancient Boat Heritage',
+    icon: Landmark,
+    badgeColor: 'text-amber-600 bg-amber-600/10 border-amber-600/20',
+    keywords: ['butuan', 'balangay', 'agusan', 'caraga', 'mindanao'],
+  },
+  {
+    city: 'Surigao City',
+    shortName: 'Surigao',
+    province: 'Surigao del Norte',
+    region: 'Caraga Region (Region 13)',
+    category: 'Coastal Gateway',
+    categoryGroup: 'SURF_ADVENTURE',
+    popular: false,
+    highlight: 'Mabua Pebble Beach • Basul Island • Gateway to Siargao & Dinagat',
+    tag: 'City of Island Adventures',
+    icon: Waves,
+    badgeColor: 'text-tertiary bg-tertiary/10 border-tertiary/20',
+    keywords: ['surigao', 'mabua pebble beach', 'surigao del norte', 'caraga', 'mindanao'],
+  },
+  {
+    city: 'General Santos City',
+    shortName: 'General Santos',
+    province: 'South Cotabato',
+    region: 'SOCCSKSARGEN (Region 12)',
+    category: 'Food & Coastal',
+    categoryGroup: 'METRO_FOOD',
+    popular: true,
+    highlight: 'Sarangani Bay Tuna Fish Port • Queen Tuna Park • Sanchez Peak Trekking',
+    tag: 'Tuna Capital of the Philippines',
+    icon: Utensils,
+    badgeColor: 'text-optimal bg-optimal/10 border-optimal/20',
+    keywords: ['general santos', 'gensan', 'tuna capital', 'south cotabato', 'mindanao'],
+  },
+  {
+    city: 'Zamboanga City',
+    shortName: 'Zamboanga',
+    province: 'Zamboanga del Sur',
+    region: 'Zamboanga Peninsula (Region 9)',
+    category: 'Heritage & Beach',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: true,
+    highlight: 'Fort Pilar Historic Shrine • Santa Cruz Pink Sand Beach • Colorful Vinta Boats',
+    tag: 'Asia\'s Latin City',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['zamboanga', 'fort pilar', 'pink sand beach', 'vinta', 'chavacano', 'mindanao'],
+  },
+  {
+    city: 'Cotabato City',
+    shortName: 'Cotabato',
+    province: 'Maguindanao',
+    region: 'BARMM',
+    category: 'Heritage & Culture',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Grand Mosque (Sultan Hassanal Bolkiah) • Kutawato Caves • Rio Grande de Mindanao',
+    tag: 'City of Golden Mosques',
+    icon: Landmark,
+    badgeColor: 'text-amber-600 bg-amber-600/10 border-amber-600/20',
+    keywords: ['cotabato', 'grand mosque', 'barmm', 'maguindanao', 'mindanao'],
+  },
+  {
+    city: 'Mandaluyong City',
+    shortName: 'Mandaluyong',
+    province: 'Metro Manila',
+    region: 'National Capital Region (NCR)',
+    category: 'Metro',
+    categoryGroup: 'METRO_FOOD',
+    popular: false,
+    highlight: 'Megamall & Shangri-La Shopping • Greenfield District Weekend Market',
+    tag: 'Shopping Mall Capital of the Philippines',
+    icon: Building2,
+    badgeColor: 'text-secondary bg-secondary/10 border-secondary/20',
+    keywords: ['mandaluyong', 'megamall', 'shangri-la', 'greenfield', 'metro manila'],
+  },
+  {
+    city: 'Marikina City',
+    shortName: 'Marikina',
+    province: 'Metro Manila',
+    region: 'National Capital Region (NCR)',
+    category: 'Heritage & Food',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Marikina River Park Promenade • Shoe Museum • Lilac Street Dining Strip',
+    tag: 'Shoe Capital of the Philippines',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['marikina', 'shoe museum', 'river park', 'lilac street', 'metro manila'],
+  },
+  {
+    city: 'Pasay City',
+    shortName: 'Pasay',
+    province: 'Metro Manila',
+    region: 'National Capital Region (NCR)',
+    category: 'Metro & Entertainment',
+    categoryGroup: 'METRO_FOOD',
+    popular: false,
+    highlight: 'SM Mall of Asia Seaside • Cultural Center of the Philippines • Entertainment City',
+    tag: 'Travel City of the Philippines',
+    icon: Building2,
+    badgeColor: 'text-secondary bg-secondary/10 border-secondary/20',
+    keywords: ['pasay', 'moa', 'mall of asia', 'ccp', 'entertainment city', 'metro manila'],
+  },
+  {
+    city: 'Parañaque City',
+    shortName: 'Paranaque',
+    province: 'Metro Manila',
+    region: 'National Capital Region (NCR)',
+    category: 'Heritage & Entertainment',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Baclaran Redemptorist Church • City of Dreams & Okada • Coastal Lagoon',
+    tag: 'Bay City of Entertainment',
+    icon: Landmark,
+    badgeColor: 'text-secondary bg-secondary/10 border-secondary/20',
+    keywords: ['paranaque', 'baclaran', 'okada', 'city of dreams', 'metro manila'],
+  },
+  {
+    city: 'Las Piñas City',
+    shortName: 'Las Pinas',
+    province: 'Metro Manila',
+    region: 'National Capital Region (NCR)',
+    category: 'Heritage',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Historic Bamboo Organ of St. Joseph • Sarao Motors Jeepney Factory',
+    tag: 'Home of the Historic Bamboo Organ',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['las pinas', 'bamboo organ', 'sarao jeepney', 'metro manila'],
+  },
+  {
+    city: 'Muntinlupa (Alabang)',
+    shortName: 'Alabang',
+    province: 'Metro Manila',
+    region: 'National Capital Region (NCR)',
+    category: 'Metro & Lifestyle',
+    categoryGroup: 'METRO_FOOD',
+    popular: false,
+    highlight: 'Filinvest City Trails • Festival Alabang River Park • Molito Lifestyle Strip',
+    tag: 'Emerald City of the South',
+    icon: Building2,
+    badgeColor: 'text-secondary bg-secondary/10 border-secondary/20',
+    keywords: ['muntinlupa', 'alabang', 'filinvest', 'molito', 'metro manila'],
+  },
+  {
+    city: 'Caloocan City',
+    shortName: 'Caloocan',
+    province: 'Metro Manila',
+    region: 'National Capital Region (NCR)',
+    category: 'Heritage',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Historic Bonifacio Monument • Gubat sa Ciudad Eco-Resort',
+    tag: 'Historic City of Heroes',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['caloocan', 'monumento', 'bonifacio monument', 'metro manila'],
+  },
+  {
+    city: 'San Juan City',
+    shortName: 'San Juan',
+    province: 'Metro Manila',
+    region: 'National Capital Region (NCR)',
+    category: 'Heritage & Food',
+    categoryGroup: 'HERITAGE_CULTURE',
+    popular: false,
+    highlight: 'Pinaglabanan Historical Shrine • Greenhills Shopping Center • Wattah Wattah Fest',
+    tag: 'Heart of Metro Manila',
+    icon: Landmark,
+    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    keywords: ['san juan', 'greenhills', 'pinaglabanan', 'metro manila'],
+  },
 ];
 
 /**
@@ -1731,6 +2263,7 @@ export default function DestinationAutocomplete({
 
   // Filter recommendations based on query and selected category tab
   const cleanQuery = (query || '').toLowerCase().trim();
+  const normalizedQuery = cleanQuery.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
   // Worldwide live geocoding search for queries not limited to presets
   const [liveResults, setLiveResults] = useState([]);
@@ -1747,30 +2280,75 @@ export default function DestinationAutocomplete({
     const timer = setTimeout(async () => {
       try {
         setIsLiveSearching(true);
-        const res = await fetch(
-          `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(trimmed)}&count=6&language=en`,
-          { signal: AbortSignal.timeout(3000) }
-        );
+
+        // Sanitize search name for Open-Meteo:
+        // Open-Meteo expects pure name without commas or country suffixes.
+        // e.g. "Los Angeles, USA" -> search for "Los Angeles", filter by "USA"
+        let primaryName = trimmed;
+        let secondaryFilter = '';
+
+        if (trimmed.includes(',')) {
+          const parts = trimmed.split(',').map((p) => p.trim());
+          primaryName = parts[0];
+          secondaryFilter = parts.slice(1).join(' ').toLowerCase();
+        } else if (trimmed.includes('(')) {
+          primaryName = trimmed.replace(/\s*\([^)]*\)/g, '').trim();
+        }
+
+        const normalizedSearch = primaryName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+        const fetchUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
+          normalizedSearch || primaryName
+        )}&count=10&language=en`;
+
+        const res = await fetch(fetchUrl, { signal: AbortSignal.timeout(5000) });
         if (!res.ok) throw new Error('Geocoding request failed');
         const data = await res.json();
-        if (Array.isArray(data.results)) {
-          const formatted = data.results.map((r) => {
-            const locName = `${r.name}${r.admin1 ? `, ${r.admin1}` : ''}`;
+
+        if (Array.isArray(data.results) && data.results.length > 0) {
+          let results = data.results;
+
+          // If user typed a secondary filter (e.g. "CA", "USA", "UK", "PH", "Philippines"), rank/filter by it
+          if (secondaryFilter) {
+            const matchesSecondary = results.filter((r) => {
+              const country = (r.country || '').toLowerCase();
+              const countryCode = (r.country_code || '').toLowerCase();
+              const admin = (r.admin1 || '').toLowerCase();
+              return (
+                country.includes(secondaryFilter) ||
+                countryCode === secondaryFilter ||
+                admin.includes(secondaryFilter) ||
+                (secondaryFilter === 'usa' && (countryCode === 'us' || country.includes('united states'))) ||
+                (secondaryFilter === 'uk' && (countryCode === 'gb' || country.includes('united kingdom'))) ||
+                (secondaryFilter === 'ph' && (countryCode === 'ph' || country.includes('philippines')))
+              );
+            });
+            if (matchesSecondary.length > 0) {
+              results = matchesSecondary;
+            }
+          }
+
+          const formatted = results.slice(0, 8).map((r) => {
+            const locName = `${r.name}${r.admin1 && r.admin1 !== r.name ? `, ${r.admin1}` : ''}`;
             const media = getDestinationMedia(r.name);
+            const isPh = r.country === 'Philippines' || r.country_code === 'PH';
             return {
               city: locName,
               shortName: r.name,
               province: r.admin1 || r.country || 'Global',
-              region: r.country || 'International',
-              country: r.country || 'Worldwide',
-              category: 'Worldwide',
-              categoryGroup: r.country === 'Philippines' ? 'PHILIPPINES' : 'GLOBAL',
+              region: r.country || (isPh ? 'Philippines' : 'International'),
+              country: r.country || (isPh ? 'Philippines' : 'Worldwide'),
+              countryCode: r.country_code || (isPh ? 'PH' : ''),
+              category: isPh ? 'Local Destination' : 'Worldwide Destination',
+              categoryGroup: isPh ? 'PHILIPPINES' : 'GLOBAL',
               popular: false,
               highlight: media.landmark || `${r.name} • ${r.admin1 ? `${r.admin1}, ` : ''}${r.country || 'Worldwide'}`,
-              tag: r.country || 'Worldwide',
+              tag: r.country || (isPh ? 'Philippines' : 'Worldwide'),
               icon: Globe,
-              badgeColor: 'text-sky-500 bg-sky-500/10 border-sky-500/20',
-              keywords: [r.name.toLowerCase(), (r.country || '').toLowerCase()],
+              badgeColor: isPh
+                ? 'text-primary bg-primary/10 border-primary/20'
+                : 'text-sky-500 bg-sky-500/10 border-sky-500/20',
+              keywords: [r.name.toLowerCase(), (r.country || '').toLowerCase(), (r.admin1 || '').toLowerCase()],
               latitude: r.latitude,
               longitude: r.longitude,
               isLive: true,
@@ -1785,28 +2363,37 @@ export default function DestinationAutocomplete({
       } finally {
         setIsLiveSearching(false);
       }
-    }, 250);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, [cleanQuery]);
 
   const filteredDestinations = cleanQuery
     ? ALL_DESTINATIONS.filter((dest) => {
-        const matchesQuery =
-          dest.city.toLowerCase().includes(cleanQuery) ||
-          dest.shortName.toLowerCase().includes(cleanQuery) ||
-          (dest.country && dest.country.toLowerCase().includes(cleanQuery)) ||
-          dest.province.toLowerCase().includes(cleanQuery) ||
-          dest.region.toLowerCase().includes(cleanQuery) ||
-          dest.category.toLowerCase().includes(cleanQuery) ||
-          dest.tag.toLowerCase().includes(cleanQuery) ||
-          dest.keywords.some((kw) => kw.includes(cleanQuery));
+        const cityName = dest.city.toLowerCase();
+        const cityNorm = cityName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const shortName = dest.shortName.toLowerCase();
+        const shortNorm = shortName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const country = (dest.country || '').toLowerCase();
+        const province = (dest.province || '').toLowerCase();
+        const region = (dest.region || '').toLowerCase();
+        const tag = (dest.tag || '').toLowerCase();
 
-        if (selectedCategory === 'ALL') return matchesQuery;
-        if (selectedCategory === 'POPULAR') return matchesQuery && dest.popular;
+        const matchesQuery =
+          cityName.includes(cleanQuery) ||
+          cityNorm.includes(normalizedQuery) ||
+          shortName.includes(cleanQuery) ||
+          shortNorm.includes(normalizedQuery) ||
+          country.includes(cleanQuery) ||
+          province.includes(cleanQuery) ||
+          region.includes(cleanQuery) ||
+          tag.includes(cleanQuery) ||
+          (dest.keywords && dest.keywords.some((kw) => kw.includes(cleanQuery) || kw.includes(normalizedQuery)));
+
+        if (selectedCategory === 'ALL' || selectedCategory === 'POPULAR') return matchesQuery;
         if (selectedCategory === 'GLOBAL') return matchesQuery && (dest.categoryGroup === 'GLOBAL' || dest.country !== 'Philippines');
         if (selectedCategory === 'PHILIPPINES') return matchesQuery && dest.country === 'Philippines';
-        return matchesQuery && dest.categoryGroup === selectedCategory;
+        return matchesQuery;
       })
     : ALL_DESTINATIONS.filter((dest) => {
         if (selectedCategory === 'ALL') return true;
@@ -1820,19 +2407,21 @@ export default function DestinationAutocomplete({
   const combinedDestinations = [...filteredDestinations];
   if (cleanQuery.length >= 2 && liveResults.length > 0) {
     liveResults.forEach((liveDest) => {
-      const alreadyExists = combinedDestinations.some(
-        (cd) =>
-          cd.city.toLowerCase() === liveDest.city.toLowerCase() ||
-          cd.shortName.toLowerCase() === liveDest.shortName.toLowerCase()
-      );
+      const liveCityNorm = liveDest.city.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const liveShortNorm = liveDest.shortName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const alreadyExists = combinedDestinations.some((cd) => {
+        const cdNorm = cd.city.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const cdShortNorm = cd.shortName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return cdNorm === liveCityNorm || cdShortNorm === liveShortNorm;
+      });
       if (!alreadyExists) {
-        if (selectedCategory === 'ALL') {
-          combinedDestinations.push(liveDest);
-        } else if (selectedCategory === 'PHILIPPINES' && liveDest.country === 'Philippines') {
-          combinedDestinations.push(liveDest);
-        } else if (selectedCategory === 'GLOBAL' && liveDest.country !== 'Philippines') {
-          combinedDestinations.push(liveDest);
+        if (selectedCategory === 'PHILIPPINES' && liveDest.country !== 'Philippines') {
+          return;
         }
+        if (selectedCategory === 'GLOBAL' && liveDest.country === 'Philippines') {
+          return;
+        }
+        combinedDestinations.push(liveDest);
       }
     });
   }
@@ -1862,17 +2451,35 @@ export default function DestinationAutocomplete({
 
   const handleSelectCustom = () => {
     if (!query.trim()) return;
+    const customCity = query.trim();
     setIsOpen(false);
     setHighlightedIndex(-1);
+    const customDest = {
+      city: customCity,
+      shortName: customCity.split(',')[0].trim(),
+      province: 'Location',
+      region: 'Location',
+      country: 'Global Region',
+      popular: false,
+      tag: 'Location',
+      isCustom: true,
+    };
     if (onChange) {
-      onChange(query.trim());
+      onChange(customCity, customDest);
+    }
+    if (onSelectDestination) {
+      onSelectDestination(customDest);
     }
   };
 
   const handleKeyDown = (e) => {
     if (!isOpen) {
-      if (e.key === 'ArrowDown' || e.key === 'Enter') {
+      if (e.key === 'ArrowDown') {
         setIsOpen(true);
+      } else if (e.key === 'Enter') {
+        if (query.trim()) {
+          handleSelectCustom();
+        }
       }
       return;
     }
@@ -1892,7 +2499,13 @@ export default function DestinationAutocomplete({
       } else if (highlightedIndex === combinedDestinations.length && cleanQuery) {
         handleSelectCustom();
       } else if (combinedDestinations.length > 0) {
-        handleSelect(combinedDestinations[0]);
+        // Match exact or startsWith
+        const exactMatch = combinedDestinations.find((d) => {
+          const cNorm = d.city.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          const sNorm = d.shortName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          return cNorm === normalizedQuery || sNorm === normalizedQuery || normalizedQuery.startsWith(sNorm);
+        });
+        handleSelect(exactMatch || combinedDestinations[0]);
       } else {
         handleSelectCustom();
       }
