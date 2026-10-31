@@ -47,7 +47,12 @@ async function getCurrentWeather(req, res, next) {
 
     const city = rawCity.trim();
     const date = req.query.date || 'Today';
-    const weatherData = await weatherService.getCurrentWeather(city, date);
+    const options = {
+      lat: req.query.lat,
+      lon: req.query.lon,
+      country: req.query.country,
+    };
+    const weatherData = await weatherService.getCurrentWeather(city, date, options);
 
     // Asynchronously log search event for analytics & history
     recordSearchEvent(req, city, weatherData);
@@ -81,7 +86,12 @@ async function getForecast(req, res, next) {
     }
 
     const city = rawCity.trim();
-    const forecastData = await weatherService.getForecast(city);
+    const options = {
+      lat: req.query.lat,
+      lon: req.query.lon,
+      country: req.query.country,
+    };
+    const forecastData = await weatherService.getForecast(city, options);
 
     res.status(200).json({
       success: true,
@@ -93,7 +103,36 @@ async function getForecast(req, res, next) {
   }
 }
 
+/**
+ * GET /api/weather/locations
+ * Searches worldwide locations across Open-Meteo, Photon, and Nominatim.
+ */
+async function searchLocations(req, res, next) {
+  try {
+    const rawQuery = req.query.q !== undefined ? req.query.q : (req.query.city || '');
+    const limit = Math.min(40, Math.max(5, Number(req.query.limit) || 25));
+
+    if (!rawQuery || typeof rawQuery !== 'string' || rawQuery.trim().length === 0) {
+      return res.status(200).json({
+        success: true,
+        data: [],
+        message: 'Provide a search query to discover worldwide locations.',
+      });
+    }
+
+    const locations = await weatherService.searchLocations(rawQuery.trim(), limit);
+    res.status(200).json({
+      success: true,
+      data: locations,
+      message: `Found ${locations.length} matching locations.`,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   getCurrentWeather,
   getForecast,
+  searchLocations,
 };

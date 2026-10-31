@@ -20,6 +20,7 @@ export default function SearchPanel({
   const navigate = useNavigate();
   const [query, setQuery] = useState(currentLocation);
   const [selectedDate, setSelectedDate] = useState('Today');
+  const [selectedMeta, setSelectedMeta] = useState(null);
 
   const popularCities = [
     'Tokyo',
@@ -52,28 +53,56 @@ export default function SearchPanel({
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
     if (onSearch && query.trim()) {
-      onSearch({ location: query.trim(), date: selectedDate });
+      const meta = selectedMeta && selectedMeta.city === query.trim() ? selectedMeta : {};
+      onSearch({
+        location: query.trim(),
+        date: selectedDate,
+        lat: meta.lat,
+        lon: meta.lon,
+        country: meta.country,
+      });
     }
   };
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
     if (onSearch && query.trim()) {
-      onSearch({ location: query.trim(), date });
+      const meta = selectedMeta && selectedMeta.city === query.trim() ? selectedMeta : {};
+      onSearch({
+        location: query.trim(),
+        date,
+        lat: meta.lat,
+        lon: meta.lon,
+        country: meta.country,
+      });
     }
   };
 
   const handleCityClick = (cityName) => {
     setQuery(cityName);
+    setSelectedMeta(null);
     if (onSearch) {
       onSearch({ location: cityName, date: selectedDate });
     }
   };
 
   const handleSelectRecommendation = (dest) => {
+    const nextMeta = {
+      city: dest.city,
+      lat: dest.latitude,
+      lon: dest.longitude,
+      country: dest.country,
+    };
     setQuery(dest.city);
+    setSelectedMeta(nextMeta);
     if (onSearch) {
-      onSearch({ location: dest.city, date: selectedDate });
+      onSearch({
+        location: dest.city,
+        date: selectedDate,
+        lat: dest.latitude,
+        lon: dest.longitude,
+        country: dest.country,
+      });
     }
   };
 
@@ -89,9 +118,21 @@ export default function SearchPanel({
         <div className="flex-1 w-full">
           <DestinationAutocomplete
             value={query}
-            onChange={(val) => setQuery(val)}
+            onChange={(val, dest) => {
+              setQuery(val);
+              if (dest && (dest.latitude !== undefined || dest.country)) {
+                setSelectedMeta({
+                  city: val,
+                  lat: dest.latitude,
+                  lon: dest.longitude,
+                  country: dest.country,
+                });
+              } else {
+                setSelectedMeta(null);
+              }
+            }}
             onSelectDestination={handleSelectRecommendation}
-            placeholder="Search worldwide destination (e.g. Tokyo, Paris, Manila, New York, Cebu)..."
+            placeholder="Search any place in the world (city, town, island, landmark, country)..."
             label=""
             id="main-destination-search-input"
             className="w-full"

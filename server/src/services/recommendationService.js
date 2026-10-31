@@ -1125,7 +1125,7 @@ const DESTINATION_FALLBACK_IMAGES = {
   zamboanga: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Zamboanga_City_Hall_%26_Rizal_Park%2C_Mar_2026.jpg/1280px-Zamboanga_City_Hall_%26_Rizal_Park%2C_Mar_2026.jpg',
   'cagayan de oro': 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/CDO_Poblacion%2C_CM_Recto_Avenue-A._Velez%2C_Misamis_Oriental_Provincial_Capitol_drone_%28Cagayan_De_Oro_City%3B_03-21-2026%29.jpg/1280px-CDO_Poblacion%2C_CM_Recto_Avenue-A._Velez%2C_Misamis_Oriental_Provincial_Capitol_drone_%28Cagayan_De_Oro_City%3B_03-21-2026%29.jpg',
   dumaguete: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Dumaguete_Belfry_park_view_%28Perdices_Street%2C_Dumaguete%2C_Negros_Oriental%3B_01-19-2023%29.jpg/1280px-Dumaguete_Belfry_park_view_%28Perdices_Street%2C_Dumaguete%2C_Negros_Oriental%3B_01-19-2023%29.jpg',
-  
+
   // Global & Worldwide Cities
   tokyo: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1280&q=80',
   osaka: 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=1280&q=80',
@@ -1149,7 +1149,7 @@ const DESTINATION_FALLBACK_IMAGES = {
   sydney: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1280&q=80',
   melbourne: 'https://images.unsplash.com/photo-1514395462725-fb4566210144?auto=format&fit=crop&w=1280&q=80',
   dubai: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1280&q=80',
-  
+
   // Additional Philippine Dest
   siquijor: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1280&q=80',
   mati: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1280&q=80',
@@ -1173,10 +1173,10 @@ const DESTINATION_FALLBACK_IMAGES = {
 function getDestinationFallbackPhoto(city) {
   if (!city) return 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1280&q=80';
   const c = city.toLowerCase().trim();
-  
+
   // Direct match
   if (DESTINATION_FALLBACK_IMAGES[c]) return DESTINATION_FALLBACK_IMAGES[c];
-  
+
   // Stripped match
   const stripped = c.replace(/\s*\([^)]*\)/g, '').split(',')[0].replace(/ city$/i, '').trim();
   if (DESTINATION_FALLBACK_IMAGES[stripped]) return DESTINATION_FALLBACK_IMAGES[stripped];
@@ -1253,16 +1253,28 @@ function getGenericActivities(cityName = 'Destination') {
       allowedConditions: ['Clear', 'Clouds'],
     },
     {
+      title: `Panoramic Viewpoint & Heritage Walk in ${cityName}`,
+      description: `Stroll historic boulevards, scenic viewpoints, and iconic landmarks in crisp open-air weather.`,
+      category: 'OUTDOOR',
+      timeSlot: '09:30 - 13:30',
+      iconName: 'Compass',
+      imageUrl: photo,
+      minTemp: -5,
+      maxTemp: 28,
+      maxWind: 32,
+      allowedConditions: ['Clear', 'Clouds', 'Snow'],
+    },
+    {
       title: `Heritage Museum & Cultural Gallery in ${cityName}`,
       description: `Discover local art, historical artifacts, and regional storytelling in comfortable climate-controlled spaces.`,
       category: 'INDOOR',
       timeSlot: '10:00 - 16:30',
       iconName: 'Sparkles',
       imageUrl: photo,
-      minTemp: 0,
+      minTemp: -50,
       maxTemp: 45,
       maxWind: 100,
-      allowedConditions: ['Clear', 'Clouds', 'Rain', 'Drizzle', 'Thunderstorm', 'Mist'],
+      allowedConditions: ['Clear', 'Clouds', 'Rain', 'Drizzle', 'Thunderstorm', 'Mist', 'Snow'],
     },
     {
       title: `Artisan Specialty Cafe & Local Cuisine in ${cityName}`,
@@ -1271,10 +1283,10 @@ function getGenericActivities(cityName = 'Destination') {
       timeSlot: '13:00 - 18:00',
       iconName: 'Sparkles',
       imageUrl: photo,
-      minTemp: 0,
+      minTemp: -50,
       maxTemp: 45,
       maxWind: 100,
-      allowedConditions: ['Clear', 'Clouds', 'Rain', 'Drizzle', 'Thunderstorm', 'Mist'],
+      allowedConditions: ['Clear', 'Clouds', 'Rain', 'Drizzle', 'Thunderstorm', 'Mist', 'Snow'],
     },
   ];
 }
@@ -1284,21 +1296,35 @@ function getGenericActivities(cityName = 'Destination') {
  * Evaluates active recommendation rules against weather telemetry, user interests, and specific destination context.
  */
 async function generateRecommendations({ weatherData, userInterestTagIds = [], destinationCity = '' }) {
-  const currentTemp = weatherData?.temperature?.current || 20;
-  const precip1h = weatherData?.telemetry?.rain1h || 0;
-  const windSpeed = weatherData?.telemetry?.windSpeed || 10;
+  const currentTemp = weatherData?.temperature?.current ?? 20;
+  const precip1h = weatherData?.telemetry?.rain1h ?? 0;
+  const windSpeed = weatherData?.telemetry?.windSpeed ?? 10;
   const weatherCondition = weatherData?.weather?.main || 'Clear';
 
   const rawCity = destinationCity || weatherData?.location?.city || 'Manila';
   const cleanCity = rawCity.toLowerCase().trim();
+  const baseCity = cleanCity
+    .replace(/\s*\([^)]*\)/g, '')
+    .split(',')[0]
+    .replace(/\s+city$/i, '')
+    .trim();
 
-  // Find destination matching list
-  let candidateActivities = DESTINATION_ACTIVITIES[cleanCity];
+  // Find destination matching list (Philippine curated presets apply only to Philippine locations)
+  const locCountry = (weatherData?.location?.country || '').toLowerCase();
+  const isPhilippineLoc = !locCountry || locCountry.includes('philippines') || locCountry === 'global forecast region';
+
+  let candidateActivities = isPhilippineLoc
+    ? DESTINATION_ACTIVITIES[cleanCity] || DESTINATION_ACTIVITIES[baseCity]
+    : null;
+  if (!candidateActivities && isPhilippineLoc) {
+    const matchKey = Object.keys(DESTINATION_ACTIVITIES).find((k) => {
+      const kBase = k.replace(/\s+city$/i, '').trim();
+      return kBase === baseCity;
+    });
+    if (matchKey) candidateActivities = DESTINATION_ACTIVITIES[matchKey];
+  }
   if (!candidateActivities) {
-    const matchKey = Object.keys(DESTINATION_ACTIVITIES).find(
-      (k) => cleanCity.includes(k) || k.includes(cleanCity)
-    );
-    candidateActivities = matchKey ? DESTINATION_ACTIVITIES[matchKey] : getGenericActivities(rawCity);
+    candidateActivities = getGenericActivities(rawCity);
   }
 
   const evaluatedActivities = [];

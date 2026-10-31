@@ -117,14 +117,17 @@ export default function HomePage() {
   const [healthData, setHealthData] = useState(null);
 
   // Fetch full live weather, forecast, and recommendations for the given city
-  const fetchCityData = async (city, date = 'Today') => {
+  const [activeLocationMeta, setActiveLocationMeta] = useState({});
+
+  const fetchCityData = async (city, date = 'Today', options = {}) => {
     setIsLoading(true);
     setError(null);
+    setActiveLocationMeta(options || {});
     try {
       const [current, forecast, recs] = await Promise.all([
-        weatherService.getCurrentWeather(city, date),
-        weatherService.getForecast(city),
-        recommendationService.getRecommendations(city, date),
+        weatherService.getCurrentWeather(city, date, options),
+        weatherService.getForecast(city, options),
+        recommendationService.getRecommendations(city, date, options),
       ]);
 
       setWeatherData(current);
@@ -164,9 +167,9 @@ export default function HomePage() {
     }).catch(() => {});
   }, [isAuthenticated, urlCity]);
 
-  const handleSearch = async ({ location, date, scrollToActivities = true }) => {
+  const handleSearch = async ({ location, date, lat, lon, country, scrollToActivities = true }) => {
     setIsSearching(true);
-    await fetchCityData(location, date);
+    await fetchCityData(location, date, { lat, lon, country });
     if (scrollToActivities) {
       setTimeout(() => {
         const el = document.getElementById('recommendations-section');
@@ -236,7 +239,7 @@ export default function HomePage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => fetchCityData(cityName, requestedDate)}
+              onClick={() => fetchCityData(cityName, requestedDate, activeLocationMeta)}
             >
               Retry
             </Button>

@@ -13,7 +13,11 @@ async function getRecommendations(req, res, next) {
     const userId = req.user?.id;
 
     // 1. Fetch real weather data
-    const weatherData = await weatherService.getCurrentWeather(city.trim(), date);
+    const weatherData = await weatherService.getCurrentWeather(city.trim(), date, {
+      lat: req.query.lat,
+      lon: req.query.lon,
+      country: req.query.country,
+    });
 
     // 2. Fetch authenticated user's selected interest tag IDs (if logged in)
     let userInterestTagIds = [];

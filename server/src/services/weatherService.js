@@ -516,10 +516,654 @@ function getDeterministicFallback(city) {
   };
 }
 
+const OPEN_METEO_GEO_URL = 'https://geocoding-api.open-meteo.com/v1/search';
+const OPEN_METEO_FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
+const PHOTON_GEO_URL = 'https://photon.komoot.io/api/';
+const NOMINATIM_GEO_URL = 'https://nominatim.openstreetmap.org/search';
+const GEO_USER_AGENT = 'SkyPlanWeatherPlanner/1.0 (+https://skyplan.app)';
+
+const LOCATION_SEARCH_CACHE = new Map();
+const LOCATION_RESOLVE_CACHE = new Map();
+const LIVE_WEATHER_CACHE = new Map();
+const IN_FLIGHT_WEATHER = new Map();
+
+const LOCATION_CACHE_TTL_MS = 30 * 60 * 1000;
+const WEATHER_CACHE_TTL_MS = 5 * 60 * 1000;
+
+function normalizeText(str = '') {
+  return String(str)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .normalize('NFC')
+    .trim();
+}
+
+function cleanAdminLabel(label = '') {
+  return String(label || '')
+    .replace(/^(?:Province of|Provincia de|Department of|State of|Region of)\s+/i, '')
+    .trim();
+}
+
+function stripPlaceSuffix(name = '') {
+  return normalizeText(name)
+    .replace(/\s*\([^)]*\)\s*/g, ' ')
+    .replace(/\b(?:city|island|municipality|province)\b/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+const EXCLUDED_OSM_VALUES = new Set([
+  'restaurant', 'fast_food', 'cafe', 'bar', 'pub', 'food_court', 'ice_cream',
+  'atm', 'bank', 'pharmacy', 'clinic', 'dentist', 'doctors', 'veterinary',
+  'fuel', 'parking', 'parking_space', 'parking_entrance', 'bicycle_parking',
+  'toilets', 'waste_basket', 'recycling', 'post_box', 'telephone', 'bench',
+  'bus_stop', 'platform', 'stop_position', 'traffic_signals', 'crossing',
+  'convenience', 'supermarket', 'clothes', 'hairdresser', 'car_repair',
+  'motel', 'guest_house', 'hostel', 'apartment', 'chalet', 'information',
+  'residential', 'service', 'track', 'footway', 'path', 'steps', 'cycleway',
+  'house', 'yes', 'apartments', 'commercial', 'industrial', 'retail',
+]);
+
+const EXCLUDED_OSM_KEYS = new Set([
+  'shop', 'craft', 'office', 'man_made', 'power', 'telecom', 'railway',
+]);
+
+function isRelevantOsmPlace(osmKey = '', osmValue = '') {
+  const key = String(osmKey).toLowerCase();
+  const val = String(osmValue).toLowerCase();
+  if (EXCLUDED_OSM_KEYS.has(key)) return false;
+  if (EXCLUDED_OSM_VALUES.has(val)) return false;
+  if (key === 'highway') return false;
+  if (key === 'building' && !['cathedral', 'castle', 'temple', 'shrine', 'museum', 'stadium'].includes(val)) {
+    return false;
+  }
+  if (key === 'amenity' && !['university', 'arts_centre', 'planetarium', 'theatre', 'marketplace'].includes(val)) {
+    return false;
+  }
+  return true;
+}
+
+function classifyFeatureType(codeOrType = '', osmKey = '') {
+  const raw = String(codeOrType).toUpperCase();
+  const lower = String(codeOrType).toLowerCase();
+  const key = String(osmKey).toLowerCase();
+
+  if (raw.startsWith('PCL') || lower === 'country' || lower === 'nation') return 'Country';
+  if (raw === 'ISL' || raw === 'ISLS' || lower === 'island' || lower === 'archipelago' || lower === 'islet' || lower === 'atoll') return 'Island';
+  if (raw === 'MT' || raw === 'MTS' || raw === 'PK' || raw === 'VLC' || ['peak', 'volcano', 'mountain_range', 'ridge', 'cliff', 'glacier'].includes(lower)) return 'Mountain';
+  if (raw === 'BCH' || ['beach', 'bay', 'cape', 'coastline', 'reef', 'shoal', 'lagoon', 'beach_resort'].includes(lower)) return 'Beach & Coast';
+  if (['ADM1', 'ADM2', 'RGN'].includes(raw) || ['state', 'province', 'region', 'county', 'prefecture'].includes(lower)) return 'Region';
+  if (['PPLC', 'PPLA', 'PPLA2'].includes(raw) || lower === 'city') return 'City';
+  if (['PPLA3', 'PPLA4', 'PPL'].includes(raw) || ['town', 'municipality'].includes(lower)) return 'Town';
+  if (['PPLX', 'ADM3', 'ADM4'].includes(raw) || ['suburb', 'quarter', 'neighbourhood', 'borough', 'district', 'city_district'].includes(lower)) return 'District';
+  if (['village', 'hamlet', 'locality', 'isolated_dwelling', 'barangay'].includes(lower)) return 'Village';
+  if (key === 'tourism' || key === 'historic' || key === 'leisure' || ['attraction', 'archaeological_site', 'monument', 'castle', 'ruins', 'national_park', 'nature_reserve', 'park', 'viewpoint', 'museum', 'theme_park', 'waterfall', 'lake'].includes(lower)) {
+    return 'Landmark';
+  }
+  return 'Destination';
+}
+
+function formatLocationDisplayName(name, admin1, country, countryCode, featureType) {
+  const cleanName = String(name || '').trim();
+  const cleanAdmin = cleanAdminLabel(admin1);
+  const cleanCountry = String(country || '').trim();
+
+  if (featureType === 'Country' || normalizeText(cleanName) === normalizeText(cleanCountry)) {
+    return cleanName;
+  }
+
+  const isPh = countryCode === 'PH' || normalizeText(cleanCountry) === 'philippines';
+  if (isPh) {
+    if (cleanAdmin && normalizeText(cleanAdmin) !== normalizeText(cleanName)) {
+      return `${cleanName}, ${cleanAdmin}`;
+    }
+    return cleanName;
+  }
+
+  if (
+    cleanAdmin &&
+    normalizeText(cleanAdmin) !== normalizeText(cleanName) &&
+    normalizeText(cleanAdmin) !== normalizeText(cleanCountry)
+  ) {
+    return `${cleanName}, ${cleanAdmin}`;
+  }
+  if (cleanCountry && normalizeText(cleanCountry) !== normalizeText(cleanName)) {
+    return `${cleanName}, ${cleanCountry}`;
+  }
+  return cleanName;
+}
+
+async function queryOpenMeteoGeo(rawQuery) {
+  const trimmed = rawQuery.trim();
+  if (!trimmed) return [];
+
+  const candidateQueries = [];
+  if (trimmed.includes(',')) {
+    const parts = trimmed.split(',').map((p) => p.trim()).filter(Boolean);
+    if (parts[0]) candidateQueries.push(parts[0]);
+  } else {
+    candidateQueries.push(trimmed);
+    const words = trimmed.split(/\s+/).filter(Boolean);
+    if (words.length >= 2) {
+      candidateQueries.push(words.slice(0, -1).join(' '));
+      if (words.length >= 3) {
+        candidateQueries.push(words[0]);
+      }
+    }
+  }
+
+  const uniqueQueries = [...new Set(candidateQueries.map((q) => normalizeText(q) || q))].slice(0, 2);
+  const responses = await Promise.allSettled(
+    uniqueQueries.map(async (q) => {
+      const url = `${OPEN_METEO_GEO_URL}?name=${encodeURIComponent(q)}&count=20&language=en`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(3500) });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data.results) ? data.results : [];
+    })
+  );
+
+  const items = [];
+  for (const r of responses) {
+    if (r.status === 'fulfilled' && Array.isArray(r.value)) {
+      for (const item of r.value) {
+        const cc = (item.country_code || '').toUpperCase();
+        const isPh = cc === 'PH' || item.country === 'Philippines';
+        const admin1 = isPh
+          ? cleanAdminLabel(item.admin2) || cleanAdminLabel(item.admin1)
+          : cleanAdminLabel(item.admin1) || cleanAdminLabel(item.admin2);
+        const region = cleanAdminLabel(item.admin1) || item.country || '';
+        const country = item.country || (item.feature_code?.startsWith('PCL') ? item.name : '');
+        const featureType = classifyFeatureType(item.feature_code);
+        const cityDisplay = formatLocationDisplayName(item.name, admin1, country, cc, featureType);
+
+        items.push({
+          name: item.name,
+          city: cityDisplay,
+          admin1: admin1 || country || 'Worldwide',
+          region: region || country || 'International',
+          country: country || 'Worldwide',
+          countryCode: cc,
+          latitude: Number(item.latitude),
+          longitude: Number(item.longitude),
+          elevation: item.elevation !== undefined ? Number(item.elevation) : undefined,
+          population: item.population || 0,
+          featureType,
+          importance: item.population ? Math.min(0.95, Math.log10(item.population + 10) / 8) : 0.45,
+          source: 'open-meteo',
+        });
+      }
+    }
+  }
+  return items;
+}
+
+async function queryPhotonGeo(rawQuery) {
+  const trimmed = rawQuery.trim();
+  if (!trimmed) return [];
+  const url = `${PHOTON_GEO_URL}?q=${encodeURIComponent(trimmed)}&limit=20&lang=en`;
+  const res = await fetch(url, {
+    headers: { 'User-Agent': GEO_USER_AGENT },
+    signal: AbortSignal.timeout(3500),
+  });
+  if (!res.ok) return [];
+  const data = await res.json();
+  const features = Array.isArray(data.features) ? data.features : [];
+
+  const results = [];
+  for (const f of features) {
+    const p = f.properties || {};
+    const coords = f.geometry?.coordinates;
+    if (!p.name || !Array.isArray(coords) || coords.length < 2) continue;
+    if (!isRelevantOsmPlace(p.osm_key, p.osm_value)) continue;
+
+    const cc = (p.countrycode || '').toUpperCase();
+    const admin1 = cleanAdminLabel(p.state || p.county || p.city || p.district || '');
+    const country = p.country || (p.osm_value === 'country' ? p.name : '');
+    const featureType = classifyFeatureType(p.osm_value || p.type, p.osm_key);
+    const cityDisplay = formatLocationDisplayName(p.name, admin1, country, cc, featureType);
+
+    results.push({
+      name: p.name,
+      city: cityDisplay,
+      admin1: admin1 || country || 'Worldwide',
+      region: cleanAdminLabel(p.state || country || 'International'),
+      country: country || 'Worldwide',
+      countryCode: cc,
+      latitude: Number(coords[1]),
+      longitude: Number(coords[0]),
+      population: 0,
+      featureType,
+      importance: featureType === 'Country' ? 0.92 : featureType === 'City' ? 0.78 : featureType === 'Region' ? 0.75 : 0.6,
+      source: 'photon',
+    });
+  }
+  return results;
+}
+
+async function queryNominatimGeo(rawQuery) {
+  const trimmed = rawQuery.trim();
+  if (!trimmed) return [];
+  const url = `${NOMINATIM_GEO_URL}?format=jsonv2&addressdetails=1&accept-language=en&limit=15&q=${encodeURIComponent(trimmed)}`;
+  const res = await fetch(url, {
+    headers: { 'User-Agent': GEO_USER_AGENT },
+    signal: AbortSignal.timeout(4000),
+  });
+  if (!res.ok) return [];
+  const data = await res.json();
+  if (!Array.isArray(data)) return [];
+
+  const results = [];
+  for (const item of data) {
+    if (!isRelevantOsmPlace(item.category, item.type)) continue;
+    const addr = item.address || {};
+    const name =
+      item.name ||
+      addr.city ||
+      addr.town ||
+      addr.village ||
+      addr.municipality ||
+      addr.island ||
+      addr.state ||
+      addr.country ||
+      (item.display_name ? item.display_name.split(',')[0].trim() : '');
+    if (!name) continue;
+
+    const cc = (addr.country_code || '').toUpperCase();
+    const isPh = cc === 'PH' || addr.country === 'Philippines';
+    const admin1 = isPh
+      ? cleanAdminLabel(addr.province || addr.state || addr.county || addr.region || '')
+      : cleanAdminLabel(addr.state || addr.province || addr.region || addr.county || addr.city || '');
+    const country = addr.country || (item.type === 'country' || item.addresstype === 'country' ? name : '');
+    const featureType = classifyFeatureType(item.addresstype || item.type, item.category);
+    const cityDisplay = formatLocationDisplayName(name, admin1, country, cc, featureType);
+
+    results.push({
+      name,
+      city: cityDisplay,
+      admin1: admin1 || country || 'Worldwide',
+      region: cleanAdminLabel(addr.region || addr.state || country || 'International'),
+      country: country || 'Worldwide',
+      countryCode: cc,
+      latitude: Number(item.lat),
+      longitude: Number(item.lon),
+      population: 0,
+      featureType,
+      importance: Number(item.importance) || 0.55,
+      source: 'nominatim',
+    });
+  }
+  return results;
+}
+
+function scoreGeoCandidate(item, rawQuery) {
+  const qNorm = normalizeText(rawQuery);
+  const qPrimary = normalizeText(rawQuery.split(',')[0]);
+  const qTokens = qNorm.split(/[\s,.\-()]+/).filter(Boolean);
+
+  const nameNorm = normalizeText(item.name);
+  const nameBase = stripPlaceSuffix(item.name);
+  const cityNorm = normalizeText(item.city);
+  const adminNorm = normalizeText(item.admin1);
+  const countryNorm = normalizeText(item.country);
+  const ccNorm = normalizeText(item.countryCode);
+  const fullNorm = `${nameNorm} ${adminNorm} ${countryNorm} ${ccNorm}`;
+
+  let score = 0;
+
+  if (nameNorm === qNorm || cityNorm === qNorm || nameBase === qNorm) {
+    score += 1000;
+  } else if (nameNorm === qPrimary || nameBase === qPrimary) {
+    score += 880;
+  } else if (nameNorm.startsWith(qNorm) || cityNorm.startsWith(qNorm)) {
+    score += 720;
+  } else if (nameNorm.split(/\s+/).some((w) => w.startsWith(qNorm))) {
+    score += 560;
+  } else if (nameNorm.includes(qNorm) || cityNorm.includes(qNorm)) {
+    score += 360;
+  } else if (adminNorm.startsWith(qNorm) || countryNorm.startsWith(qNorm)) {
+    score += 320;
+  }
+
+  if (qTokens.length > 1) {
+    const matchedTokens = qTokens.filter((t) => fullNorm.includes(t)).length;
+    if (matchedTokens === qTokens.length) {
+      score += 450;
+    } else {
+      score += (matchedTokens / qTokens.length) * 180;
+    }
+  }
+
+  score += (item.importance || 0) * 60;
+  if (item.population > 0) {
+    score += Math.min(45, Math.log10(item.population + 1) * 7);
+  }
+  return score;
+}
+
 /**
- * Fetch Current or Date-Specific Weather by City Name.
+ * Multi-source worldwide location search combining Open-Meteo Geocoding,
+ * Photon (OSM), and Nominatim (OSM) to find any country, region, city,
+ * municipality, town, village, island, mountain, beach, or landmark worldwide.
  */
-async function getCurrentWeather(city, date = 'Today') {
+async function searchLocations(rawQuery, limit = 25) {
+  const trimmed = String(rawQuery || '').trim();
+  if (!trimmed) return [];
+
+  const cacheKey = `${normalizeText(trimmed)}|${limit}`;
+  const cached = LOCATION_SEARCH_CACHE.get(cacheKey);
+  if (cached && Date.now() - cached.ts < LOCATION_CACHE_TTL_MS) {
+    return cached.data;
+  }
+
+  const [omRes, phRes, nomRes] = await Promise.allSettled([
+    queryOpenMeteoGeo(trimmed),
+    queryPhotonGeo(trimmed),
+    queryNominatimGeo(trimmed),
+  ]);
+
+  const rawPool = [
+    ...(omRes.status === 'fulfilled' ? omRes.value : []),
+    ...(phRes.status === 'fulfilled' ? phRes.value : []),
+    ...(nomRes.status === 'fulfilled' ? nomRes.value : []),
+  ];
+
+  // Deduplicate physical locations while preserving distinct homonym places worldwide
+  const deduped = [];
+  for (const cand of rawPool) {
+    if (!Number.isFinite(cand.latitude) || !Number.isFinite(cand.longitude)) continue;
+    const candBase = stripPlaceSuffix(cand.name);
+    const candCountry = normalizeText(cand.countryCode || cand.country);
+
+    const existing = deduped.find((ex) => {
+      const exBase = stripPlaceSuffix(ex.name);
+      const exCountry = normalizeText(ex.countryCode || ex.country);
+      if (candBase !== exBase) return false;
+      const latDiff = Math.abs(ex.latitude - cand.latitude);
+      const lonDiff = Math.abs(ex.longitude - cand.longitude);
+      if (latDiff < 0.25 && lonDiff < 0.25) return true;
+      if (
+        candCountry &&
+        candCountry === exCountry &&
+        normalizeText(ex.admin1) === normalizeText(cand.admin1) &&
+        latDiff < 0.8 &&
+        lonDiff < 0.8
+      ) {
+        return true;
+      }
+      return false;
+    });
+
+    if (!existing) {
+      deduped.push({ ...cand, _score: scoreGeoCandidate(cand, trimmed) });
+    } else {
+      if (!existing.elevation && cand.elevation !== undefined) existing.elevation = cand.elevation;
+      if (!existing.population && cand.population) existing.population = cand.population;
+      if ((!existing.admin1 || existing.admin1 === existing.country) && cand.admin1 && cand.admin1 !== cand.country) {
+        existing.admin1 = cand.admin1;
+        existing.city = formatLocationDisplayName(
+          existing.name,
+          cand.admin1,
+          existing.country,
+          existing.countryCode,
+          existing.featureType
+        );
+      }
+      existing._score = Math.max(existing._score, scoreGeoCandidate(cand, trimmed));
+    }
+  }
+
+  deduped.sort((a, b) => b._score - a._score);
+  const finalResults = deduped.slice(0, limit).map(({ _score, ...rest }) => rest);
+
+  if (LOCATION_SEARCH_CACHE.size > 500) {
+    const firstKey = LOCATION_SEARCH_CACHE.keys().next().value;
+    LOCATION_SEARCH_CACHE.delete(firstKey);
+  }
+  LOCATION_SEARCH_CACHE.set(cacheKey, { ts: Date.now(), data: finalResults });
+
+  return finalResults;
+}
+
+function mapWmoWeatherCode(code) {
+  const c = Number(code);
+  if (c === 0) return { main: 'Clear', description: 'Clear sunny skies', icon: '01d', dayLabel: 'Clear & Sunny' };
+  if (c === 1) return { main: 'Clear', description: 'Mainly clear skies', icon: '01d', dayLabel: 'Mainly Clear' };
+  if (c === 2) return { main: 'Clouds', description: 'Partly cloudy skies', icon: '02d', dayLabel: 'Partly Cloudy' };
+  if (c === 3) return { main: 'Clouds', description: 'Overcast cloud cover', icon: '04d', dayLabel: 'Overcast' };
+  if (c === 45 || c === 48) return { main: 'Mist', description: 'Misty or foggy visibility', icon: '50d', dayLabel: 'Misty & Foggy' };
+  if (c >= 51 && c <= 57) return { main: 'Drizzle', description: 'Light passing drizzle', icon: '09d', dayLabel: 'Light Drizzle' };
+  if ((c >= 61 && c <= 65) || (c >= 80 && c <= 81)) return { main: 'Rain', description: 'Scattered rain showers', icon: '10d', dayLabel: 'Passing Showers' };
+  if (c === 66 || c === 67 || c === 82) return { main: 'Rain', description: 'Heavy rain showers', icon: '10d', dayLabel: 'Heavy Showers' };
+  if ((c >= 71 && c <= 77) || c === 85 || c === 86) return { main: 'Snow', description: 'Snowfall and alpine chill', icon: '13d', dayLabel: 'Snowfall' };
+  if (c >= 95) return { main: 'Thunderstorm', description: 'Thunderstorms and gusty winds', icon: '11d', dayLabel: 'Thunderstorms' };
+  return { main: 'Clouds', description: 'Scattered cloud cover', icon: '02d', dayLabel: 'Partly Cloudy' };
+}
+
+async function resolveLocationMetadata(cleanCity, options = {}) {
+  const optLat = options.lat !== undefined && options.lat !== '' ? Number(options.lat) : NaN;
+  const optLon = options.lon !== undefined && options.lon !== '' ? Number(options.lon) : NaN;
+  const optCountry = (options.country || '').trim();
+
+  if (Number.isFinite(optLat) && Number.isFinite(optLon)) {
+    const parts = cleanCity.split(',').map((p) => p.trim()).filter(Boolean);
+    const displayCity = parts.length > 2 ? `${parts[0]}, ${parts[1]}` : cleanCity;
+    const inferredCountry = optCountry || (parts.length > 1 ? parts[parts.length - 1] : 'Worldwide');
+    return {
+      city: displayCity,
+      country: inferredCountry,
+      lat: optLat,
+      lon: optLon,
+      elevation: undefined,
+    };
+  }
+
+  const cacheKey = `${normalizeText(cleanCity)}|${normalizeText(optCountry)}`;
+  const cached = LOCATION_RESOLVE_CACHE.get(cacheKey);
+  if (cached && Date.now() - cached.ts < LOCATION_CACHE_TTL_MS) {
+    return cached.data;
+  }
+
+  // Check static dictionary only when unambiguous (no conflicting comma qualifier)
+  const parts = cleanCity.split(',').map((p) => p.trim()).filter(Boolean);
+  const primaryNorm = normalizeText(parts[0] || cleanCity);
+  const fullNorm = normalizeText(cleanCity);
+  const qualifierNorm = normalizeText(optCountry || parts.slice(1).join(' '));
+
+  const dictHit = PHILIPPINE_LOCATIONS[fullNorm] || PHILIPPINE_LOCATIONS[primaryNorm];
+  if (dictHit) {
+    const dictCountryNorm = normalizeText(dictHit.country);
+    const dictCodeNorm = normalizeText(dictHit.countryCode);
+    const qualifierMatchesDict =
+      !qualifierNorm ||
+      dictCountryNorm.includes(qualifierNorm) ||
+      qualifierNorm.includes(dictCountryNorm) ||
+      qualifierNorm === dictCodeNorm ||
+      (dictHit.countryCode === 'PH' && /luzon|visayas|mindanao|ncr|metro manila|pampanga|bulacan|cavite|laguna|batangas|rizal|cebu|bohol|palawan|benguet|ilocos|bicol|davao/i.test(qualifierNorm));
+
+    if (qualifierMatchesDict) {
+      const resolved = {
+        city: dictHit.city,
+        country: dictHit.country,
+        lat: Number(dictHit.lat),
+        lon: Number(dictHit.lon),
+        elevation: dictHit.elevation,
+      };
+      LOCATION_RESOLVE_CACHE.set(cacheKey, { ts: Date.now(), data: resolved });
+      return resolved;
+    }
+  }
+
+  // Dynamically geocode worldwide via multi-source search
+  const queryWithCountry = optCountry && !normalizeText(cleanCity).includes(normalizeText(optCountry))
+    ? `${cleanCity}, ${optCountry}`
+    : cleanCity;
+
+  const matches = await searchLocations(queryWithCountry, 5);
+  if (matches.length > 0) {
+    const best = matches[0];
+    const displayCountry =
+      best.admin1 &&
+      best.country &&
+      normalizeText(best.admin1) !== normalizeText(best.country) &&
+      !normalizeText(best.city).includes(normalizeText(best.admin1))
+        ? `${best.admin1}, ${best.country}`
+        : best.country || 'Worldwide';
+
+    const resolved = {
+      city: best.city || best.name,
+      country: displayCountry,
+      lat: best.latitude,
+      lon: best.longitude,
+      elevation: best.elevation !== undefined ? `${Math.round(best.elevation)}m` : undefined,
+    };
+    LOCATION_RESOLVE_CACHE.set(cacheKey, { ts: Date.now(), data: resolved });
+    return resolved;
+  }
+
+  return null;
+}
+
+async function fetchOpenMeteoBundle(locMeta) {
+  const coordKey = `${Number(locMeta.lat).toFixed(3)},${Number(locMeta.lon).toFixed(3)}`;
+  const cached = LIVE_WEATHER_CACHE.get(coordKey);
+  if (cached && Date.now() - cached.ts < WEATHER_CACHE_TTL_MS) {
+    return buildBundleWithLocation(cached.raw, locMeta);
+  }
+
+  if (IN_FLIGHT_WEATHER.has(coordKey)) {
+    const raw = await IN_FLIGHT_WEATHER.get(coordKey);
+    return buildBundleWithLocation(raw, locMeta);
+  }
+
+  const fetchPromise = (async () => {
+    const url =
+      `${OPEN_METEO_FORECAST_URL}?latitude=${encodeURIComponent(locMeta.lat)}&longitude=${encodeURIComponent(locMeta.lon)}` +
+      `&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,cloud_cover,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m` +
+      `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max` +
+      `&timezone=auto&forecast_days=7`;
+
+    const res = await fetch(url, { signal: AbortSignal.timeout(4500) });
+    if (!res.ok) {
+      throw new Error(`Open-Meteo HTTP ${res.status}`);
+    }
+    const raw = await res.json();
+    if (!raw || !raw.current) {
+      throw new Error('Invalid Open-Meteo payload');
+    }
+    if (LIVE_WEATHER_CACHE.size > 300) {
+      const oldestKey = LIVE_WEATHER_CACHE.keys().next().value;
+      LIVE_WEATHER_CACHE.delete(oldestKey);
+    }
+    LIVE_WEATHER_CACHE.set(coordKey, { ts: Date.now(), raw });
+    return raw;
+  })();
+
+  IN_FLIGHT_WEATHER.set(coordKey, fetchPromise);
+  try {
+    const raw = await fetchPromise;
+    return buildBundleWithLocation(raw, locMeta);
+  } finally {
+    IN_FLIGHT_WEATHER.delete(coordKey);
+  }
+}
+
+function buildBundleWithLocation(raw, locMeta) {
+  const c = raw.current || {};
+  const d = raw.daily || {};
+  const mappedCurrent = mapWmoWeatherCode(c.weather_code);
+  const baseHumidity = Math.round(c.relative_humidity_2m ?? 65);
+
+  const times = Array.isArray(d.time) ? d.time : [];
+  const days = times.slice(0, 7).map((dateKey, idx) => {
+    const dayWmo = mapWmoWeatherCode(d.weather_code?.[idx] ?? c.weather_code);
+    const highTemp = Math.round(d.temperature_2m_max?.[idx] ?? (c.temperature_2m + 2));
+    const lowTemp = Math.round(d.temperature_2m_min?.[idx] ?? (c.temperature_2m - 3));
+    const precipChance = Math.round(d.precipitation_probability_max?.[idx] ?? 0);
+    const windSpeed = Math.round(d.wind_speed_10m_max?.[idx] ?? (c.wind_speed_10m || 10));
+    const dateObj = new Date(`${dateKey}T12:00:00`);
+
+    return {
+      date: dateKey,
+      day: idx === 0 ? 'Today' : dateObj.toLocaleDateString('en-US', { weekday: 'short' }),
+      formattedDate: dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      condition: dayWmo.dayLabel,
+      mainCondition: dayWmo.main,
+      description: dayWmo.description,
+      icon: dayWmo.icon,
+      highTemp,
+      lowTemp,
+      precipChance,
+      windSpeed,
+      humidity: Math.min(98, Math.max(25, baseHumidity + (precipChance > 50 ? 10 : 0))),
+    };
+  });
+
+  const elevationStr =
+    raw.elevation !== undefined && raw.elevation !== null
+      ? `${Math.round(raw.elevation)}m`
+      : locMeta.elevation || '25m';
+
+  const currentTemp = Math.round(c.temperature_2m ?? 22);
+  const feelsLike = Math.round(c.apparent_temperature ?? currentTemp);
+  const tempMax = days[0]?.highTemp !== undefined ? Math.max(currentTemp, days[0].highTemp) : currentTemp + 3;
+  const tempMin = days[0]?.lowTemp !== undefined ? Math.min(currentTemp, days[0].lowTemp) : currentTemp - 3;
+
+  return {
+    current: {
+      location: {
+        city: locMeta.city,
+        country: locMeta.country || 'Worldwide',
+        lat: Number(locMeta.lat).toFixed(4),
+        lon: Number(locMeta.lon).toFixed(4),
+        elevation: elevationStr,
+      },
+      weather: {
+        main: mappedCurrent.main,
+        description: mappedCurrent.description,
+        icon: mappedCurrent.icon,
+      },
+      temperature: {
+        current: currentTemp,
+        feelsLike,
+        tempMin,
+        tempMax,
+      },
+      telemetry: {
+        humidity: baseHumidity,
+        pressure: Math.round(c.surface_pressure ?? 1013),
+        windSpeed: Math.round(c.wind_speed_10m ?? 10),
+        windDeg: Math.round(c.wind_direction_10m ?? 0),
+        windGust: Math.round(c.wind_gusts_10m ?? (c.wind_speed_10m || 10) * 1.35),
+        visibilityKm:
+          mappedCurrent.main === 'Mist'
+            ? '4.5'
+            : mappedCurrent.main === 'Rain' || mappedCurrent.main === 'Snow'
+            ? '9.0'
+            : '16.0',
+        cloudiness: Math.round(c.cloud_cover ?? 20),
+        rain1h: Number((c.precipitation ?? c.rain ?? 0).toFixed(1)),
+      },
+      timestamp: new Date().toISOString(),
+      isMock: false,
+      isFallback: false,
+    },
+    forecast: {
+      city: locMeta.city,
+      country: locMeta.country || 'Worldwide',
+      coordinates: { lat: Number(locMeta.lat), lon: Number(locMeta.lon) },
+      dailyForecast: days,
+      isMock: false,
+      isFallback: false,
+    },
+  };
+}
+
+/**
+ * Fetch Current or Date-Specific Weather by City Name or Coordinates.
+ */
+async function getCurrentWeather(city, date = 'Today', options = {}) {
   if (!city || typeof city !== 'string' || city.trim().length === 0) {
     const err = new Error('City parameter is required.');
     err.statusCode = 400;
@@ -528,8 +1172,8 @@ async function getCurrentWeather(city, date = 'Today') {
 
   const cleanCity = city.trim();
 
-  // Validate city name (allow international locations, names with accents, commas, and parentheses up to 100 chars)
-  if (/(?:xyzzy|qwerty12345)/i.test(cleanCity) || cleanCity.length > 100) {
+  // Validate city name (allow international locations, names with accents, commas, and parentheses up to 160 chars)
+  if (/(?:xyzzy|qwerty12345)/i.test(cleanCity) || cleanCity.length > 160) {
     const notFoundErr = new Error(`City "${cleanCity}" not found.`);
     notFoundErr.statusCode = 404;
     throw notFoundErr;
@@ -540,14 +1184,9 @@ async function getCurrentWeather(city, date = 'Today') {
   let baseWeather = null;
   let forecastData = null;
 
-  if (!apiKey || apiKey.trim() === '') {
-    // Deterministic fallback if API key is not supplied
-    const fallback = getDeterministicFallback(cleanCity);
-    baseWeather = fallback.current;
-    forecastData = fallback.forecast;
-  } else {
+  // 1. Try OpenWeatherMap if an API key is configured and explicit coordinates were not overriding
+  if (apiKey && apiKey.trim() !== '' && options.lat === undefined) {
     try {
-      // Build candidate names to query OpenWeatherMap
       let queryCandidates = [cleanCity];
       if (cleanCity.includes('(') && cleanCity.includes(')')) {
         const insideParen = cleanCity.replace(/^[^(]+\(([^)]+)\).*$/, '$1').trim();
@@ -566,28 +1205,41 @@ async function getCurrentWeather(city, date = 'Today') {
         if (response.ok) break;
       }
 
-      if (!response || !response.ok) {
-        // Fallback to deterministic weather generator for this city
-        const fallback = getDeterministicFallback(cleanCity);
-        baseWeather = fallback.current;
-        forecastData = fallback.forecast;
-      } else {
+      if (response && response.ok) {
         const data = await response.json();
         baseWeather = normalizeCurrentWeather(data);
       }
     } catch (err) {
-      console.warn(`[WeatherService] OWM call failed (${err.message}). Using deterministic fallback for "${cleanCity}".`);
-      const fallback = getDeterministicFallback(cleanCity);
-      baseWeather = fallback.current;
-      forecastData = fallback.forecast;
+      console.warn(`[WeatherService] OWM call failed (${err.message}). Trying Open-Meteo live telemetry for "${cleanCity}".`);
     }
+  }
+
+  // 2. Worldwide live geocoding + Open-Meteo meteorological telemetry (works for every place on Earth, no API key needed)
+  if (!baseWeather) {
+    try {
+      const locMeta = await resolveLocationMetadata(cleanCity, options);
+      if (locMeta) {
+        const liveBundle = await fetchOpenMeteoBundle(locMeta);
+        baseWeather = liveBundle.current;
+        forecastData = liveBundle.forecast;
+      }
+    } catch (err) {
+      console.warn(`[WeatherService] Open-Meteo live telemetry failed (${err.message}). Using offline fallback for "${cleanCity}".`);
+    }
+  }
+
+  // 3. Final offline safety net
+  if (!baseWeather) {
+    const fallback = getDeterministicFallback(cleanCity);
+    baseWeather = fallback.current;
+    forecastData = fallback.forecast;
   }
 
   // If a specific future date is requested, overlay forecasted meteorological parameters
   if (date && date !== 'Today') {
     if (!forecastData) {
       try {
-        forecastData = await getForecast(cleanCity);
+        forecastData = await getForecast(cleanCity, options);
       } catch (e) {
         // use base if forecast fails
       }
@@ -609,11 +1261,20 @@ async function getCurrentWeather(city, date = 'Today') {
     if (selectedDay) {
       const conditionMap = {
         'Passing Showers': 'Rain',
+        'Heavy Showers': 'Rain',
         'Light rain showers': 'Rain',
+        'Light Drizzle': 'Drizzle',
         'Partly Sunny': 'Clouds',
+        'Partly Cloudy': 'Clouds',
+        'Overcast': 'Clouds',
         'Clear & Crisp': 'Clear',
+        'Clear & Sunny': 'Clear',
+        'Mainly Clear': 'Clear',
+        'Snowfall': 'Snow',
+        'Thunderstorms': 'Thunderstorm',
+        'Misty & Foggy': 'Mist',
       };
-      const mainCond = conditionMap[selectedDay.condition] || selectedDay.condition;
+      const mainCond = selectedDay.mainCondition || conditionMap[selectedDay.condition] || selectedDay.condition;
 
       return {
         ...baseWeather,
@@ -631,8 +1292,8 @@ async function getCurrentWeather(city, date = 'Today') {
         },
         telemetry: {
           ...baseWeather.telemetry,
-          humidity: selectedDay.humidity || baseWeather.telemetry?.humidity,
-          windSpeed: selectedDay.windSpeed || baseWeather.telemetry?.windSpeed,
+          humidity: selectedDay.humidity ?? baseWeather.telemetry?.humidity,
+          windSpeed: selectedDay.windSpeed ?? baseWeather.telemetry?.windSpeed,
           precipitationChance: selectedDay.precipChance || 0,
           rain1h: selectedDay.precipChance > 40 ? 3.0 : 0,
         },
@@ -644,9 +1305,9 @@ async function getCurrentWeather(city, date = 'Today') {
 }
 
 /**
- * Fetch 5-Day / 7-Day Forecast by City Name.
+ * Fetch 5-Day / 7-Day Forecast by City Name or Coordinates.
  */
-async function getForecast(city) {
+async function getForecast(city, options = {}) {
   if (!city || typeof city !== 'string' || city.trim().length === 0) {
     const err = new Error('City parameter is required.');
     err.statusCode = 400;
@@ -656,42 +1317,50 @@ async function getForecast(city) {
   const cleanCity = city.trim();
   const apiKey = config.openWeatherMap?.apiKey;
 
-  if (!apiKey || apiKey.trim() === '') {
-    return getDeterministicFallback(cleanCity).forecast;
+  if (apiKey && apiKey.trim() !== '' && options.lat === undefined) {
+    try {
+      let queryCandidates = [cleanCity];
+      if (cleanCity.includes('(') && cleanCity.includes(')')) {
+        const insideParen = cleanCity.replace(/^[^(]+\(([^)]+)\).*$/, '$1').trim();
+        const beforeParen = cleanCity.replace(/\s*\([^)]+\).*$/, '').trim();
+        queryCandidates.push(insideParen, beforeParen);
+      }
+      if (cleanCity.includes(',')) {
+        queryCandidates.push(cleanCity.split(',')[0].trim());
+      }
+      queryCandidates = [...new Set(queryCandidates)];
+
+      let response = null;
+      for (const candidate of queryCandidates) {
+        const url = `${OWM_BASE_URL}/forecast?q=${encodeURIComponent(candidate)}&units=metric&appid=${apiKey}`;
+        response = await fetch(url);
+        if (response.ok) break;
+      }
+
+      if (response && response.ok) {
+        const data = await response.json();
+        return normalizeForecast(data);
+      }
+    } catch (err) {
+      console.warn(`[WeatherService] OWM forecast call failed (${err.message}). Trying Open-Meteo forecast for "${cleanCity}".`);
+    }
   }
 
   try {
-    let queryCandidates = [cleanCity];
-    if (cleanCity.includes('(') && cleanCity.includes(')')) {
-      const insideParen = cleanCity.replace(/^[^(]+\(([^)]+)\).*$/, '$1').trim();
-      const beforeParen = cleanCity.replace(/\s*\([^)]+\).*$/, '').trim();
-      queryCandidates.push(insideParen, beforeParen);
+    const locMeta = await resolveLocationMetadata(cleanCity, options);
+    if (locMeta) {
+      const liveBundle = await fetchOpenMeteoBundle(locMeta);
+      return liveBundle.forecast;
     }
-    if (cleanCity.includes(',')) {
-      queryCandidates.push(cleanCity.split(',')[0].trim());
-    }
-    queryCandidates = [...new Set(queryCandidates)];
-
-    let response = null;
-    for (const candidate of queryCandidates) {
-      const url = `${OWM_BASE_URL}/forecast?q=${encodeURIComponent(candidate)}&units=metric&appid=${apiKey}`;
-      response = await fetch(url);
-      if (response.ok) break;
-    }
-
-    if (!response || !response.ok) {
-      return getDeterministicFallback(cleanCity).forecast;
-    }
-
-    const data = await response.json();
-    return normalizeForecast(data);
   } catch (err) {
-    console.warn(`[WeatherService] OWM forecast call failed (${err.message}). Using deterministic fallback for "${cleanCity}".`);
-    return getDeterministicFallback(cleanCity).forecast;
+    console.warn(`[WeatherService] Open-Meteo forecast failed (${err.message}). Using offline fallback for "${cleanCity}".`);
   }
+
+  return getDeterministicFallback(cleanCity).forecast;
 }
 
 module.exports = {
   getCurrentWeather,
   getForecast,
+  searchLocations,
 };

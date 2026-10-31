@@ -22,6 +22,9 @@ import {
   Loader2,
 } from 'lucide-react';
 import { getDestinationMedia } from '../../services/destinationMediaService';
+import weatherService from '../../services/weatherService';
+
+const LIVE_GEO_CACHE = new Map();
 
 
 /**
@@ -3228,87 +3231,41 @@ export default function DestinationAutocomplete({
       return;
     }
 
+    // Check instant in-memory cache
+    if (LIVE_GEO_CACHE.has(trimmed)) {
+      setLiveResults(LIVE_GEO_CACHE.get(trimmed));
+      setIsLiveSearching(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    let isCancelled = false;
+
     const timer = setTimeout(async () => {
       try {
         setIsLiveSearching(true);
 
-        // Sanitize search name for Open-Meteo:
-        // Open-Meteo expects pure place name without commas, parentheses, or trailing country/province qualifiers.
-        let primaryName = trimmed;
-        let secondaryFilter = '';
-
-        if (trimmed.includes(',')) {
-          const parts = trimmed.split(',').map((p) => p.trim());
-          primaryName = parts[0];
-          secondaryFilter = parts.slice(1).join(' ').toLowerCase();
-        } else if (trimmed.includes('(')) {
-          primaryName = trimmed.replace(/\s*\([^)]*\)/g, '').trim();
-        } else {
-          // Known country & province qualifiers when typed without comma (e.g. "Tokyo Japan", "Paris France", "San Jose del Monte Bulacan")
-          const qualifiers = [
-            'philippines', 'ph', 'japan', 'france', 'usa', 'united states', 'uk', 'united kingdom',
-            'italy', 'spain', 'germany', 'canada', 'australia', 'indonesia', 'thailand', 'vietnam',
-            'malaysia', 'singapore', 'taiwan', 'south korea', 'korea', 'china',
-            'bulacan', 'pampanga', 'bataan', 'zambales', 'tarlac', 'nueva ecija', 'aurora',
-            'cavite', 'laguna', 'batangas', 'rizal', 'quezon', 'benguet', 'la union', 'ilocos sur',
-            'ilocos norte', 'ilocos', 'pangasinan', 'albay', 'camarines sur', 'camarines norte',
-            'sorsogon', 'catanduanes', 'masbate', 'palawan', 'cebu', 'bohol', 'siquijor', 'leyte',
-            'samar', 'davao', 'bukidnon', 'camiguin', 'misamis', 'cotabato', 'surigao', 'agusan'
-          ];
-          const lower = trimmed.toLowerCase();
-          for (const q of qualifiers) {
-            if (lower.endsWith(' ' + q) && lower.length > q.length + 2) {
-              primaryName = trimmed.slice(0, trimmed.length - q.length).trim();
-              secondaryFilter = q;
-              break;
-            }
-          }
+        // 1. Query backend search endpoint first (aggregates Open-Meteo, Photon, and Nominatim)
+        let backendResults = [];
+        try {
+          backendResults = await weatherService.searchLocations(trimmed, 25, controller.signal);
+        } catch (e) {
+          if (controller.signal.aborted) return;
         }
 
-        const normalizedSearch = primaryName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        let formatted = [];
 
-        const fetchUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
-          normalizedSearch || primaryName
-        )}&count=10&language=en`;
-
-        const res = await fetch(fetchUrl, { signal: AbortSignal.timeout(5000) });
-        if (!res.ok) throw new Error('Geocoding request failed');
-        const data = await res.json();
-
-        if (Array.isArray(data.results) && data.results.length > 0) {
-          let results = data.results;
-
-          // If user typed a secondary filter (e.g. "CA", "USA", "UK", "PH", "Philippines"), rank/filter by it
-          if (secondaryFilter) {
-            const matchesSecondary = results.filter((r) => {
-              const country = (r.country || '').toLowerCase();
-              const countryCode = (r.country_code || '').toLowerCase();
-              const admin = (r.admin1 || '').toLowerCase();
-              return (
-                country.includes(secondaryFilter) ||
-                countryCode === secondaryFilter ||
-                admin.includes(secondaryFilter) ||
-                (secondaryFilter === 'usa' && (countryCode === 'us' || country.includes('united states'))) ||
-                (secondaryFilter === 'uk' && (countryCode === 'gb' || country.includes('united kingdom'))) ||
-                (secondaryFilter === 'ph' && (countryCode === 'ph' || country.includes('philippines')))
-              );
-            });
-            if (matchesSecondary.length > 0) {
-              results = matchesSecondary;
-            }
-          }
-
-          const formatted = results.slice(0, 8).map((r) => {
-            const locName = `${r.name}${r.admin1 && r.admin1 !== r.name ? `, ${r.admin1}` : ''}`;
-            const media = getDestinationMedia(r.name);
-            const isPh = r.country === 'Philippines' || r.country_code === 'PH';
+        if (Array.isArray(backendResults) && backendResults.length > 0) {
+          formatted = backendResults.map((r) => {
+            const isPh = r.countryCode === 'PH' || (r.country && r.country.toLowerCase().includes('philippines'));
+            const media = getDestinationMedia(r.name || r.city);
             return {
-              city: locName,
-              shortName: r.name,
-              province: r.admin1 || r.country || 'Global',
-              region: r.country || (isPh ? 'Philippines' : 'International'),
+              city: r.city,
+              shortName: r.name || r.city.split(',')[0].trim(),
+              province: r.admin1 || r.country || (isPh ? 'Philippines' : 'Worldwide'),
+              region: r.region || r.country || (isPh ? 'Philippines' : 'International'),
               country: r.country || (isPh ? 'Philippines' : 'Worldwide'),
-              countryCode: r.country_code || (isPh ? 'PH' : ''),
+              countryCode: r.countryCode || (isPh ? 'PH' : ''),
               category: isPh ? 'Local Destination' : 'Worldwide Destination',
               categoryGroup: isPh ? 'PHILIPPINES' : 'GLOBAL',
               popular: false,
@@ -3318,24 +3275,128 @@ export default function DestinationAutocomplete({
               badgeColor: isPh
                 ? 'text-primary bg-primary/10 border-primary/20'
                 : 'text-sky-500 bg-sky-500/10 border-sky-500/20',
-              keywords: [r.name.toLowerCase(), (r.country || '').toLowerCase(), (r.admin1 || '').toLowerCase()],
+              keywords: [
+                (r.name || '').toLowerCase(),
+                (r.city || '').toLowerCase(),
+                (r.country || '').toLowerCase(),
+                (r.admin1 || '').toLowerCase(),
+              ],
               latitude: r.latitude,
               longitude: r.longitude,
               isLive: true,
             };
           });
-          setLiveResults(formatted);
         } else {
-          setLiveResults([]);
+          // Direct client fallback to Photon & Open-Meteo if backend endpoint is unavailable
+          const photonUrl = `https://photon.komoot.io/api/?q=${encodeURIComponent(trimmed)}&limit=15&lang=en`;
+          const omUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
+            trimmed.split(',')[0].trim()
+          )}&count=15&language=en`;
+
+          const [phRes, omRes] = await Promise.allSettled([
+            fetch(photonUrl, { signal: controller.signal }),
+            fetch(omUrl, { signal: controller.signal }),
+          ]);
+
+          const rawList = [];
+
+          if (phRes.status === 'fulfilled' && phRes.value.ok) {
+            const phData = await phRes.value.json();
+            if (Array.isArray(phData.features)) {
+              for (const f of phData.features) {
+                const p = f.properties || {};
+                const coords = f.geometry?.coordinates;
+                if (!p.name || !coords) continue;
+                const cc = (p.countrycode || '').toUpperCase();
+                const isPh = cc === 'PH' || (p.country && p.country.toLowerCase().includes('philippines'));
+                const admin = p.state || p.county || p.city || '';
+                const display = admin && admin !== p.name ? `${p.name}, ${admin}` : p.country ? `${p.name}, ${p.country}` : p.name;
+                rawList.push({
+                  name: p.name,
+                  city: display,
+                  admin1: admin,
+                  country: p.country || 'Worldwide',
+                  countryCode: cc,
+                  latitude: coords[1],
+                  longitude: coords[0],
+                  isPh,
+                });
+              }
+            }
+          }
+
+          if (omRes.status === 'fulfilled' && omRes.value.ok) {
+            const omData = await omRes.value.json();
+            if (Array.isArray(omData.results)) {
+              for (const r of omData.results) {
+                const cc = (r.country_code || '').toUpperCase();
+                const isPh = cc === 'PH' || (r.country && r.country.toLowerCase().includes('philippines'));
+                const admin = r.admin1 || r.admin2 || '';
+                const display = admin && admin !== r.name ? `${r.name}, ${admin}` : r.country ? `${r.name}, ${r.country}` : r.name;
+                rawList.push({
+                  name: r.name,
+                  city: display,
+                  admin1: admin,
+                  country: r.country || 'Worldwide',
+                  countryCode: cc,
+                  latitude: r.latitude,
+                  longitude: r.longitude,
+                  isPh,
+                });
+              }
+            }
+          }
+
+          formatted = rawList.slice(0, 20).map((r) => {
+            const media = getDestinationMedia(r.name);
+            return {
+              city: r.city,
+              shortName: r.name,
+              province: r.admin1 || r.country || 'Global',
+              region: r.country || (r.isPh ? 'Philippines' : 'International'),
+              country: r.country || (r.isPh ? 'Philippines' : 'Worldwide'),
+              countryCode: r.countryCode || (r.isPh ? 'PH' : ''),
+              category: r.isPh ? 'Local Destination' : 'Worldwide Destination',
+              categoryGroup: r.isPh ? 'PHILIPPINES' : 'GLOBAL',
+              popular: false,
+              highlight: media.landmark || `${r.name} • ${r.admin1 ? `${r.admin1}, ` : ''}${r.country || 'Worldwide'}`,
+              tag: r.country || (r.isPh ? 'Philippines' : 'Worldwide'),
+              icon: Globe,
+              badgeColor: r.isPh
+                ? 'text-primary bg-primary/10 border-primary/20'
+                : 'text-sky-500 bg-sky-500/10 border-sky-500/20',
+              keywords: [(r.name || '').toLowerCase(), (r.country || '').toLowerCase(), (r.admin1 || '').toLowerCase()],
+              latitude: r.latitude,
+              longitude: r.longitude,
+              isLive: true,
+            };
+          });
+        }
+
+        if (!isCancelled && !controller.signal.aborted) {
+          LIVE_GEO_CACHE.set(trimmed, formatted);
+          if (LIVE_GEO_CACHE.size > 200) {
+            const first = LIVE_GEO_CACHE.keys().next().value;
+            LIVE_GEO_CACHE.delete(first);
+          }
+          setLiveResults(formatted);
         }
       } catch (err) {
-        setLiveResults([]);
+        if (!isCancelled && !controller.signal.aborted) {
+          setLiveResults([]);
+        }
       } finally {
-        setIsLiveSearching(false);
+        if (!isCancelled && !controller.signal.aborted) {
+          setIsLiveSearching(false);
+        }
       }
-    }, 200);
+    }, 180);
 
-    return () => clearTimeout(timer);
+    return () => {
+      isCancelled = true;
+      controller.abort();
+      clearTimeout(timer);
+    };
   }, [cleanQuery]);
 
   // Robust multi-word and tokenized destination search across all curated locations
@@ -3375,19 +3436,54 @@ export default function DestinationAutocomplete({
       });
 
   // Seamlessly merge curated destinations with worldwide live geocoding results
+  // Deduplicate by (shortName + admin1/province + country) to preserve distinct homonym places worldwide
   const combinedDestinations = [...filteredDestinations];
   if (cleanQuery.length >= 2 && liveResults.length > 0) {
     liveResults.forEach((liveDest) => {
-      const liveCityNorm = liveDest.city.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-      const liveShortNorm = liveDest.shortName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const liveNameNorm = (liveDest.shortName || liveDest.city).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+      const liveAdminNorm = (liveDest.province || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+      const liveCountryNorm = (liveDest.country || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+
       const alreadyExists = combinedDestinations.some((cd) => {
-        const cdNorm = cd.city.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        const cdShortNorm = cd.shortName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        return cdNorm === liveCityNorm || cdShortNorm === liveShortNorm;
+        const cdNameNorm = (cd.shortName || cd.city).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+        const cdAdminNorm = (cd.province || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+        const cdCountryNorm = (cd.country || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+
+        // Exact name, province/admin, and country duplicate
+        if (cdNameNorm === liveNameNorm && cdCountryNorm === liveCountryNorm) {
+          if (!cdAdminNorm || !liveAdminNorm || cdAdminNorm === liveAdminNorm) return true;
+        }
+        return false;
       });
+
       if (!alreadyExists) {
         combinedDestinations.push(liveDest);
       }
+    });
+  }
+
+  // Rank matching destinations by relevance to current search query
+  if (cleanQuery) {
+    combinedDestinations.sort((a, b) => {
+      const aName = (a.shortName || a.city).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const bName = (b.shortName || b.city).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+      const aExact = aName === normalizedQuery;
+      const bExact = bName === normalizedQuery;
+      if (aExact && !bExact) return -1;
+      if (!aExact && bExact) return 1;
+
+      const aStarts = aName.startsWith(normalizedQuery);
+      const bStarts = bName.startsWith(normalizedQuery);
+      if (aStarts && !bStarts) return -1;
+      if (!aStarts && bStarts) return 1;
+
+      const aWords = aName.split(/\s+/).some((w) => w.startsWith(normalizedQuery));
+      const bWords = bName.split(/\s+/).some((w) => w.startsWith(normalizedQuery));
+      if (aWords && !bWords) return -1;
+      if (!aWords && bWords) return 1;
+
+      return 0;
     });
   }
 
@@ -3563,7 +3659,7 @@ export default function DestinationAutocomplete({
                 : `Recommended destinations (${combinedDestinations.length} available)`}
             </span>
             <span className="text-[10px] uppercase tracking-wider text-primary font-bold px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20">
-              100+ Worldwide & Local
+              Worldwide & Local
             </span>
           </div>
 
