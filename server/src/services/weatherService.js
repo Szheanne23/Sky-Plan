@@ -656,8 +656,8 @@ async function queryOpenMeteoGeo(rawQuery) {
   const uniqueQueries = [...new Set(candidateQueries.map((q) => normalizeText(q) || q))].slice(0, 2);
   const responses = await Promise.allSettled(
     uniqueQueries.map(async (q) => {
-      const url = `${OPEN_METEO_GEO_URL}?name=${encodeURIComponent(q)}&count=20&language=en`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(3500) });
+      const url = `${OPEN_METEO_GEO_URL}?name=${encodeURIComponent(q)}&count=25&language=en`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(1800) });
       if (!res.ok) return [];
       const data = await res.json();
       return Array.isArray(data.results) ? data.results : [];
@@ -690,7 +690,7 @@ async function queryOpenMeteoGeo(rawQuery) {
           elevation: item.elevation !== undefined ? Number(item.elevation) : undefined,
           population: item.population || 0,
           featureType,
-          importance: item.population ? Math.min(0.95, Math.log10(item.population + 10) / 8) : 0.45,
+          importance: item.population ? Math.min(0.95, Math.log10(item.population + 10) / 8) : 0.65,
           source: 'open-meteo',
         });
       }
@@ -702,10 +702,10 @@ async function queryOpenMeteoGeo(rawQuery) {
 async function queryPhotonGeo(rawQuery) {
   const trimmed = rawQuery.trim();
   if (!trimmed) return [];
-  const url = `${PHOTON_GEO_URL}?q=${encodeURIComponent(trimmed)}&limit=20&lang=en`;
+  const url = `${PHOTON_GEO_URL}?q=${encodeURIComponent(trimmed)}&limit=25&lang=en`;
   const res = await fetch(url, {
     headers: { 'User-Agent': GEO_USER_AGENT },
-    signal: AbortSignal.timeout(3500),
+    signal: AbortSignal.timeout(1800),
   });
   if (!res.ok) return [];
   const data = await res.json();
@@ -847,6 +847,77 @@ function scoreGeoCandidate(item, rawQuery) {
  * Photon (OSM), and Nominatim (OSM) to find any country, region, city,
  * municipality, town, village, island, mountain, beach, or landmark worldwide.
  */
+function searchLocalCatalog(rawQuery) {
+  const trimmed = String(rawQuery || '').trim();
+  if (!trimmed) return [];
+  const qNorm = normalizeText(trimmed);
+  const qTokens = qNorm.split(/[\s,.-]+/).filter(Boolean);
+  const matches = [];
+
+  for (const [key, loc] of Object.entries(PHILIPPINE_LOCATIONS)) {
+    const keyNorm = normalizeText(key);
+    const cityNorm = normalizeText(loc.city);
+    const countryNorm = normalizeText(loc.country || '');
+    const cleanCityName = loc.city.replace(/\s*\([^)]*\)/g, '').trim();
+    const cleanAdmin = loc.city.includes('(')
+      ? loc.city.replace(/^.*\(([^)]+)\).*$/, '$1').trim()
+      : (loc.countryCode === 'PH' ? 'Philippines' : loc.country || 'Worldwide');
+
+    let isMatch = false;
+    let score = 0;
+
+    if (keyNorm === qNorm || cityNorm === qNorm) {
+      isMatch = true;
+      score = 1000;
+    } else if (keyNorm.startsWith(qNorm) || cityNorm.startsWith(qNorm)) {
+      isMatch = true;
+      score = 800;
+    } else if (keyNorm.includes(qNorm) || cityNorm.includes(qNorm)) {
+      isMatch = true;
+      score = 600;
+    } else if (qTokens.length > 0 && qTokens.every((tok) => keyNorm.includes(tok) || cityNorm.includes(tok))) {
+      isMatch = true;
+      score = 500;
+    }
+
+    if (isMatch) {
+      const cc = loc.countryCode || (loc.country === 'Philippines' ? 'PH' : '');
+      const isPh = cc === 'PH' || loc.country === 'Philippines';
+      const featureType = loc.elevation && parseInt(loc.elevation, 10) > 800 ? 'Highland' : 'City';
+
+      matches.push({
+        name: cleanCityName,
+        city: loc.city,
+        admin1: cleanAdmin,
+        region: loc.country || 'Philippines',
+        country: loc.country || 'Philippines',
+        countryCode: cc,
+        latitude: Number(loc.lat),
+        longitude: Number(loc.lon),
+        elevation: loc.elevation ? parseInt(loc.elevation, 10) : undefined,
+        population: 500000,
+        featureType,
+        importance: 0.95,
+        source: 'catalog',
+        _score: score,
+      });
+    }
+  }
+
+  // Deduplicate by cleanCityName + countryCode
+  const deduped = [];
+  for (const item of matches) {
+    const existing = deduped.find((d) => normalizeText(d.name) === normalizeText(item.name) && d.countryCode === item.countryCode);
+    if (!existing) {
+      deduped.push(item);
+    } else if (item._score > existing._score) {
+      existing._score = item._score;
+    }
+  }
+
+  return deduped;
+}
+
 async function searchLocations(rawQuery, limit = 25) {
   const trimmed = String(rawQuery || '').trim();
   if (!trimmed) return [];
@@ -857,16 +928,33 @@ async function searchLocations(rawQuery, limit = 25) {
     return cached.data;
   }
 
-  const [omRes, phRes, nomRes] = await Promise.allSettled([
+  // 1. Instant local catalog scan (0ms)
+  const localMatches = searchLocalCatalog(trimmed);
+
+  // 2. High-speed concurrent live geocoding (Open-Meteo & Photon)
+  const [omRes, phRes] = await Promise.allSettled([
     queryOpenMeteoGeo(trimmed),
     queryPhotonGeo(trimmed),
-    queryNominatimGeo(trimmed),
   ]);
 
+  let omItems = omRes.status === 'fulfilled' ? omRes.value : [];
+  let phItems = phRes.status === 'fulfilled' ? phRes.value : [];
+
+  // 3. Fallback to Nominatim only if no results from local catalog and live geocoders
+  let nomItems = [];
+  if (localMatches.length === 0 && omItems.length === 0 && phItems.length === 0) {
+    try {
+      nomItems = await queryNominatimGeo(trimmed);
+    } catch (e) {
+      // non-blocking
+    }
+  }
+
   const rawPool = [
-    ...(omRes.status === 'fulfilled' ? omRes.value : []),
-    ...(phRes.status === 'fulfilled' ? phRes.value : []),
-    ...(nomRes.status === 'fulfilled' ? nomRes.value : []),
+    ...localMatches,
+    ...omItems,
+    ...phItems,
+    ...nomItems,
   ];
 
   // Deduplicate physical locations while preserving distinct homonym places worldwide
@@ -895,8 +983,10 @@ async function searchLocations(rawQuery, limit = 25) {
       return false;
     });
 
+    const itemScore = cand._score || scoreGeoCandidate(cand, trimmed);
+
     if (!existing) {
-      deduped.push({ ...cand, _score: scoreGeoCandidate(cand, trimmed) });
+      deduped.push({ ...cand, _score: itemScore });
     } else {
       if (!existing.elevation && cand.elevation !== undefined) existing.elevation = cand.elevation;
       if (!existing.population && cand.population) existing.population = cand.population;
@@ -910,7 +1000,7 @@ async function searchLocations(rawQuery, limit = 25) {
           existing.featureType
         );
       }
-      existing._score = Math.max(existing._score, scoreGeoCandidate(cand, trimmed));
+      existing._score = Math.max(existing._score || 0, itemScore);
     }
   }
 
